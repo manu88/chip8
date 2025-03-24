@@ -9,14 +9,33 @@
 #include "Rom.hpp"
 #include "Peripherals.hpp"
 #include <stdio.h>
+#include <assert.h>
 
-#define CHECK_BIT(var, pos) ((var) & (1 << (pos)))
+
+#define ROM_ADDR (uint16_t) 0x200
+
+void Chip8::Memory::setRom(Rom *rom){
+    _rom = rom;
+}
+
+uint16_t Chip8::Memory::getValueAtAddr(uint16_t addr){
+    if (addr >= ROM_ADDR){
+        return _rom->bytes[addr - ROM_ADDR];
+    }
+    printf("Invalid memory address 0X%0X\n", addr);
+    assert(false);
+    return 0;
+}
 
 void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
-    _registers.reset();
-    _pc = 0;
-    _rom = rom;
+    _mem.setRom(rom);
     _peripherals = peripherals;
+    reset();
+}
+
+void Chip8::CPU::reset(){
+    _registers.reset();
+    _pc = ROM_ADDR;
     _soundTimer = 0;
 }
 
@@ -39,7 +58,7 @@ void Chip8::CPU::dump(){
 
 bool Chip8::CPU::execAt(uint16_t memLoc) {
     //dump();
-    uint16_t instruction = _rom->bytes[memLoc];
+    uint16_t instruction = _mem.getValueAtAddr(memLoc);
     printf("Exec instruction 0X%0X at location 0X%0X\n", instruction, memLoc);
     return exec(instruction);
 }

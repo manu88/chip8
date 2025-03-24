@@ -38,9 +38,19 @@ enum OpCode {
     RETURN = 0x00EE,
     GOTO_MASK = 0xF000,
 };
+
+class Memory{
+public:
+    void setRom(Rom *rom);
+    uint16_t getValueAtAddr(uint16_t addr);
+private:
+    Rom *_rom;
+};
+
 class CPU {
   public:
     void init(Rom *rom, Peripherals *peripherals);
+    void reset();
     void run();
     bool exec(Instruction instruction);
     void dump();
@@ -52,7 +62,7 @@ class CPU {
     Registers _registers;
     uint16_t _pc;
     
-    Rom *_rom;
+    Memory _mem;
     Peripherals *_peripherals;
     
     uint16_t _soundTimer = 0;
