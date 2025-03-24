@@ -11,22 +11,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-
-#define ROM_ADDR (uint16_t) 0x200
-
-void Chip8::Memory::setRom(Rom *rom){
-    _rom = rom;
-}
-
-uint16_t Chip8::Memory::getValueAtAddr(uint16_t addr){
-    if (addr >= ROM_ADDR){
-        return _rom->bytes[addr - ROM_ADDR];
-    }
-    printf("Invalid memory address 0X%0X\n", addr);
-    assert(false);
-    return 0;
-}
-
 void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
     _mem.setRom(rom);
     _peripherals = peripherals;

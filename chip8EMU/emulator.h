@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include "Memory.hpp"
 
 class Rom;
 
@@ -37,14 +38,6 @@ enum OpCode {
     DISPLAY_CLEAR = 0x00E0,
     RETURN = 0x00EE,
     GOTO_MASK = 0xF000,
-};
-
-class Memory{
-public:
-    void setRom(Rom *rom);
-    uint16_t getValueAtAddr(uint16_t addr);
-private:
-    Rom *_rom;
 };
 
 class CPU {
