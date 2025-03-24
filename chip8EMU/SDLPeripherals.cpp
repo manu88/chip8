@@ -45,6 +45,10 @@ uint8_t SDLPeripherals::waitKeyPress() {
     SDL_Event e;
     while (!done) {
         while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+                return 0;
+            }
             if (e.type == SDL_KEYUP) {
                 const char key = SDL_GetKeyName(e.key.keysym.sym)[0];
                 // hackish
@@ -103,4 +107,8 @@ uint8_t SDLPeripherals::waitKeyPress() {
 }
 void SDLPeripherals::clearDisplay() {
     SDL_RenderClear(renderer);
+}
+
+bool SDLPeripherals::shouldStop(){
+    return quit;
 }

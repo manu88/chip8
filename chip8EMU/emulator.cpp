@@ -45,6 +45,9 @@ void Chip8::CPU::run() {
             return;
         }
         _peripherals->update();
+        if (_peripherals->shouldStop()){
+            return;
+        }
     }
 }
 
