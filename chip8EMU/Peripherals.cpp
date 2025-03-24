@@ -10,12 +10,17 @@
 
 uint8_t Chip8::Peripherals::waitKeyPress(){
     printf("Wait for key press\n");
-    getchar();
+    int val = getchar();
+    printf("Val=0X%X\n", val);
     return  4;
 }
 
 void Chip8::Peripherals::clearDisplay(){
     printf("Display clear\n");
+}
+
+void Chip8::Peripherals::update(){
+    
 }
 
 void Chip8::Peripherals::draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i){

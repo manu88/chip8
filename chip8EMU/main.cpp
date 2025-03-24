@@ -9,11 +9,12 @@
 #include "emulator.h"
 #include "Rom.hpp"
 #include "Peripherals.hpp"
-
+#include "SDLPeripherals.hpp"
 
 int main(int argc, const char * argv[]) {
     
-    Chip8::Peripherals p;
+    SDLPeripherals p;
+    p.init();
     Rom rom;
     rom.loadFile("/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
     

@@ -44,6 +44,7 @@ void Chip8::CPU::run() {
         if (!execAt(_pc)){
             return;
         }
+        _peripherals->update();
     }
 }
 
@@ -57,16 +58,13 @@ void Chip8::CPU::dump(){
 }
 
 bool Chip8::CPU::execAt(uint16_t memLoc) {
-    //dump();
     uint16_t instruction = _mem.getValueAtAddr(memLoc);
-    printf("Exec instruction 0X%0X at location 0X%0X\n", instruction, memLoc);
     return exec(instruction);
 }
 
 bool Chip8::CPU::exec(Instruction instruction) {
 
     if (instruction == DISPLAY_CLEAR) {
-        printf("Got display clear \n");
         _peripherals->clearDisplay();
         _pc += 1;
         return true;
@@ -81,7 +79,6 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if (opcode1 == 1) { // 1NNN
             uint16_t addr = instruction & 0x0FFF;
-            printf("goto addr : 0x%x\n", addr);
             _pc = addr;
             return true;
         } else if (opcode1 == 2) { // 2NNN
@@ -108,7 +105,6 @@ bool Chip8::CPU::exec(Instruction instruction) {
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
             _registers.v[reg] = val;
-            printf("Set reg V%x to 0X%0X\n", reg, val);
             _pc += 1;
             return true;
         } else if (opcode1 == 7) { // 7XNN
@@ -172,7 +168,6 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if (opcode1 == 0xA) { // ANNN
             const uint16_t addr = instruction & 0x0FFF;
-            printf("Set I to 0X%0X\n", addr);
             _registers.i = addr;
             _pc += 1;
             return true;
@@ -222,7 +217,6 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if ((instruction & 0xF0FF) == 0xF018) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("sets the sound timer to V%x\n", reg);
             _soundTimer = _registers.v[reg];
             _pc += 1;
             return true;
@@ -232,9 +226,6 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if ((instruction & 0xF0FF) == 0xF029) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("Sets I to the location of the sprite for the character in "
-                   "V%x (ie 0X%0X)\n",
-                   reg, _registers.v[reg]);
             _registers.i = getSpriteAddr(_registers.v[reg]);
             _pc += 1;
             return true;
