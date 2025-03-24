@@ -8,16 +8,18 @@
 #include <iostream>
 #include "emulator.h"
 #include "Rom.hpp"
+#include "Peripherals.hpp"
 
 
 int main(int argc, const char * argv[]) {
     
+    Chip8::Peripherals p;
     Rom rom;
     rom.loadFile("/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
     
     rom.dump();
     Chip8::CPU emu;
-    emu.init(&rom);
+    emu.init(&rom, &p);
     emu.run();
 
 /*

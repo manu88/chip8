@@ -15,14 +15,18 @@ class Rom;
 
 namespace Chip8 {
 
+class Peripherals;
+
 struct Registers{
     uint16_t v[16];
+    uint16_t i;
     
     Registers(){
         reset();
     }
     void reset(){
         memset(v, 0, 16);
+        i = 0;
     }
 };
 
@@ -36,15 +40,21 @@ enum OpCode {
 };
 class CPU {
   public:
-    void init(Rom *rom);
+    void init(Rom *rom, Peripherals *peripherals);
     void run();
     bool exec(Instruction instruction);
+    void dump();
   private:
+    
+    uint16_t getSpriteAddr(uint16_t val);
     bool execAt(uint16_t memLoc);
     
     Registers _registers;
-    uint16_t _instructionPtr;
+    uint16_t _pc;
     
     Rom *_rom;
+    Peripherals *_peripherals;
+    
+    uint16_t _soundTimer = 0;
 };
 } // namespace Chip8
