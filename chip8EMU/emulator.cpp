@@ -25,8 +25,10 @@ void Chip8::CPU::reset(){
 
 void Chip8::CPU::run() {
     while (!_peripherals->shouldStop()){
-        if (!execAt(_pc)){
-            return;
+        if(_mem.isValid(_pc)){
+            if (!execAt(_pc)){
+                return;
+            }
         }
         _peripherals->update(_mem);
     }
@@ -43,6 +45,7 @@ void Chip8::CPU::dump(){
 
 bool Chip8::CPU::execAt(uint16_t memLoc) {
     uint16_t instruction = _mem.getValueAtAddr(memLoc);
+    printf("Exec instruction 0X%0X at 0X%0X\n", instruction, memLoc);
     return exec(instruction);
 }
 

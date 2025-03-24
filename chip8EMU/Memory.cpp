@@ -113,6 +113,14 @@ void Chip8::Memory::setRom(Rom *rom){
     _rom = rom;
 }
 
+bool Chip8::Memory::isValid(uint16_t addr) const{
+    if (addr >= ROM_ADDR){
+        uint16_t romAddr = addr - ROM_ADDR;
+        return romAddr <_rom->bytes.size();
+    }
+    return false;
+}
+
 uint16_t Chip8::Memory::getValueAtAddr(uint16_t addr)const{
     if (addr >= ROM_ADDR){
         return _rom->bytes[addr - ROM_ADDR];

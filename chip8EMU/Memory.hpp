@@ -20,6 +20,8 @@ class Memory {
         const uint8_t *data;
     };
   public:
+    
+    bool isValid(uint16_t addr) const;
     void setRom(Rom *rom);
     uint16_t getValueAtAddr(uint16_t addr) const;
     uint16_t getSpriteAddr(uint16_t val)const;
