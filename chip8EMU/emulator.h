@@ -49,7 +49,7 @@ class CPU {
     void dump();
   private:
     
-    uint16_t getSpriteAddr(uint16_t val);
+
     bool execAt(uint16_t memLoc);
     
     Registers _registers;

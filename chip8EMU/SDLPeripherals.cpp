@@ -6,13 +6,14 @@
 //
 
 #include "SDLPeripherals.hpp"
+#include "Memory.hpp"
 #include <string>
 
 SDLPeripherals::SDLPeripherals() {}
 
 void SDLPeripherals::init() {
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_CreateWindowAndRenderer(320, 640, 0, &window, &renderer);
+    SDL_CreateWindowAndRenderer(640, 320, 0, &window, &renderer);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -25,9 +26,50 @@ SDLPeripherals::~SDLPeripherals() {
     SDL_Quit();
 }
 
-void SDLPeripherals::update() {
-    SDL_Event e;
+uint8_t reverse(uint8_t x) {
+    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
+    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
+    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
+    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
+    return ((x >> 16) | (x << 16));
+}
 
+void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
+                                  const SDLPeripherals::DrawCommand &cmd) {
+    const auto sprite = memory.getSpriteData(cmd.i);
+    for (int y = 0; y < cmd.height; y++) {
+        uint8_t v = sprite.data[y];
+        for (int x = 0; x < 8; x++) {
+            if (v & 0x0001) {
+
+                SDL_Rect r;
+                r.x = (cmd.x + 7 - x) * 10;
+                r.y = (cmd.y + y) * 10;
+                r.w = 10;
+                r.h = 10;
+                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+                SDL_RenderFillRect(renderer, &r);
+            }
+            v >>= 1;
+        }
+    }
+}
+
+void SDLPeripherals::update(const Chip8::Memory &memory) {
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    // Clear winow
+    SDL_RenderClear(renderer);
+
+    for (const auto &cmd : _commands) {
+        renderSprite(memory, cmd);
+    }
+
+    // Render the rect to the screen
+    SDL_RenderPresent(renderer);
+
+    SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
             quit = true;
@@ -38,6 +80,8 @@ void SDLPeripherals::update() {
 void SDLPeripherals::draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) {
     printf("SDL Draw at x=0X%0X, y=0X%0X height=0X%0X, i=0X%0X\n", x, y, height,
            i);
+
+    _commands.push_back({x, y, height, i});
 }
 
 uint8_t SDLPeripherals::waitKeyPress() {
@@ -105,10 +149,6 @@ uint8_t SDLPeripherals::waitKeyPress() {
     }
     return 0;
 }
-void SDLPeripherals::clearDisplay() {
-    SDL_RenderClear(renderer);
-}
+void SDLPeripherals::clearDisplay() { _commands.clear(); }
 
-bool SDLPeripherals::shouldStop(){
-    return quit;
-}
+bool SDLPeripherals::shouldStop() { return quit; }

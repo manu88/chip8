@@ -24,14 +24,11 @@ void Chip8::CPU::reset(){
 }
 
 void Chip8::CPU::run() {
-    while (1){
+    while (!_peripherals->shouldStop()){
         if (!execAt(_pc)){
             return;
         }
-        _peripherals->update();
-        if (_peripherals->shouldStop()){
-            return;
-        }
+        _peripherals->update(_mem);
     }
 }
 
@@ -213,7 +210,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if ((instruction & 0xF0FF) == 0xF029) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            _registers.i = getSpriteAddr(_registers.v[reg]);
+            _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
             _pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF033) {
@@ -243,9 +240,4 @@ bool Chip8::CPU::exec(Instruction instruction) {
     }
     printf("Unknown instruction 0X%X\n", instruction);
     return false;
-}
-
-
-uint16_t Chip8::CPU::getSpriteAddr(uint16_t val){
-    return val;
 }
