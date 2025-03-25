@@ -25,10 +25,15 @@ struct Registers {
     uint16_t v[16];
     uint16_t i;
 
+    uint16_t pc;
+    uint8_t sp;
+
     Registers() { reset(); }
     void reset() {
         memset(v, 0, 16);
         i = 0;
+        sp = 0;
+        pc = ROM_ADDR;
     }
 };
 
@@ -55,8 +60,6 @@ class CPU {
     void updateTimers(double totalDurationMS);
 
     Registers _registers;
-    uint16_t _pc;
-    uint8_t _sp;
     uint16_t _stack[STACK_SIZE];
 
     Memory _mem;

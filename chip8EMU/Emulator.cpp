@@ -24,9 +24,7 @@ void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
 
 void Chip8::CPU::reset() {
     _registers.reset();
-    _sp = 0;
     memset(_stack, 0, STACK_SIZE * sizeof(uint16_t));
-    _pc = ROM_ADDR;
     _soundTimer = 0;
     _startTime = std::chrono::system_clock::now();
     _rng.seed((unsigned int)_startTime.time_since_epoch().count());
@@ -45,7 +43,7 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 void Chip8::CPU::run() {
     while (!_peripherals->shouldStop()) {
         const auto before = std::chrono::system_clock::now();
-        uint16_t pc = _pc;
+        uint16_t pc = _registers.pc;
 
         if (!execAt(pc)) {
             if (_conf.logs) {
@@ -75,10 +73,10 @@ void Chip8::CPU::dump() {
         printf("V%x=0X%0X\n", i, _registers.v[i]);
     }
     printf("I=0X%0x\n", _registers.i);
-    printf("pc=0X%0x\n", _pc);
-    printf("Stack ptr %i\n", _sp);
+    printf("pc=0X%0x\n", _registers.pc);
+    printf("Stack ptr %i\n", _registers.sp);
     for (int i = 0; i < STACK_SIZE; i++) {
-        printf("0X%X: 0X%X %c\n", i, _stack[i], _sp == i ? '*' : ' ');
+        printf("0X%X: 0X%X %c\n", i, _stack[i], _registers.sp == i ? '*' : ' ');
     }
 }
 
@@ -93,61 +91,61 @@ bool Chip8::CPU::exec(Instruction instruction) {
     }
     if (instruction == 0x00E0) {
         _peripherals->clearDisplay();
-        _pc += 1;
+        _registers.pc += 1;
         return true;
     } else if (instruction == 0x00EE) {
-        _sp -= 1;
-        _pc = _stack[_sp] + 1;
+        _registers.sp -= 1;
+        _registers.pc = _stack[_registers.sp] + 1;
         return true;
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
         if (opcode1 == 0) { // call 0NNN
             uint16_t addr = instruction & 0x0FFF;
-            _pc += 1;
+            _registers.pc += 1;
             if (_conf.logs) {
                 printf("[ignored] Call machine code at addr : 0x%x\n", addr);
             }
             return true;
         } else if (opcode1 == 1) { // 1NNN
             uint16_t addr = instruction & 0x0FFF;
-            _pc = addr;
+            _registers.pc = addr;
             return true;
         } else if (opcode1 == 2) { // 2NNN
             uint16_t addr = instruction & 0x0FFF;
-            _stack[_sp] = _pc;
-            _sp += 1;
-            _pc = addr;
+            _stack[_registers.sp] = _registers.pc;
+            _registers.sp += 1;
+            _registers.pc = addr;
             return true;
         } else if (opcode1 == 3) { // 3XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
             if (_registers.v[reg] == val) {
-                _pc += 1;
+                _registers.pc += 1;
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 4) { // 4XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
             if (_registers.v[reg] != val) {
-                _pc += 1;
+                _registers.pc += 1;
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 5) { // 5XY0
             uint16_t reg1 = (instruction & 0x0F00) >> 8;
             uint16_t reg2 = (instruction & 0x00F0) >> 4;
 
             if (_registers.v[reg1] == _registers.v[reg2]) {
-                _pc += 1;
+                _registers.pc += 1;
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 6) { // 6XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
             _registers.v[reg] = val;
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 7) { // 7XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
@@ -217,7 +215,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if (opcode1 == 0xA) { // ANNN
             const uint16_t addr = instruction & 0x0FFF;
             _registers.i = addr;
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 0xB) { // BNNN
             const uint16_t addr = instruction & 0x0FFF;
@@ -228,7 +226,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
             const uint16_t val = instruction & 0x00FF;
             uint8_t randomVal = _uint8Distrib(_rng);
             _registers.v[reg] = randomVal & val;
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if (opcode1 == 0xD) { // DXYN
             const uint16_t reg1 = (instruction & 0x0F00) >> 8;
@@ -236,7 +234,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
             const uint16_t val = instruction & 0x000F;
             _peripherals->draw(_registers.v[reg1], _registers.v[reg2], val,
                                _registers.i);
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xE09E) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
@@ -255,23 +253,23 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if ((instruction & 0xF0FF) == 0xF007) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _registers.v[reg] = _delayTimer;
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF00A) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             printf("A key press is awaited, and then stored in V%x\n", reg);
             _registers.v[reg] = _peripherals->waitKeyPress();
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF015) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _delayTimer = _registers.v[reg];
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF018) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _soundTimer = _registers.v[reg];
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF01E) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
@@ -280,7 +278,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if ((instruction & 0xF0FF) == 0xF029) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF033) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
@@ -298,21 +296,21 @@ bool Chip8::CPU::exec(Instruction instruction) {
             if (!_mem.setValueAtAddr(_registers.i + 2, d0)) {
                 printf("Error writing 0X%0X at 0X%0X\n", d0, _registers.i + 2);
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF055) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             for (int i = 0; i <= reg; i++) {
-                _mem.setValueAtAddr(_registers.i + i, _registers.v[i] );
+                _mem.setValueAtAddr(_registers.i + i, _registers.v[i]);
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         } else if ((instruction & 0xF0FF) == 0xF065) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             for (int i = 0; i <= reg; i++) {
                 _registers.v[i] = _mem.getValueAtAddr(_registers.i + i);
             }
-            _pc += 1;
+            _registers.pc += 1;
             return true;
         }
     }
