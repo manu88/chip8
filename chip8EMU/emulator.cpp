@@ -62,8 +62,9 @@ bool Chip8::CPU::exec(Instruction instruction) {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
         if (opcode1 == 0) { // call 0NNN
             uint16_t addr = instruction & 0x0FFF;
-            printf("[TODO] Call machine code at addr : 0x%x\n", addr);
-            return false;
+            _pc += 1;
+            printf("[ignored]Call machine code at addr : 0x%x\n", addr);
+            return true;
         } else if (opcode1 == 1) { // 1NNN
             uint16_t addr = instruction & 0x0FFF;
             _pc = addr;
@@ -75,19 +76,28 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if (opcode1 == 3) { // 3XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
-            printf("[TODO] Skip next instruction if v%x equals 0x%x\n", reg, val);
-            return false;
+            if (_registers.v[reg] == val){
+                _pc += 1;
+            }
+            _pc += 1;
+            return true;
         } else if (opcode1 == 4) { // 4XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
-            printf("[TODO] Skip next instruction if v%x DOES NOT equal 0x%x\n", reg,
-                   val);
-            return false;
+            if (_registers.v[reg] != val){
+                _pc += 1;
+            }
+            _pc += 1;
+            return true;
         } else if (opcode1 == 5) { // 5XY0
             uint16_t reg1 = (instruction & 0x0F00) >> 8;
             uint16_t reg2 = (instruction & 0x00F0) >> 4;
-            printf("[TODO] Skip next instruction if v%x equals v%x\n", reg1, reg2);
-            return false;
+            
+            if (_registers.v[reg1] == _registers.v[reg2] ){
+                _pc += 1;
+            }
+            _pc += 1;
+            return true;
         } else if (opcode1 == 6) { // 6XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
@@ -190,8 +200,9 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return false;
         } else if ((instruction & 0xF0FF) == 0xF007) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("[TODO] Sets V%x to the value of the delay timer\n", reg);
-            return false;
+            _registers.v[reg] = _delayTimer;
+            _pc += 1;
+            return true;
         } else if ((instruction & 0xF0FF) == 0xF00A) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             printf("A key press is awaited, and then stored in V%x\n", reg);
@@ -200,8 +211,9 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return true;
         } else if ((instruction & 0xF0FF) == 0xF015) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("[TODO] sets the delay timer to V%x\n", reg);
-            return false;
+            _delayTimer = _registers.v[reg];
+            _pc += 1;
+            return true;
         } else if ((instruction & 0xF0FF) == 0xF018) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _soundTimer = _registers.v[reg];

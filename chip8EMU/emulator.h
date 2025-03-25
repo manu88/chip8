@@ -59,5 +59,6 @@ class CPU {
     Peripherals *_peripherals;
     
     uint16_t _soundTimer = 0;
+    uint16_t _delayTimer = 0;
 };
 } // namespace Chip8
