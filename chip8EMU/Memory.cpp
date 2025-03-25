@@ -44,6 +44,7 @@ static const uint8_t Sprites[][5] = {
     {0b11110000, 0b10000000, 0b11110000, 0b10000000, 0b10000000},
 };
 
+
 void Chip8::Memory::setRom(Rom *rom) { _rom = rom; }
 
 bool Chip8::Memory::isValid(uint16_t addr) const {

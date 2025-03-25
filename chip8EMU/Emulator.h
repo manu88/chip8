@@ -43,7 +43,7 @@ class CPU {
   public:
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
-    enum { STACK_SIZE = 16 };
+
 
     CPU() : CPU(Config{}) {}
     CPU(const Config &config) : _conf(config), _rng(_randomDevice()) {}
@@ -60,7 +60,6 @@ class CPU {
     void updateTimers(double totalDurationMS);
 
     Registers _registers;
-    uint16_t _stack[STACK_SIZE];
 
     Memory _mem;
     Peripherals *_peripherals;

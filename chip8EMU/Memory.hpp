@@ -20,6 +20,8 @@ class Memory {
     };
 
   public:
+    enum { STACK_SIZE = 16 };
+
     bool isValid(uint16_t addr) const;
     void setRom(Rom *rom);
     uint16_t getValueAtAddr(uint16_t addr) const;
@@ -29,8 +31,12 @@ class Memory {
 
     Sprite getSpriteData(uint16_t val) const;
 
+    uint16_t stack[STACK_SIZE];
+
   private:
     Rom *_rom;
     std::map<uint16_t, uint16_t> _ram;
+    
+    
 };
 } // namespace Chip8

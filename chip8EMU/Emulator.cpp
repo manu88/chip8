@@ -24,7 +24,6 @@ void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
 
 void Chip8::CPU::reset() {
     _registers.reset();
-    memset(_stack, 0, STACK_SIZE * sizeof(uint16_t));
     _soundTimer = 0;
     _startTime = std::chrono::system_clock::now();
     _rng.seed((unsigned int)_startTime.time_since_epoch().count());
@@ -75,8 +74,8 @@ void Chip8::CPU::dump() {
     printf("I=0X%0x\n", _registers.i);
     printf("pc=0X%0x\n", _registers.pc);
     printf("Stack ptr %i\n", _registers.sp);
-    for (int i = 0; i < STACK_SIZE; i++) {
-        printf("0X%X: 0X%X %c\n", i, _stack[i], _registers.sp == i ? '*' : ' ');
+    for (int i = 0; i < Chip8::Memory::STACK_SIZE; i++) {
+        printf("0X%X: 0X%X %c\n", i, _mem.stack[i], _registers.sp == i ? '*' : ' ');
     }
 }
 
@@ -95,7 +94,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
         return true;
     } else if (instruction == 0x00EE) {
         _registers.sp -= 1;
-        _registers.pc = _stack[_registers.sp] + 1;
+        _registers.pc = _mem.stack[_registers.sp] + 1;
         return true;
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
@@ -112,7 +111,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return true;
         } else if (opcode1 == 2) { // 2NNN
             uint16_t addr = instruction & 0x0FFF;
-            _stack[_registers.sp] = _registers.pc;
+            _mem.stack[_registers.sp] = _registers.pc;
             _registers.sp += 1;
             _registers.pc = addr;
             return true;
