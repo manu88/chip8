@@ -13,6 +13,7 @@
 #include <chrono>
 #include <stdint.h>
 #include <string.h>
+#include <random>
 
 class Rom;
 
@@ -47,7 +48,7 @@ class CPU {
     enum { STACK_SIZE = 16};
 
     CPU() : CPU(Config{}) {}
-    CPU(const Config &config) : _conf(config){};
+    CPU(const Config &config) : _conf(config), _rng(_randomDevice()){}
 
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
@@ -72,5 +73,9 @@ class CPU {
     uint16_t _delayTimer = 0;
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
+    
+    std::random_device _randomDevice;
+    std::mt19937 _rng;
+    std::uniform_int_distribution<uint8_t> _uint8Distrib; 
 };
 } // namespace Chip8

@@ -25,6 +25,8 @@ void Chip8::CPU::reset() {
     _pc = ROM_ADDR;
     _soundTimer = 0;
     _startTime = std::chrono::system_clock::now();
+    _rng.seed((unsigned int)_startTime.time_since_epoch().count());
+    _uint8Distrib = std::uniform_int_distribution<uint8_t>();
 }
 
 void Chip8::CPU::updateTimers(double totalDurationMS) {
@@ -84,7 +86,7 @@ bool Chip8::CPU::exec(Instruction instruction) {
         return true;
     } else if (instruction == RETURN) {
         _pc = _stack[_sp];
-        _sp-=1;
+        _sp -= 1;
         return true;
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
@@ -212,11 +214,10 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if (opcode1 == 0xC) { // CXNN
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             const uint16_t val = instruction & 0x00FF;
-            printf(
-                "[TODO] sets V%x to the result of a bitwise and operation on a "
-                "random number and 0X%x\n",
-                reg, val);
-            return false;
+            uint8_t randomVal = _uint8Distrib(_rng);
+            _registers.v[reg] = randomVal & val;
+            _pc += 1;
+            return true;
         } else if (opcode1 == 0xD) { // DXYN
             const uint16_t reg1 = (instruction & 0x0F00) >> 8;
             const uint16_t reg2 = (instruction & 0x00F0) >> 4;
