@@ -149,8 +149,9 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if (opcode1 == 7) { // 7XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
-            printf("[TODO] Add 0x%x to v%x \n", val, reg);
-            return false;
+            _registers.v[reg] += val;
+            _registers.pc += 1;
+            return true;
         } else if (opcode1 == 8) { // 8XY#
             const uint16_t opcode2 = instruction & 0x000F;
             const uint16_t reg1 = (instruction & 0x0F00) >> 8;
@@ -275,6 +276,11 @@ bool Chip8::CPU::exec(Instruction instruction) {
             printf("[TODO] adds V%x to I\n", reg);
             return false;
         } else if ((instruction & 0xF0FF) == 0xF029) {
+            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
+            _registers.pc += 1;
+            return true;
+        } else if ((instruction & 0xF0FF) == 0xF030) { // Super-chip instruction
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
             _registers.pc += 1;
