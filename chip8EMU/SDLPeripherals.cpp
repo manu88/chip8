@@ -9,11 +9,20 @@
 #include "Memory.hpp"
 #include <string>
 
+// we draw the 'screen' with a 10,10 offset from top-right side of screen
+#define OFFSET (int) 10
+
 SDLPeripherals::SDLPeripherals() {}
 
 void SDLPeripherals::init() {
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_CreateWindowAndRenderer(640, 320, 0, &window, &renderer);
+
+    int width = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
+
+    width += 300; // more space for debug infos
+    int height = (int)Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
+    height += 20;
+    SDL_CreateWindowAndRenderer(width, height, 0, &window, &renderer);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -43,10 +52,10 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
             if (v & 0x0001) {
 
                 SDL_Rect r;
-                r.x = (cmd.x + 7 - x) * 10;
-                r.y = (cmd.y + y) * 10;
-                r.w = 10;
-                r.h = 10;
+                r.x = OFFSET + (cmd.x + 7 - x) * SCALE_FACTOR;
+                r.y = OFFSET + (cmd.y + y) * SCALE_FACTOR;
+                r.w = SCALE_FACTOR;
+                r.h = SCALE_FACTOR;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 SDL_RenderFillRect(renderer, &r);
             }
@@ -58,10 +67,20 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
 void SDLPeripherals::update(const Chip8::Memory &memory,
                             const Chip8::Peripherals::UpdateParams &params) {
 
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     SDL_RenderClear(renderer);
 
+    // frame around chip8 'screen'
+    SDL_Rect r;
+    r.x = OFFSET;
+    r.y = OFFSET;
+    r.w = (int) Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
+    r.h = (int) Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &r);
+    
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }

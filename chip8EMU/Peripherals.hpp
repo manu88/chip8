@@ -13,6 +13,9 @@ class Memory;
 
 class Peripherals {
   public:
+    enum { SCREEN_WIDTH = 64 };
+    enum { SCREEN_HEIGTH = 32 };
+
     virtual ~Peripherals() {}
 
     struct UpdateParams {
