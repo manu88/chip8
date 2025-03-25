@@ -36,7 +36,7 @@ void Rom::dump() {
     int i = 0;
     for (uint16_t b : bytes) {
         if (i % 8 == 0)
-            printf("\n");
+            printf("\n 0X%0X: ", i);
         printf("0X%04X ", b);
         i++;
     }

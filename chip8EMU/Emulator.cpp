@@ -20,6 +20,8 @@ void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
 
 void Chip8::CPU::reset() {
     _registers.reset();
+    _sp = 0;
+    memset(_stack, 0, STACK_SIZE * sizeof(uint16_t));
     _pc = ROM_ADDR;
     _soundTimer = 0;
     _startTime = std::chrono::system_clock::now();
@@ -81,8 +83,9 @@ bool Chip8::CPU::exec(Instruction instruction) {
         _pc += 1;
         return true;
     } else if (instruction == RETURN) {
-        printf("[TODO] Got return opcode\n");
-        return false;
+        _pc = _stack[_sp];
+        _sp-=1;
+        return true;
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
         if (opcode1 == 0) { // call 0NNN
@@ -96,8 +99,11 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return true;
         } else if (opcode1 == 2) { // 2NNN
             uint16_t addr = instruction & 0x0FFF;
-            printf("[TODO] call subroutine at addr : 0x%x\n", addr);
-            return false;
+            _stack[_sp] = _pc;
+            _sp++;
+            _pc = addr;
+            printf("Calling subroutine at 0X%0X\n", _pc);
+            return true;
         } else if (opcode1 == 3) { // 3XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
             uint16_t val = instruction & 0x00FF;
