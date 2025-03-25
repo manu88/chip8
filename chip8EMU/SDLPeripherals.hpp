@@ -9,6 +9,8 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+typedef struct TTF_Font TTF_Font;
+
 namespace Chip8 {
 class Memory;
 }
@@ -22,6 +24,7 @@ class SDLPeripherals : public Chip8::Peripherals {
     void init();
 
     void update(const Chip8::Memory &memory,
+                const Chip8::Registers &registers,
                 const Chip8::Peripherals::UpdateParams &params) override;
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) override;
     uint8_t waitKeyPress() override;
@@ -42,4 +45,6 @@ class SDLPeripherals : public Chip8::Peripherals {
     SDL_Renderer *renderer = NULL;
 
     bool quit = false;
+    
+    TTF_Font *_font;
 };

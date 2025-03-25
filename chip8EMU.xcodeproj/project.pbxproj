@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364CD2D91CA44003B3793 /* SDL2.framework */; };
+		598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +28,7 @@
 		598364CB2D91C880003B3793 /* SDL2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = SDL2; path = ../../../../../Library/Frameworks/SDL2.framework/SDL2; sourceTree = "<group>"; };
 		598364CD2D91CA44003B3793 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		598364D32D928A70003B3793 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL2_ttf.dylib; path = ../../../../../opt/homebrew/lib/libSDL2_ttf.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -43,6 +45,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */,
+				598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +73,7 @@
 		598364CA2D91C87F003B3793 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */,
 				598364CD2D91CA44003B3793 /* SDL2.framework */,
 				598364CB2D91C880003B3793 /* SDL2 */,
 			);
@@ -278,9 +282,11 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = /opt/homebrew/include/;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chip8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -299,9 +305,11 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = /opt/homebrew/include/;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework",
+					/opt/homebrew/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chip8;
 				PRODUCT_NAME = "$(TARGET_NAME)";

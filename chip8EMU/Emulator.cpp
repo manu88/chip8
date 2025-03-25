@@ -58,7 +58,7 @@ void Chip8::CPU::run() {
         if (params.timeoutMS < 0) {
             params.timeoutMS = CYCLE_MS;
         }
-        _peripherals->update(_mem, params);
+        _peripherals->update(_mem, _registers, params);
 
         const std::chrono::duration<double, std::milli> completeCycle =
             std::chrono::system_clock::now() - before;

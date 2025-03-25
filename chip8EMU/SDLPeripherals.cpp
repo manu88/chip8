@@ -6,13 +6,20 @@
 //
 
 #include "SDLPeripherals.hpp"
+#include "Emulator.h"
 #include "Memory.hpp"
 #include <string>
 
-// we draw the 'screen' with a 10,10 offset from top-right side of screen
-#define OFFSET (int) 10
+#include <SDL2/SDL_ttf.h>
 
-SDLPeripherals::SDLPeripherals() {}
+// we draw the 'screen' with a 10,10 offset from top-right side of screen
+#define OFFSET (int)10
+#define FONT_SIZE 16
+
+SDLPeripherals::SDLPeripherals() {
+    TTF_Init();
+    _font = TTF_OpenFont("/opt/Arial.ttf", FONT_SIZE);
+}
 
 void SDLPeripherals::init() {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -30,6 +37,7 @@ void SDLPeripherals::init() {
 }
 
 SDLPeripherals::~SDLPeripherals() {
+    TTF_CloseFont(_font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -64,9 +72,46 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
     }
 }
 
-void SDLPeripherals::update(const Chip8::Memory &memory,
-                            const Chip8::Peripherals::UpdateParams &params) {
+static void renderText(SDL_Renderer *renderer, int x, int y,
+                       const std::string &text, TTF_Font *font) {
+    int text_width;
+    int text_height;
 
+    SDL_Color textColor = {255, 255, 255, 0};
+
+    SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    text_width = surface->w;
+    text_height = surface->h;
+    SDL_FreeSurface(surface);
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = text_width;
+    rect.h = text_height;
+
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
+}
+
+static std::string hex(uint16_t value) {
+    char str[16];
+    char *p = &str[16];
+    do {
+        p--;
+        uint32_t digit = value % 16;
+        value /= 16;
+        *p = digit >= 10 ? 'a' + (digit - 10) : '0' + digit;
+    } while (value > 0);
+    p--;
+    *p = 'x';
+    p--;
+    *p = '0';
+    return std::string(p, &str[16] - p);
+}
+
+void SDLPeripherals::update(const Chip8::Memory &memory,
+                            const Chip8::Registers &registers,
+                            const Chip8::Peripherals::UpdateParams &params) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -76,13 +121,27 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     SDL_Rect r;
     r.x = OFFSET;
     r.y = OFFSET;
-    r.w = (int) Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
-    r.h = (int) Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
+    r.w = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
+    r.h = (int)Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &r);
-    
+
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
+    }
+
+    // render machine stats
+    const int startX = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR + 20;
+    const int startY = 10;
+    renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
+    renderText(renderer, startX, startY + FONT_SIZE, "sp: " + hex(registers.sp),
+               _font);
+    for (int i=0;i<16;i+=2){
+        std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
+        s += " v" + std::to_string(i+1) + ": " + hex(registers.v[i+1]);
+        
+        renderText(renderer, startX, startY + (FONT_SIZE*2)+ (FONT_SIZE/2*i), s,
+                   _font);
     }
 
     SDL_RenderPresent(renderer);
