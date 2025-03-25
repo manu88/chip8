@@ -11,9 +11,9 @@
 #include "Config.h"
 #include "Memory.hpp"
 #include <chrono>
+#include <random>
 #include <stdint.h>
 #include <string.h>
-#include <random>
 
 class Rom;
 
@@ -34,21 +34,14 @@ struct Registers {
 
 typedef uint16_t Instruction;
 
-enum OpCode {
-    CALL_MASK = 0xF000,
-    DISPLAY_CLEAR = 0x00E0,
-    RETURN = 0x00EE,
-    GOTO_MASK = 0xF000,
-};
-
 class CPU {
   public:
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
-    enum { STACK_SIZE = 16};
+    enum { STACK_SIZE = 16 };
 
     CPU() : CPU(Config{}) {}
-    CPU(const Config &config) : _conf(config), _rng(_randomDevice()){}
+    CPU(const Config &config) : _conf(config), _rng(_randomDevice()) {}
 
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
@@ -73,9 +66,9 @@ class CPU {
     uint16_t _delayTimer = 0;
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
-    
+
     std::random_device _randomDevice;
     std::mt19937 _rng;
-    std::uniform_int_distribution<uint8_t> _uint8Distrib; 
+    std::uniform_int_distribution<uint8_t> _uint8Distrib;
 };
 } // namespace Chip8

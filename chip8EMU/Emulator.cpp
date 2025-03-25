@@ -12,6 +12,10 @@
 #include <iostream>
 #include <stdio.h>
 
+static uint32_t dec2bcd_r(uint16_t dec) {
+    return (dec) ? ((dec2bcd_r(dec / 10) << 4) + (dec % 10)) : 0;
+}
+
 void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
     _mem.setRom(rom);
     _peripherals = peripherals;
@@ -41,11 +45,15 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 void Chip8::CPU::run() {
     while (!_peripherals->shouldStop()) {
         const auto before = std::chrono::system_clock::now();
-        if (_mem.isValid(_pc)) {
-            if (!execAt(_pc)) {
-                return;
+        uint16_t pc = _pc;
+
+        if (!execAt(pc)) {
+            if (_conf.logs) {
+                printf("Unable to exec instruction at pc=0X%0X\n", pc);
             }
+            return;
         }
+
         const std::chrono::duration<double, std::milli> cpuDuration =
             std::chrono::system_clock::now() - before;
         Chip8::Peripherals::UpdateParams params;
@@ -68,32 +76,37 @@ void Chip8::CPU::dump() {
     }
     printf("I=0X%0x\n", _registers.i);
     printf("pc=0X%0x\n", _pc);
+    printf("Stack ptr %i\n", _sp);
+    for (int i = 0; i < STACK_SIZE; i++) {
+        printf("0X%X: 0X%X %c\n", i, _stack[i], _sp == i ? '*' : ' ');
+    }
 }
 
 bool Chip8::CPU::execAt(uint16_t memLoc) {
     uint16_t instruction = _mem.getValueAtAddr(memLoc);
-    // printf("Exec instruction 0X%0X at 0X%0X\n", instruction, memLoc);
     return exec(instruction);
 }
 
 bool Chip8::CPU::exec(Instruction instruction) {
     if (_conf.logs) {
-        printf("Exec instruction 0X%0X at PC=0X%0X\n", instruction, _pc);
+        // printf("Exec instruction 0X%0X at PC=0X%0X\n", instruction, _pc);
     }
-    if (instruction == DISPLAY_CLEAR) {
+    if (instruction == 0x00E0) {
         _peripherals->clearDisplay();
         _pc += 1;
         return true;
-    } else if (instruction == RETURN) {
-        _pc = _stack[_sp];
+    } else if (instruction == 0x00EE) {
         _sp -= 1;
+        _pc = _stack[_sp] + 1;
         return true;
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
         if (opcode1 == 0) { // call 0NNN
             uint16_t addr = instruction & 0x0FFF;
             _pc += 1;
-            printf("[ignored]Call machine code at addr : 0x%x\n", addr);
+            if (_conf.logs) {
+                printf("[ignored] Call machine code at addr : 0x%x\n", addr);
+            }
             return true;
         } else if (opcode1 == 1) { // 1NNN
             uint16_t addr = instruction & 0x0FFF;
@@ -102,9 +115,8 @@ bool Chip8::CPU::exec(Instruction instruction) {
         } else if (opcode1 == 2) { // 2NNN
             uint16_t addr = instruction & 0x0FFF;
             _stack[_sp] = _pc;
-            _sp++;
+            _sp += 1;
             _pc = addr;
-            printf("Calling subroutine at 0X%0X\n", _pc);
             return true;
         } else if (opcode1 == 3) { // 3XNN
             uint16_t reg = (instruction & 0x0F00) >> 8;
@@ -272,29 +284,36 @@ bool Chip8::CPU::exec(Instruction instruction) {
             return true;
         } else if ((instruction & 0xF0FF) == 0xF033) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf(
-                "[TODO] Stores the binary-coded decimal representation of V%x, "
-                "with "
-                "the hundreds digit in memory at location in I, the tens digit "
-                "at location I+1, and the ones digit at location I+2\n",
-                reg);
-            return false;
+            uint32_t result =
+                dec2bcd_r(_registers.v[reg]); // 0X 0000 0000 0000 0000
+            const uint8_t d0 = result & 0x000F;
+            const uint8_t d1 = (result & 0x00F0) >> 4;
+            const uint8_t d2 = (result & 0x0F00) >> 8;
+            if (!_mem.setValueAtAddr(_registers.i, d2)) {
+                printf("Error writing 0X%0X at 0X%0X\n", d2, _registers.i);
+            }
+            if (!_mem.setValueAtAddr(_registers.i + 1, d1)) {
+                printf("Error writing 0X%0X at 0X%0X\n", d1, _registers.i + 1);
+            }
+            if (!_mem.setValueAtAddr(_registers.i + 2, d0)) {
+                printf("Error writing 0X%0X at 0X%0X\n", d0, _registers.i + 2);
+            }
+            _pc += 1;
+            return true;
         } else if ((instruction & 0xF0FF) == 0xF055) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("[TODO] Stores from V0 to V%x (including V%x) in memory, "
-                   "starting "
-                   "at address I. The offset from I is increased by 1 for each "
-                   "value written, but I itself is left unmodified.\n",
-                   reg, reg);
-            return false;
+            for (int i = 0; i <= reg; i++) {
+                _mem.setValueAtAddr(_registers.i + i, _registers.v[i] );
+            }
+            _pc += 1;
+            return true;
         } else if ((instruction & 0xF0FF) == 0xF065) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
-            printf("[TODO] Fills from V0 to V%x (including V%x) with values "
-                   "from memory, "
-                   "starting at address I. The offset from I is increased by 1 "
-                   "for each value read, but I itself is left unmodified\n",
-                   reg, reg);
-            return false;
+            for (int i = 0; i <= reg; i++) {
+                _registers.v[i] = _mem.getValueAtAddr(_registers.i + i);
+            }
+            _pc += 1;
+            return true;
         }
     }
     printf("Unknown instruction 0X%X\n", instruction);

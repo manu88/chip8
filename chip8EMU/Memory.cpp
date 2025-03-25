@@ -55,12 +55,23 @@ bool Chip8::Memory::isValid(uint16_t addr) const {
 }
 
 uint16_t Chip8::Memory::getValueAtAddr(uint16_t addr) const {
-    if (addr >= ROM_ADDR) {
+    if (addr >= ROM_ADDR && addr < ROM_ADDR + _rom->size()) {
         return _rom->bytes[addr - ROM_ADDR];
     }
-    printf("Invalid memory address 0X%0X\n", addr);
-    assert(false);
-    return 0;
+    
+    if(_ram.count(addr) == 0){
+        printf("Invalid memory address 0X%0X\n", addr);
+        assert(false);
+    }
+    return _ram.at(addr);
+}
+
+bool Chip8::Memory::setValueAtAddr(uint16_t addr, uint16_t val) {
+    if (addr < ROM_ADDR + _rom->size()) {
+        return false;
+    }
+    _ram[addr] = val;
+    return true;
 }
 
 uint16_t Chip8::Memory::getSpriteAddr(uint16_t val) const { return val; }
