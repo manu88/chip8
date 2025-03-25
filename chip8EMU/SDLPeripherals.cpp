@@ -60,14 +60,12 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    // Clear winow
     SDL_RenderClear(renderer);
 
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
 
-    // Render the rect to the screen
     SDL_RenderPresent(renderer);
 
     SDL_Event e;
