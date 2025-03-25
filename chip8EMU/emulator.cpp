@@ -25,10 +25,10 @@ void Chip8::CPU::reset() {
     _startTime = std::chrono::system_clock::now();
 }
 
-void Chip8::CPU::updateTimers(double totalDurationMS){
-    if (_delayTimer > 0){
-        _delayTimer -=1;
-        if( _delayTimer == 0){
+void Chip8::CPU::updateTimers(double totalDurationMS) {
+    if (_delayTimer > 0) {
+        _delayTimer -= 1;
+        if (_delayTimer == 0) {
             printf("Delay timer complete!\n");
         }
     }

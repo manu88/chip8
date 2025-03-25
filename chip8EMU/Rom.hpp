@@ -6,15 +6,14 @@
 //
 
 #pragma once
-#include <string>
 #include <stdint.h>
+#include <string>
 #include <vector>
 
-class Rom{
-    public:
+class Rom {
+  public:
     bool loadFile(const std::string &path);
     void dump();
     std::vector<uint16_t> bytes;
 };
 #include <stdio.h>
-

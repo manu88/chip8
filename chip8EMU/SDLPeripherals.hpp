@@ -15,20 +15,19 @@ class Memory;
 
 class SDLPeripherals : public Chip8::Peripherals {
   public:
-
     SDLPeripherals();
     ~SDLPeripherals();
 
     void init();
 
-    void update(const Chip8::Memory &memory, const Chip8::Peripherals::UpdateParams &params) override;
+    void update(const Chip8::Memory &memory,
+                const Chip8::Peripherals::UpdateParams &params) override;
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
     bool shouldStop() override;
 
   private:
-    
     struct DrawCommand {
         uint16_t x;
         uint16_t y;
@@ -36,8 +35,8 @@ class SDLPeripherals : public Chip8::Peripherals {
         uint16_t i;
     };
     std::vector<DrawCommand> _commands;
-    
-    void renderSprite(const Chip8::Memory &memory, const DrawCommand& cmd);
+
+    void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 

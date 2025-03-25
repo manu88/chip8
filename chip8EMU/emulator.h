@@ -8,10 +8,10 @@
 
 #pragma one
 
+#include "Memory.hpp"
+#include <chrono>
 #include <stdint.h>
 #include <string.h>
-#include <chrono>
-#include "Memory.hpp"
 
 class Rom;
 
@@ -19,14 +19,12 @@ namespace Chip8 {
 
 class Peripherals;
 
-struct Registers{
+struct Registers {
     uint16_t v[16];
     uint16_t i;
-    
-    Registers(){
-        reset();
-    }
-    void reset(){
+
+    Registers() { reset(); }
+    void reset() {
         memset(v, 0, 16);
         i = 0;
     }
@@ -43,29 +41,28 @@ enum OpCode {
 
 class CPU {
   public:
-    enum {CYCLE_MS = 16}; // approx. 60Hz
-    enum {DELAY_TIMER_HZ = 60};
-    
+    enum { CYCLE_MS = 16 }; // approx. 60Hz
+    enum { DELAY_TIMER_HZ = 60 };
+
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
     void run();
     bool exec(Instruction instruction);
     void dump();
-  private:
-    
 
+  private:
     bool execAt(uint16_t memLoc);
     void updateTimers(double totalDurationMS);
-    
+
     Registers _registers;
     uint16_t _pc;
-    
+
     Memory _mem;
     Peripherals *_peripherals;
-    
+
     uint16_t _soundTimer = 0;
     uint16_t _delayTimer = 0;
-    
+
     std::chrono::time_point<std::chrono::system_clock> _startTime;
 };
 } // namespace Chip8

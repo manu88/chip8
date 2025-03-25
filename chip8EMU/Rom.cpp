@@ -18,24 +18,25 @@ static std::vector<uint16_t> readFile(const std::string &filename) {
     file.seekg(0, std::ios::beg);
 
     // read the data:
-    std::vector<uint16_t> fileData(fileSize/2);
+    std::vector<uint16_t> fileData(fileSize / 2);
     file.read((char *)&fileData[0], fileSize);
     return fileData;
 }
 
 bool Rom::loadFile(const std::string &path) {
-    bytes  = readFile(path);
-    
-    for(int i=0; i< bytes.size(); i++){
+    bytes = readFile(path);
+
+    for (int i = 0; i < bytes.size(); i++) {
         bytes[i] = (bytes[i] >> 8) | (bytes[i] << 8);
     }
     return true;
 }
 
-void Rom::dump(){
-    int i=0;
-    for(uint16_t b: bytes){
-        if (i %8 == 0) printf("\n");
+void Rom::dump() {
+    int i = 0;
+    for (uint16_t b : bytes) {
+        if (i % 8 == 0)
+            printf("\n");
         printf("0X%04X ", b);
         i++;
     }
