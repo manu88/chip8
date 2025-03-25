@@ -19,7 +19,7 @@ void Chip8::Peripherals::clearDisplay(){
     printf("Display clear\n");
 }
 
-void Chip8::Peripherals::update(const Chip8::Memory &memory){
+void Chip8::Peripherals::update(const Chip8::Memory &memory, const Chip8::Peripherals::UpdateParams &params){
     
 }
 

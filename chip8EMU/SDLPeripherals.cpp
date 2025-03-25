@@ -55,7 +55,7 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
     }
 }
 
-void SDLPeripherals::update(const Chip8::Memory &memory) {
+void SDLPeripherals::update(const Chip8::Memory &memory, const Chip8::Peripherals::UpdateParams &params) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -70,7 +70,8 @@ void SDLPeripherals::update(const Chip8::Memory &memory) {
     SDL_RenderPresent(renderer);
 
     SDL_Event e;
-    while (SDL_PollEvent(&e) != 0) {
+    
+    while (SDL_WaitEventTimeout(&e, params.timeoutMS) != 0) {
         if (e.type == SDL_QUIT) {
             quit = true;
         }

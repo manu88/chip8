@@ -21,7 +21,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
     void init();
 
-    void update(const Chip8::Memory &memory) override;
+    void update(const Chip8::Memory &memory, const Chip8::Peripherals::UpdateParams &params) override;
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;

@@ -26,6 +26,7 @@
 		598364B12D91778A003B3793 /* chip8EMU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = chip8EMU; sourceTree = BUILT_PRODUCTS_DIR; };
 		598364CB2D91C880003B3793 /* SDL2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = SDL2; path = ../../../../../Library/Frameworks/SDL2.framework/SDL2; sourceTree = "<group>"; };
 		598364CD2D91CA44003B3793 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		598364D32D928A70003B3793 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -51,6 +52,7 @@
 		598364A82D91778A003B3793 = {
 			isa = PBXGroup;
 			children = (
+				598364D32D928A70003B3793 /* README.md */,
 				598364B32D91778A003B3793 /* chip8EMU */,
 				598364CA2D91C87F003B3793 /* Frameworks */,
 				598364B22D91778A003B3793 /* Products */,
