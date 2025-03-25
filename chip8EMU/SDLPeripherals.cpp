@@ -78,9 +78,6 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
 }
 
 void SDLPeripherals::draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) {
-    printf("SDL Draw at x=0X%0X, y=0X%0X height=0X%0X, i=0X%0X\n", x, y, height,
-           i);
-
     _commands.push_back({x, y, height, i});
 }
 
