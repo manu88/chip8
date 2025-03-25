@@ -8,6 +8,7 @@
 
 #pragma one
 
+#include "Config.h"
 #include "Memory.hpp"
 #include <chrono>
 #include <stdint.h>
@@ -44,6 +45,9 @@ class CPU {
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
 
+    CPU() : CPU(Config{}) {}
+    CPU(const Config &config) : _conf(config){};
+
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
     void run();
@@ -51,6 +55,7 @@ class CPU {
     void dump();
 
   private:
+    const Config &_conf;
     bool execAt(uint16_t memLoc);
     void updateTimers(double totalDurationMS);
 

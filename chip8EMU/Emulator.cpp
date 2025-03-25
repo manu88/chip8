@@ -5,7 +5,7 @@
 //  Created by Manuel Deneu on 24/03/2025.
 //
 
-#include "emulator.h"
+#include "Emulator.h"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include <assert.h>
@@ -73,7 +73,9 @@ bool Chip8::CPU::execAt(uint16_t memLoc) {
 }
 
 bool Chip8::CPU::exec(Instruction instruction) {
-
+    if (_conf.logs) {
+        printf("Exec instruction 0X%0X at PC=0X%0X\n", instruction, _pc);
+    }
     if (instruction == DISPLAY_CLEAR) {
         _peripherals->clearDisplay();
         _pc += 1;

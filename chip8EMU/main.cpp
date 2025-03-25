@@ -8,7 +8,7 @@
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include "SDLPeripherals.hpp"
-#include "emulator.h"
+#include "Emulator.h"
 #include <iostream>
 
 int main(int argc, const char *argv[]) {
@@ -20,7 +20,7 @@ int main(int argc, const char *argv[]) {
         "/Users/manueldeneu/Documents/dev/chip8EMU/roms/rand_tester.rom");
 
     rom.dump();
-    Chip8::CPU emu;
+    Chip8::CPU emu({.logs = true});
     emu.init(&rom, &p);
     emu.run();
     return 0;
