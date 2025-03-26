@@ -46,6 +46,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				FileLoader.cpp,
+				InstructionParser.cpp,
 			);
 			target = 598364DA2D92FACD003B3793 /* asm */;
 		};

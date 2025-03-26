@@ -17,7 +17,7 @@ int main(int argc, const char *argv[]) {
     p.init();
     Rom rom;
     rom.loadFile(
-        "/Users/manueldeneu/Documents/dev/chip8EMU/roms/letterScroll.rom");
+        "/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
 
     rom.dump();
     Chip8::CPU emu({.logs = true});
