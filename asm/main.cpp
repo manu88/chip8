@@ -45,12 +45,12 @@ int runDisassembler(const std::string &binFilePath,
         return 1;
     }
     std::string code = disassembler.generate();
-    if (code.size() == 0){
+    if (code.size() == 0) {
         return 1;
     }
     std::ofstream outFile;
     outFile.open(outFilePath);
-    if(!outFile.good()){
+    if (!outFile.good()) {
         printf("unable to open file '%s' for writting\n", outFilePath.c_str());
         return 1;
     }

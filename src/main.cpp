@@ -5,10 +5,10 @@
 //  Created by Manuel Deneu on 24/03/2025.
 //
 
+#include "Emulator.h"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include "SDLPeripherals.hpp"
-#include "Emulator.h"
 #include <iostream>
 
 int main(int argc, const char *argv[]) {

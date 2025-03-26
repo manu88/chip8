@@ -10,21 +10,20 @@
 #include "Disassembler.hpp"
 #include <assert.h>
 
-static void TestInstruction(const std::string &inCode)
-{
+static void TestInstruction(const std::string &inCode) {
     Assembler a(inCode);
     auto b = a.generate();
     Disassembler d(b);
     d.params.noComments = true;
     auto code = d.generate();
-    code.resize(code.size()-1); // remove last \n
+    code.resize(code.size() - 1); // remove last \n
     assert(code == inCode);
 }
 
 void RunTests() {
     TestInstruction("CLS");
     TestInstruction("RET");
-    
+
     TestInstruction("LD V2, 0x78");
     TestInstruction("LD I, 0x500");
     TestInstruction("LD V3, 0x1");

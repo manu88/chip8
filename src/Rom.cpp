@@ -8,8 +8,7 @@
 #include "Rom.hpp"
 
 bool Rom::loadFile(const std::string &path) {
-    bytes = Chip8::loadFile(path);
-    return true;
+    return Chip8::loadFile(path, bytes);
 }
 
 void Rom::dump() {

@@ -44,7 +44,6 @@ static const uint8_t Sprites[][5] = {
     {0b11110000, 0b10000000, 0b11110000, 0b10000000, 0b10000000},
 };
 
-
 void Chip8::Memory::setRom(Rom *rom) { _rom = rom; }
 
 bool Chip8::Memory::isValid(uint16_t addr) const {
@@ -59,8 +58,8 @@ uint16_t Chip8::Memory::getValueAtAddr(uint16_t addr) const {
     if (addr >= ROM_ADDR && addr < ROM_ADDR + _rom->size()) {
         return _rom->bytes[addr - ROM_ADDR];
     }
-    
-    if(_ram.count(addr) == 0){
+
+    if (_ram.count(addr) == 0) {
         printf("Invalid memory address 0X%0X\n", addr);
         assert(false);
     }

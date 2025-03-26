@@ -9,12 +9,12 @@
 #pragma one
 
 #include "Config.h"
+#include "InstructionParser.hpp"
 #include "Memory.hpp"
 #include <chrono>
 #include <random>
 #include <stdint.h>
 #include <string.h>
-#include "InstructionParser.hpp"
 
 class Rom;
 
@@ -38,11 +38,10 @@ struct Registers {
     }
 };
 
-class CPU: public InstructionParser{
+class CPU : public InstructionParser {
   public:
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
-
 
     CPU() : CPU(Config{}) {}
     CPU(const Config &config) : _conf(config), _rng(_randomDevice()) {}
@@ -53,7 +52,6 @@ class CPU: public InstructionParser{
     void dump();
 
   private:
-    
     bool onCLS();
     bool onRET();
     bool onCallMachine(uint16_t addr);
@@ -90,11 +88,7 @@ class CPU: public InstructionParser{
     bool onStoreBCDOfVxInI(uint16_t reg);
     bool onStoreVnInI(uint16_t reg);
     bool onReadVnFromI(uint16_t reg);
-    
-    
-    
-    
-    
+
     const Config &_conf;
     bool execAt(uint16_t memLoc);
     void updateTimers(double totalDurationMS);

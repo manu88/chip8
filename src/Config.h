@@ -8,7 +8,7 @@
 #pragma once
 
 namespace Chip8 {
-struct Config{
+struct Config {
     bool logs = false;
 };
-}
+} // namespace Chip8

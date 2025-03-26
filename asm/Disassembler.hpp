@@ -12,23 +12,23 @@
 #include <vector>
 
 /*
- Follows this assembly language: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#3.1
+ Follows this assembly language:
+ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#3.1
  */
 class Disassembler : public Chip8::InstructionParser {
   public:
-    
-    Disassembler(const Chip8::Bytes &bytes):_bytes(bytes){}
-    Disassembler(): Disassembler(Chip8::Bytes()){}
-    
+    Disassembler(const Chip8::Bytes &bytes) : _bytes(bytes) {}
+    Disassembler() : Disassembler(Chip8::Bytes()) {}
+
     bool loadFile(const std::string &path);
 
     std::string generate();
 
-    struct Parameters{
+    struct Parameters {
         bool noComments = false;
     };
     Parameters params;
-    
+
   private:
     bool onCLS();
     bool onRET();

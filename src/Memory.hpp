@@ -36,7 +36,5 @@ class Memory {
   private:
     Rom *_rom;
     std::map<uint16_t, uint16_t> _ram;
-    
-    
 };
 } // namespace Chip8

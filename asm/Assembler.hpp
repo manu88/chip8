@@ -6,18 +6,18 @@
 //
 
 #pragma once
-#include <string>
 #include "FileLoader.hpp"
+#include <string>
 
-class Assembler{
-public:
+class Assembler {
+  public:
     Assembler();
     Assembler(const std::string &code);
     bool loadFile(const std::string &path);
-    
+
     Chip8::Bytes generate();
 
-private:
+  private:
     uint16_t processLine(const std::string &line);
     std::string _code;
 };

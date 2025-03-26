@@ -104,7 +104,10 @@ bool Chip8::CPU::onCallMachine(uint16_t addr) {
     return true;
 }
 
-bool Chip8::CPU::onJump(uint16_t addr) { _registers.pc = addr; return true;}
+bool Chip8::CPU::onJump(uint16_t addr) {
+    _registers.pc = addr;
+    return true;
+}
 bool Chip8::CPU::onCallSubroutine(uint16_t addr) {
     _mem.stack[_registers.sp] = _registers.pc;
     _registers.sp += 1;
@@ -142,22 +145,24 @@ bool Chip8::CPU::onAddValToVx(uint16_t reg, uint16_t val) {
     _registers.pc += 1;
     return true;
 }
-bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) {return false;}
-bool Chip8::CPU::onOrValToVx(uint16_t reg, uint16_t val) {return false;}
-bool Chip8::CPU::onAndValToVx(uint16_t reg, uint16_t val) {return false;}
-bool Chip8::CPU::onXOrValToVx(uint16_t reg, uint16_t val) {return false;}
-bool Chip8::CPU::onAddVyToVx(uint16_t regX, uint16_t regY) {return false;}
-bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) {return false;}
-bool Chip8::CPU::onShiftRightVx(uint16_t reg) {return false;}
-bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) {return false;}
-bool Chip8::CPU::onShiftLeftVx(uint16_t reg) {return false;}
-bool Chip8::CPU::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {return false;}
+bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
+bool Chip8::CPU::onOrValToVx(uint16_t reg, uint16_t val) { return false; }
+bool Chip8::CPU::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
+bool Chip8::CPU::onXOrValToVx(uint16_t reg, uint16_t val) { return false; }
+bool Chip8::CPU::onAddVyToVx(uint16_t regX, uint16_t regY) { return false; }
+bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) { return false; }
+bool Chip8::CPU::onShiftRightVx(uint16_t reg) { return false; }
+bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) { return false; }
+bool Chip8::CPU::onShiftLeftVx(uint16_t reg) { return false; }
+bool Chip8::CPU::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
+    return false;
+}
 bool Chip8::CPU::onSetI(uint16_t addr) {
     _registers.i = addr;
     _registers.pc += 1;
     return true;
 }
-bool Chip8::CPU::onJumpToLoc(uint16_t val) {return false;}
+bool Chip8::CPU::onJumpToLoc(uint16_t val) { return false; }
 bool Chip8::CPU::onRand(uint16_t reg, uint16_t val) {
     uint8_t randomVal = _uint8Distrib(_rng);
     _registers.v[reg] = randomVal & val;
@@ -171,8 +176,8 @@ bool Chip8::CPU::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     return true;
 }
 
-bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) {return false;}
-bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) {return false;}
+bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) { return false; }
+bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
 bool Chip8::CPU::onSetVxToDelayTimer(uint16_t reg) {
     _registers.v[reg] = _delayTimer;
     _registers.pc += 1;
@@ -193,7 +198,7 @@ bool Chip8::CPU::onSetSoundTimer(uint16_t reg) {
     _registers.pc += 1;
     return true;
 }
-bool Chip8::CPU::onAddVxToI(uint16_t reg) {return false;}
+bool Chip8::CPU::onAddVxToI(uint16_t reg) { return false; }
 bool Chip8::CPU::onSetIToSpriteLoc(uint16_t reg) {
     _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
     _registers.pc += 1;
