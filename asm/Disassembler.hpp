@@ -8,13 +8,14 @@
 #pragma once
 #include <vector>
 #include <stdint.h>
+#include "FileLoader.hpp"
 
 class Disassembler{
 public:
-    Disassembler(const std::vector<uint8_t> &bytes);
+    bool loadFile(const std::string &path);
     
     void generate();
 private:
-    const std::vector<uint8_t> _bytes;
+    Chip8::Bytes _bytes;
     
 };

@@ -10,8 +10,8 @@
 #include "Disassembler.hpp"
 
 int main(int argc, const char * argv[]) {
-    const std::string c = "";
-    Assembler asembler(c);
-    asembler.generate();
+    Disassembler disassembler;
+    disassembler.loadFile("/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
+    disassembler.generate();
     return 0;
 }

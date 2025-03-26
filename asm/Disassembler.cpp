@@ -8,11 +8,14 @@
 #include "Disassembler.hpp"
 
 
-Disassembler::Disassembler(const std::vector<uint8_t> &bytes):_bytes(bytes){
-    
+bool Disassembler::loadFile(const std::string &path) {
+    _bytes = Chip8::loadFile(path);
+    return true;
 }
 
 
 void Disassembler::generate(){
-    
+    for(const auto &instr : _bytes){
+        printf("Got 0X%0X\n", instr);
+    }
 }

@@ -41,9 +41,22 @@
 		598364DB2D92FACD003B3793 /* asm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = asm; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		598365642D9319E4003B3793 /* Exceptions for "src" folder in "asm" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				FileLoader.cpp,
+			);
+			target = 598364DA2D92FACD003B3793 /* asm */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		598364B32D91778A003B3793 /* src */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				598365642D9319E4003B3793 /* Exceptions for "src" folder in "asm" target */,
+			);
 			path = src;
 			sourceTree = "<group>";
 		};
