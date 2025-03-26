@@ -12,6 +12,7 @@
 int main(int argc, const char * argv[]) {
     Disassembler disassembler;
     disassembler.loadFile("/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
-    disassembler.generate();
+    std::string code = disassembler.generate();
+    printf("%s\n", code.c_str());
     return 0;
 }
