@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Assembler.hpp"
 #include "Disassembler.hpp"
+#include "Tests.hpp"
 
 int runAsembler(const std::string &binFilePath){
     Assembler assembler;
@@ -30,6 +31,8 @@ int runDisassembler(const std::string &binFilePath){
 }
 
 int main(int argc, const char * argv[]) {
+    RunTests();
+    return 0;
     return runAsembler("/Users/manueldeneu/Documents/dev/chip8EMU/tests/hello.asm");
     //return runDisassembler("/Users/manueldeneu/Documents/dev/chip8EMU/roms/helloworld.rom");
 }

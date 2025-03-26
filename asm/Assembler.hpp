@@ -16,7 +16,7 @@ public:
     bool loadFile(const std::string &path);
     
     Chip8::Bytes generate();
-    
+
 private:
     uint16_t processLine(const std::string &line);
     std::string _code;
