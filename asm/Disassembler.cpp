@@ -53,7 +53,7 @@ bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {return false;}
 bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {return false;}
 bool Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {return false;}
 bool Disassembler::onSetVx(uint16_t reg, uint16_t val) {
-    _text += "LD v" + std::to_string(reg) + ", " + hex(val);
+    _text += "LD V" + std::to_string(reg) + ", " + hex(val);
     return true;
 }
 bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {return false;}
@@ -94,7 +94,7 @@ bool Disassembler::onSetSoundTimer(uint16_t reg) {
 }
 bool Disassembler::onAddVxToI(uint16_t reg) {return false;}
 bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {
-    _text += "LD F, Vx"+ std::to_string(reg);
+    _text += "LD F, V"+ std::to_string(reg);
     return true;
 }
 bool Disassembler::onStoreBCDOfVxInI(uint16_t reg) {return false;}

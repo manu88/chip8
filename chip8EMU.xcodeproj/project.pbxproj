@@ -39,6 +39,7 @@
 		598364D32D928A70003B3793 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL2_ttf.dylib; path = ../../../../../opt/homebrew/lib/libSDL2_ttf.dylib; sourceTree = "<group>"; };
 		598364DB2D92FACD003B3793 /* asm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = asm; sourceTree = BUILT_PRODUCTS_DIR; };
+		598365692D942D40003B3793 /* hello.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello.asm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -92,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				598364D32D928A70003B3793 /* README.md */,
+				5983656A2D942D40003B3793 /* tests */,
 				598364B32D91778A003B3793 /* src */,
 				598364DC2D92FACD003B3793 /* asm */,
 				598364CA2D91C87F003B3793 /* Frameworks */,
@@ -116,6 +118,14 @@
 				598364CB2D91C880003B3793 /* SDL2 */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5983656A2D942D40003B3793 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				598365692D942D40003B3793 /* hello.asm */,
+			);
+			path = tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -7,12 +7,17 @@
 
 #pragma once
 #include <string>
+#include "FileLoader.hpp"
 
 class Assembler{
 public:
+    Assembler();
     Assembler(const std::string &code);
+    bool loadFile(const std::string &path);
     
-    void generate();
+    Chip8::Bytes generate();
+    
 private:
-    const std::string _code;
+    uint16_t processLine(const std::string &line);
+    std::string _code;
 };
