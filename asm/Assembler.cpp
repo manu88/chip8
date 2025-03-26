@@ -41,10 +41,11 @@ Assembler::Assembler() : Assembler("") {}
 
 bool Assembler::loadFile(const std::string &path) {
     std::ifstream infile(path);
-
+    if (!infile.good()) {
+        return false;
+    }
     _code = std::string((std::istreambuf_iterator<char>(infile)),
                         std::istreambuf_iterator<char>());
-
     return true;
 }
 
@@ -114,13 +115,14 @@ uint16_t parseNumber(const std::string &str) {
     return std::stoll(str.c_str(), nullptr, 0);
 }
 
-bool isNumber(const std::string &s){
-    if(s[0] == '0' && std::tolower(s[1]) == 'x'){
+bool isNumber(const std::string &s) {
+    if (s[0] == '0' && std::tolower(s[1]) == 'x') {
         auto sub = s.substr(2);
         return isNumber(sub);
     }
-    return !s.empty() && std::find_if(s.begin(),
-            s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+    return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) {
+                             return !std::isdigit(c);
+                         }) == s.end();
 }
 uint16_t generateAnnn(const std::string &arg) {
     uint16_t val = parseNumber(arg);
@@ -129,21 +131,21 @@ uint16_t generateAnnn(const std::string &arg) {
     return ret;
 }
 
-uint16_t generate8xy0(const std::string &arg0, const std::string &arg1){
+uint16_t generate8xy0(const std::string &arg0, const std::string &arg1) {
     uint8_t reg0 = std::atoi(arg0.c_str() + 1);
     uint8_t reg1 = std::atoi(arg1.c_str() + 1);
-    uint16_t ret =  0x8000 + (reg0 << 8) + (reg1 << 4);
+    uint16_t ret = 0x8000 + (reg0 << 8) + (reg1 << 4);
     return ret;
 }
 
-uint16_t generate6xkk(const std::string &arg0, const std::string &arg1){
+uint16_t generate6xkk(const std::string &arg0, const std::string &arg1) {
     uint8_t reg0 = std::atoi(arg0.c_str() + 1);
     uint16_t val = parseNumber(arg1);
     uint16_t ret = 0x6000 + (reg0 << 8) + val;
     return ret;
 }
 
-uint16_t generateFx0A(const std::string &arg0){
+uint16_t generateFx0A(const std::string &arg0) {
     uint8_t reg0 = std::atoi(arg0.c_str() + 1);
     uint16_t ret = 0xF00A + (reg0 << 8);
     return ret;
@@ -159,14 +161,14 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args) {
     } else if (args.at(0) == "I") {
         // Annn - LD I, addr
         return generateAnnn(args[1]);
-    } else if ( std::tolower(args.at(0)[0]) == 'v') {
-        if ( std::tolower(args.at(1)[0]) == 'v'){
+    } else if (std::tolower(args.at(0)[0]) == 'v') {
+        if (std::tolower(args.at(1)[0]) == 'v') {
             // 8xy0 - LD Vx, Vy
             return generate8xy0(args[0], args[1]);
-        }else if ( std::tolower(args.at(1)[0]) == 'k'){
+        } else if (std::tolower(args.at(1)[0]) == 'k') {
             // Fx0A - LD Vx, K
             return generateFx0A(args[0]);
-        }else if (isNumber(args.at(1))){
+        } else if (isNumber(args.at(1))) {
             // 6xkk - LD Vx, byte
             return generate6xkk(args[0], args[1]);
         }
@@ -176,7 +178,7 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args) {
 }
 
 uint16_t generateDxyn(const std::vector<std::string> &args) {
-    //Dxyn - DRW Vx, Vy, nibble
+    // Dxyn - DRW Vx, Vy, nibble
     uint8_t reg0 = std::atoi(args.at(0).c_str() + 1);
     uint8_t reg1 = std::atoi(args.at(1).c_str() + 1);
     uint8_t val = parseNumber(args.at(2));
@@ -186,10 +188,10 @@ uint16_t generateDxyn(const std::vector<std::string> &args) {
 }
 
 uint16_t generateJP(const std::vector<std::string> &args) {
-    if (args.size() == 2){
-        //Bnnn - JP V0, addr
+    if (args.size() == 2) {
+        // Bnnn - JP V0, addr
         return 0;
-    }else if(isNumber(args[0])){
+    } else if (isNumber(args[0])) {
         uint16_t addr = parseNumber(args[0]);
         assert(addr <= 0xFFF);
         // 1nnn - JP addr
@@ -197,7 +199,6 @@ uint16_t generateJP(const std::vector<std::string> &args) {
     }
     return 0;
 }
-    
 
 uint16_t generateMachineCode(const Instruction &inst) {
     if (inst.op == "CLS") {
@@ -206,16 +207,16 @@ uint16_t generateMachineCode(const Instruction &inst) {
         return 0x00EE;
     } else if (inst.op == "LD") {
         return generateLDMachineCode(inst.args);
-    } else if(inst.op == "DRW"){
+    } else if (inst.op == "DRW") {
         return generateDxyn(inst.args);
-    } else if (inst.op == "JP"){
+    } else if (inst.op == "JP") {
         return generateJP(inst.args);
     }
     return 0;
 }
 
 uint16_t Assembler::processLine(const std::string &line) {
-    //printf("Line: '%s'\n", line.c_str());
+    // printf("Line: '%s'\n", line.c_str());
     Instruction inst = splitInstruction(line);
     if (inst.op.empty()) {
         printf("Unable to parse OP from line '%s'\n", line.c_str());

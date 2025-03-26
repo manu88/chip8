@@ -12,5 +12,5 @@
 namespace Chip8 {
 using Bytes = std::vector<uint16_t>;
 
-Bytes loadFile(const std::string &path);
+bool loadFile(const std::string &path, Bytes& bytes);
 } // namespace Chip8

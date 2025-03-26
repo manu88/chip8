@@ -25,8 +25,7 @@ static std::string hex(uint16_t value) {
 }
 
 bool Disassembler::loadFile(const std::string &path) {
-    _bytes = Chip8::loadFile(path);
-    return true;
+    return Chip8::loadFile(path, _bytes);
 }
 
 std::string Disassembler::generate() {
