@@ -42,10 +42,10 @@ std::string Disassembler::generate() {
 }
 
 bool Disassembler::onCLS() { _text += "CLS"; return true;}
-bool Disassembler::onRET() { _text += "CLS";return true; }
+bool Disassembler::onRET() { _text += "RET";return true; }
 bool Disassembler::onCallMachine(uint16_t addr) { return false;}
 bool Disassembler::onJump(uint16_t addr) {
-    _text += "jump v" + hex(addr);
+    _text += "JP " + hex(addr);
     return true;
 }
 bool Disassembler::onCallSubroutine(uint16_t addr) {return false;}
@@ -53,7 +53,7 @@ bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {return false;}
 bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {return false;}
 bool Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {return false;}
 bool Disassembler::onSetVx(uint16_t reg, uint16_t val) {
-    _text += "mov v" + std::to_string(reg) + ", " + hex(val);
+    _text += "LD v" + std::to_string(reg) + ", " + hex(val);
     return true;
 }
 bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {return false;}
@@ -68,30 +68,33 @@ bool Disassembler::onSubVxToVy(uint16_t regX, uint16_t regY) {return false;}
 bool Disassembler::onShiftLeftVx(uint16_t reg) {return false;}
 bool Disassembler::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {return false;}
 bool Disassembler::onSetI(uint16_t addr) {
-    _text += "mov I, " + hex(addr);
+    _text += "LD I, " + hex(addr);
     return true;
 }
 bool Disassembler::onJumpToLoc(uint16_t val) {return false;}
 bool Disassembler::onRand(uint16_t reg, uint16_t val) {return false;}
 bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
-    _text += "sprite v" + std::to_string(regX) + ", v" + std::to_string(regY) + ", " + hex(nimble);
+    _text += "DRW V" + std::to_string(regX) + ", V" + std::to_string(regY) + ", " + hex(nimble);
     return true;
 }
 bool Disassembler::onSkipIfKeyPressed(uint16_t reg) {return false;}
 bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) {return false;}
 bool Disassembler::onSetVxToDelayTimer(uint16_t reg) {return false;}
 bool Disassembler::onWaitKeyPressed(uint16_t reg) {
-    _text += "wait_for_key v" + std::to_string(reg);
+    _text += "LD V" + std::to_string(reg) + ", K";
     return true;
 }
-bool Disassembler::onSetDelayTimer(uint16_t reg) {return false;}
+bool Disassembler::onSetDelayTimer(uint16_t reg) {
+    _text += "LD DT, V" + std::to_string(reg);
+    return true;
+}
 bool Disassembler::onSetSoundTimer(uint16_t reg) {
-    _text += "mov sound-timer, v" + std::to_string(reg);
+    _text += "LD ST, V" + std::to_string(reg);
     return true;
 }
 bool Disassembler::onAddVxToI(uint16_t reg) {return false;}
 bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {
-    _text += "[TODO] Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.";
+    _text += "LD F, Vx"+ std::to_string(reg);
     return true;
 }
 bool Disassembler::onStoreBCDOfVxInI(uint16_t reg) {return false;}

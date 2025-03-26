@@ -11,6 +11,9 @@
 #include <stdint.h>
 #include <vector>
 
+/*
+ Follows this assembly language: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#3.1
+ */
 class Disassembler : public Chip8::InstructionParser {
   public:
     bool loadFile(const std::string &path);
