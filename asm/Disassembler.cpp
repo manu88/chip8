@@ -41,40 +41,41 @@ std::string Disassembler::generate() {
     return _text;
 }
 
-void Disassembler::onCLS() { _text += "CLS"; }
-void Disassembler::onRET() { _text += "CLS"; }
-void Disassembler::onCallMachine(uint16_t addr) {}
-void Disassembler::onJump(uint16_t addr) {}
-void Disassembler::onCallSubroutine(uint16_t addr) {}
-void Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {}
-void Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {}
-void Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {}
-void Disassembler::onSetVx(uint16_t reg, uint16_t val) {
+bool Disassembler::onCLS() { _text += "CLS"; return true;}
+bool Disassembler::onRET() { _text += "CLS";return true; }
+bool Disassembler::onCallMachine(uint16_t addr) { return false;}
+bool Disassembler::onJump(uint16_t addr) {return false;}
+bool Disassembler::onCallSubroutine(uint16_t addr) {return false;}
+bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onSetVx(uint16_t reg, uint16_t val) {
     _text += "mov v" + std::to_string(reg) + ", " + hex(val);
+    return true;
 }
-void Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {}
-void Disassembler::onSetVxToVy(uint16_t regX, uint16_t regY) {}
-void Disassembler::onOrValToVx(uint16_t reg, uint16_t val) {}
-void Disassembler::onAndValToVx(uint16_t reg, uint16_t val) {}
-void Disassembler::onXOrValToVx(uint16_t reg, uint16_t val) {}
-void Disassembler::onAddVyToVx(uint16_t regX, uint16_t regY) {}
-void Disassembler::onSubVyToVx(uint16_t regX, uint16_t regY) {}
-void Disassembler::onShiftRightVx(uint16_t reg) {}
-void Disassembler::onSubVxToVy(uint16_t regX, uint16_t regY) {}
-void Disassembler::onShiftLeftVx(uint16_t reg) {}
-void Disassembler::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {}
-void Disassembler::onSetI(uint16_t addr) {}
-void Disassembler::onJumpToLoc(uint16_t val) {}
-void Disassembler::onRand(uint16_t reg, uint16_t val) {}
-void Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {}
-void Disassembler::onSkipIfKeyPressed(uint16_t reg) {}
-void Disassembler::onSkipIfKeyNotPressed(uint16_t reg) {}
-void Disassembler::onSetVxToDelayTimer(uint16_t reg) {}
-void Disassembler::onWaitKeyPressed(uint16_t reg) {}
-void Disassembler::onSetDelayTimer(uint16_t reg) {}
-void Disassembler::onSetSoundTimer(uint16_t reg) {}
-void Disassembler::onAddVxToI(uint16_t reg) {}
-void Disassembler::onSetIToSpriteLoc(uint16_t reg) {}
-void Disassembler::onStoreBCDOfVxInI(uint16_t reg) {}
-void Disassembler::onStoreVnInI(uint16_t reg) {}
-void Disassembler::onReadVnFromI(uint16_t reg) {}
+bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onSetVxToVy(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onOrValToVx(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onAndValToVx(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onXOrValToVx(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onAddVyToVx(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onSubVyToVx(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onShiftRightVx(uint16_t reg) {return false;}
+bool Disassembler::onSubVxToVy(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onShiftLeftVx(uint16_t reg) {return false;}
+bool Disassembler::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {return false;}
+bool Disassembler::onSetI(uint16_t addr) {return false;}
+bool Disassembler::onJumpToLoc(uint16_t val) {return false;}
+bool Disassembler::onRand(uint16_t reg, uint16_t val) {return false;}
+bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {return false;}
+bool Disassembler::onSkipIfKeyPressed(uint16_t reg) {return false;}
+bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) {return false;}
+bool Disassembler::onSetVxToDelayTimer(uint16_t reg) {return false;}
+bool Disassembler::onWaitKeyPressed(uint16_t reg) {return false;}
+bool Disassembler::onSetDelayTimer(uint16_t reg) {return false;}
+bool Disassembler::onSetSoundTimer(uint16_t reg) {return false;}
+bool Disassembler::onAddVxToI(uint16_t reg) {return false;}
+bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {return false;}
+bool Disassembler::onStoreBCDOfVxInI(uint16_t reg) {return false;}
+bool Disassembler::onStoreVnInI(uint16_t reg) {return false;}
+bool Disassembler::onReadVnFromI(uint16_t reg) {return false;}
