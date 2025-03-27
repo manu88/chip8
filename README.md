@@ -11,9 +11,9 @@ Todo:
 - Add Makefile
 - Complete asm/disasm implementation
 
-##some useful links
-https://en.wikipedia.org/wiki/CHIP-8
+## some useful links
 http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+
 https://johnearnest.github.io/Octo/docs/SuperChip.html
+
 https://github.com/mwales/chip8/blob/master/customRom/
- 
