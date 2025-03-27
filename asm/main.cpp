@@ -11,14 +11,20 @@
 #include <fstream>
 #include <iostream>
 
-int runAssembler(const std::string &binFilePath,
+int runAssembler(const std::string &srcFilePath,
                  const std::string &outFilePath) {
     Assembler assembler;
-    if (!assembler.loadFile(binFilePath)) {
-        printf("unable to read from file '%s'\n", binFilePath.c_str());
+    if (!assembler.loadFile(srcFilePath)) {
+        printf("unable to read from file '%s'\n", srcFilePath.c_str());
         return 1;
     }
     auto binary = assembler.generate();
+
+    if (assembler.getError().has_value()) {
+        printf("%s:%i: error: %s\n", srcFilePath.c_str(),
+               assembler.getError().value().line,
+               assembler.getError().value().msg.c_str());
+    }
     if (binary.size() == 0) {
         return 1;
     }

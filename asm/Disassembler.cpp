@@ -83,7 +83,10 @@ bool Disassembler::onSetI(uint16_t addr) {
     _text += "LD I, " + hex(addr);
     return true;
 }
-bool Disassembler::onJumpToLoc(uint16_t val) { return false; }
+bool Disassembler::onJumpToLoc(uint16_t addr) {
+    _text += "JP V0, " + hex(addr);
+    return true;
+}
 bool Disassembler::onRand(uint16_t reg, uint16_t val) { return false; }
 bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     _text += "DRW V" + std::to_string(regX) + ", V" + std::to_string(regY) +
