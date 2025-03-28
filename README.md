@@ -8,7 +8,6 @@ Todo:
 - Add support for super-chip8
 - Add sound support
 - Add terminal-based UI
-- Add Makefile
 - Complete asm/disasm implementation
 
 ## some useful links
