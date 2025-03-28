@@ -134,7 +134,7 @@ bool isNumber(const std::string &s) {
         return isNumber(sub);
     }
     return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) {
-                             return !std::isdigit(c);
+                             return !std::isxdigit(c);
                          }) == s.end();
 }
 

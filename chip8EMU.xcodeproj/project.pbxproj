@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5957ED572D972F1700C1A4BD /* SDLPeripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED562D972F1700C1A4BD /* SDLPeripherals.cpp */; };
+		5957ED582D972F1700C1A4BD /* Rom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED542D972F1700C1A4BD /* Rom.cpp */; };
+		5957ED592D972F1700C1A4BD /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED522D972F1700C1A4BD /* Peripherals.cpp */; };
+		5957ED5A2D972F1700C1A4BD /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED502D972F1700C1A4BD /* Memory.cpp */; };
+		5957ED5B2D972F1700C1A4BD /* FileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */; };
+		5957ED5C2D972F1700C1A4BD /* Assembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED462D972F1700C1A4BD /* Assembler.cpp */; };
+		5957ED5D2D972F1700C1A4BD /* InstructionParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */; };
+		5957ED5E2D972F1700C1A4BD /* Emulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED492D972F1700C1A4BD /* Emulator.cpp */; };
+		5957ED5F2D972F1700C1A4BD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4E2D972F1700C1A4BD /* main.cpp */; };
+		5957ED662D972F8100C1A4BD /* Disassembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED622D972F8100C1A4BD /* Disassembler.cpp */; };
+		5957ED672D972F8100C1A4BD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED632D972F8100C1A4BD /* main.cpp */; };
+		5957ED682D972F8100C1A4BD /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED652D972F8100C1A4BD /* Tests.cpp */; };
+		5957ED6A2D972FA300C1A4BD /* InstructionParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */; };
+		5957ED6B2D972FA900C1A4BD /* Emulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED492D972F1700C1A4BD /* Emulator.cpp */; };
+		5957ED6C2D972FB200C1A4BD /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED502D972F1700C1A4BD /* Memory.cpp */; };
+		5957ED6D2D972FBD00C1A4BD /* Assembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED462D972F1700C1A4BD /* Assembler.cpp */; };
+		5957ED6E2D972FC800C1A4BD /* FileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */; };
 		598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364CD2D91CA44003B3793 /* SDL2.framework */; };
 		598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */; };
 /* End PBXBuildFile section */
@@ -34,6 +51,30 @@
 
 /* Begin PBXFileReference section */
 		5957EC012D969FAB00C1A4BD /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		5957ED442D972D3000C1A4BD /* hello2.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello2.asm; sourceTree = "<group>"; };
+		5957ED452D972F1700C1A4BD /* Assembler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Assembler.hpp; path = ../src/Assembler.hpp; sourceTree = "<group>"; };
+		5957ED462D972F1700C1A4BD /* Assembler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Assembler.cpp; path = ../src/Assembler.cpp; sourceTree = "<group>"; };
+		5957ED472D972F1700C1A4BD /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Config.h; path = ../src/Config.h; sourceTree = "<group>"; };
+		5957ED482D972F1700C1A4BD /* Emulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Emulator.h; path = ../src/Emulator.h; sourceTree = "<group>"; };
+		5957ED492D972F1700C1A4BD /* Emulator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Emulator.cpp; path = ../src/Emulator.cpp; sourceTree = "<group>"; };
+		5957ED4A2D972F1700C1A4BD /* FileLoader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = FileLoader.hpp; path = ../src/FileLoader.hpp; sourceTree = "<group>"; };
+		5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FileLoader.cpp; path = ../src/FileLoader.cpp; sourceTree = "<group>"; };
+		5957ED4C2D972F1700C1A4BD /* InstructionParser.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = InstructionParser.hpp; path = ../src/InstructionParser.hpp; sourceTree = "<group>"; };
+		5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstructionParser.cpp; path = ../src/InstructionParser.cpp; sourceTree = "<group>"; };
+		5957ED4E2D972F1700C1A4BD /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/main.cpp; sourceTree = "<group>"; };
+		5957ED4F2D972F1700C1A4BD /* Memory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Memory.hpp; path = ../src/Memory.hpp; sourceTree = "<group>"; };
+		5957ED502D972F1700C1A4BD /* Memory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Memory.cpp; path = ../src/Memory.cpp; sourceTree = "<group>"; };
+		5957ED512D972F1700C1A4BD /* Peripherals.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Peripherals.hpp; path = ../src/Peripherals.hpp; sourceTree = "<group>"; };
+		5957ED522D972F1700C1A4BD /* Peripherals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Peripherals.cpp; path = ../src/Peripherals.cpp; sourceTree = "<group>"; };
+		5957ED532D972F1700C1A4BD /* Rom.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Rom.hpp; path = ../src/Rom.hpp; sourceTree = "<group>"; };
+		5957ED542D972F1700C1A4BD /* Rom.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Rom.cpp; path = ../src/Rom.cpp; sourceTree = "<group>"; };
+		5957ED552D972F1700C1A4BD /* SDLPeripherals.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = SDLPeripherals.hpp; path = ../src/SDLPeripherals.hpp; sourceTree = "<group>"; };
+		5957ED562D972F1700C1A4BD /* SDLPeripherals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SDLPeripherals.cpp; path = ../src/SDLPeripherals.cpp; sourceTree = "<group>"; };
+		5957ED612D972F8100C1A4BD /* Disassembler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Disassembler.hpp; path = ../asm/Disassembler.hpp; sourceTree = "<group>"; };
+		5957ED622D972F8100C1A4BD /* Disassembler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Disassembler.cpp; path = ../asm/Disassembler.cpp; sourceTree = "<group>"; };
+		5957ED632D972F8100C1A4BD /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../asm/main.cpp; sourceTree = "<group>"; };
+		5957ED642D972F8100C1A4BD /* Tests.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Tests.hpp; path = ../asm/Tests.hpp; sourceTree = "<group>"; };
+		5957ED652D972F8100C1A4BD /* Tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Tests.cpp; path = ../asm/Tests.cpp; sourceTree = "<group>"; };
 		598364B12D91778A003B3793 /* chip8EMU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = chip8EMU; sourceTree = BUILT_PRODUCTS_DIR; };
 		598364CB2D91C880003B3793 /* SDL2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = SDL2; path = ../../../../../Library/Frameworks/SDL2.framework/SDL2; sourceTree = "<group>"; };
 		598364CD2D91CA44003B3793 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -42,34 +83,6 @@
 		598364DB2D92FACD003B3793 /* asm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = asm; sourceTree = BUILT_PRODUCTS_DIR; };
 		598365692D942D40003B3793 /* hello.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello.asm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		598365642D9319E4003B3793 /* Exceptions for "src" folder in "asm" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Assembler.cpp,
-				FileLoader.cpp,
-				InstructionParser.cpp,
-			);
-			target = 598364DA2D92FACD003B3793 /* asm */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		598364B32D91778A003B3793 /* src */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				598365642D9319E4003B3793 /* Exceptions for "src" folder in "asm" target */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		598364DC2D92FACD003B3793 /* asm */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = asm;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		598364AE2D91778A003B3793 /* Frameworks */ = {
@@ -91,14 +104,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5957ED602D972F1E00C1A4BD /* src */ = {
+			isa = PBXGroup;
+			children = (
+				5957ED452D972F1700C1A4BD /* Assembler.hpp */,
+				5957ED462D972F1700C1A4BD /* Assembler.cpp */,
+				5957ED472D972F1700C1A4BD /* Config.h */,
+				5957ED482D972F1700C1A4BD /* Emulator.h */,
+				5957ED492D972F1700C1A4BD /* Emulator.cpp */,
+				5957ED4A2D972F1700C1A4BD /* FileLoader.hpp */,
+				5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */,
+				5957ED4C2D972F1700C1A4BD /* InstructionParser.hpp */,
+				5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */,
+				5957ED4E2D972F1700C1A4BD /* main.cpp */,
+				5957ED4F2D972F1700C1A4BD /* Memory.hpp */,
+				5957ED502D972F1700C1A4BD /* Memory.cpp */,
+				5957ED512D972F1700C1A4BD /* Peripherals.hpp */,
+				5957ED522D972F1700C1A4BD /* Peripherals.cpp */,
+				5957ED532D972F1700C1A4BD /* Rom.hpp */,
+				5957ED542D972F1700C1A4BD /* Rom.cpp */,
+				5957ED552D972F1700C1A4BD /* SDLPeripherals.hpp */,
+				5957ED562D972F1700C1A4BD /* SDLPeripherals.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		5957ED692D972F8500C1A4BD /* asm */ = {
+			isa = PBXGroup;
+			children = (
+				5957ED612D972F8100C1A4BD /* Disassembler.hpp */,
+				5957ED622D972F8100C1A4BD /* Disassembler.cpp */,
+				5957ED632D972F8100C1A4BD /* main.cpp */,
+				5957ED642D972F8100C1A4BD /* Tests.hpp */,
+				5957ED652D972F8100C1A4BD /* Tests.cpp */,
+			);
+			path = asm;
+			sourceTree = "<group>";
+		};
 		598364A82D91778A003B3793 = {
 			isa = PBXGroup;
 			children = (
+				5957ED692D972F8500C1A4BD /* asm */,
+				5957ED602D972F1E00C1A4BD /* src */,
 				5957EC012D969FAB00C1A4BD /* Makefile */,
 				598364D32D928A70003B3793 /* README.md */,
 				5983656A2D942D40003B3793 /* tests */,
-				598364B32D91778A003B3793 /* src */,
-				598364DC2D92FACD003B3793 /* asm */,
 				598364CA2D91C87F003B3793 /* Frameworks */,
 				598364B22D91778A003B3793 /* Products */,
 			);
@@ -127,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				598365692D942D40003B3793 /* hello.asm */,
+				5957ED442D972D3000C1A4BD /* hello2.asm */,
 			);
 			path = tests;
 			sourceTree = "<group>";
@@ -146,9 +197,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				598364B32D91778A003B3793 /* src */,
-			);
 			name = chip8EMU;
 			packageProductDependencies = (
 			);
@@ -167,9 +215,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				598364DC2D92FACD003B3793 /* asm */,
 			);
 			name = asm;
 			packageProductDependencies = (
@@ -220,6 +265,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5957ED572D972F1700C1A4BD /* SDLPeripherals.cpp in Sources */,
+				5957ED582D972F1700C1A4BD /* Rom.cpp in Sources */,
+				5957ED592D972F1700C1A4BD /* Peripherals.cpp in Sources */,
+				5957ED5A2D972F1700C1A4BD /* Memory.cpp in Sources */,
+				5957ED5B2D972F1700C1A4BD /* FileLoader.cpp in Sources */,
+				5957ED5C2D972F1700C1A4BD /* Assembler.cpp in Sources */,
+				5957ED5D2D972F1700C1A4BD /* InstructionParser.cpp in Sources */,
+				5957ED5E2D972F1700C1A4BD /* Emulator.cpp in Sources */,
+				5957ED5F2D972F1700C1A4BD /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +281,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5957ED6C2D972FB200C1A4BD /* Memory.cpp in Sources */,
+				5957ED662D972F8100C1A4BD /* Disassembler.cpp in Sources */,
+				5957ED6A2D972FA300C1A4BD /* InstructionParser.cpp in Sources */,
+				5957ED672D972F8100C1A4BD /* main.cpp in Sources */,
+				5957ED6B2D972FA900C1A4BD /* Emulator.cpp in Sources */,
+				5957ED682D972F8100C1A4BD /* Tests.cpp in Sources */,
+				5957ED6E2D972FC800C1A4BD /* FileLoader.cpp in Sources */,
+				5957ED6D2D972FBD00C1A4BD /* Assembler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,17 +25,17 @@ static void TestValidInstruction(const std::string &inCode) {
 static void RunTests1() {
     TestValidInstruction("CLS");
     TestValidInstruction("RET");
-
-    TestValidInstruction("LD V2, 0x78");
-    TestValidInstruction("LD I, 0x500");
-    TestValidInstruction("LD V3, 0x1");
-    TestValidInstruction("LD V4, 0x1");
+    TestValidInstruction("LD V2, 0X78");
+    TestValidInstruction("LD I, 0X500");
+    TestValidInstruction("LD V3, 0X1");
+    TestValidInstruction("LD V4, 0X1");
     TestValidInstruction("LD V1, K");
     TestValidInstruction("LD ST, V2");
     TestValidInstruction("LD F, V1");
-    TestValidInstruction("DRW V3, V4, 0x5");
-    TestValidInstruction("JP 0x200");
-    TestValidInstruction("JP V0, 0x200");
+    TestValidInstruction("DRW V3, V4, 0X5");
+    TestValidInstruction("JP 0X200");
+    TestValidInstruction("JP V0, 0X200");
+    TestValidInstruction("LD V1, 0XA");
 }
 
 static void TestInvalidASM(const std::string &code) {
@@ -63,7 +63,6 @@ static void RunTests2() {
     TestInvalidASM("DRW foo, V67, foo");
     TestInvalidASM("JP bar");
     TestInvalidASM("DRW V3, VT, 0x5");
-    TestInvalidASM("LD V1, 0xFF");
 }
 
 void RunTests() {

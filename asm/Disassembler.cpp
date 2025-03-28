@@ -7,6 +7,9 @@
 
 #include "Disassembler.hpp"
 
+static void toUpper(std::string &str){
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+}
 static std::string hex(uint16_t value) {
     char str[16];
     char *p = &str[16];
@@ -20,7 +23,9 @@ static std::string hex(uint16_t value) {
     *p = 'x';
     p--;
     *p = '0';
-    return std::string(p, &str[16] - p);
+    auto ret =std::string(p, &str[16] - p);
+    toUpper(ret);
+    return ret;
 }
 
 bool Disassembler::loadFile(const std::string &path) {
