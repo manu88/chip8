@@ -33,6 +33,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5957EC012D969FAB00C1A4BD /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		598364B12D91778A003B3793 /* chip8EMU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = chip8EMU; sourceTree = BUILT_PRODUCTS_DIR; };
 		598364CB2D91C880003B3793 /* SDL2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = SDL2; path = ../../../../../Library/Frameworks/SDL2.framework/SDL2; sourceTree = "<group>"; };
 		598364CD2D91CA44003B3793 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -93,6 +94,7 @@
 		598364A82D91778A003B3793 = {
 			isa = PBXGroup;
 			children = (
+				5957EC012D969FAB00C1A4BD /* Makefile */,
 				598364D32D928A70003B3793 /* README.md */,
 				5983656A2D942D40003B3793 /* tests */,
 				598364B32D91778A003B3793 /* src */,
