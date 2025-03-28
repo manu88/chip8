@@ -5,6 +5,7 @@
 //  Created by Manuel Deneu on 24/03/2025.
 //
 
+#include "Assembler.hpp"
 #include "Emulator.h"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
@@ -35,9 +36,10 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-v] \n");
+    printf("usage: inputfile [-h] [-v] [-a] \n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
+    printf("-a: compile inputfile\n");
 }
 
 int main(int argc, const char *argv[]) {
@@ -52,16 +54,37 @@ int main(int argc, const char *argv[]) {
         return 0;
     }
     bool verbose = false;
+
     const std::string inputFile = argv[1];
     if (checkFlag(argc, argv, "-v")) {
         verbose = true;
     }
 
+    bool inputIsAsm = false;
+    if (checkFlag(argc, argv, "-a")) {
+        inputIsAsm = true;
+    }
+
     SDLPeripherals p;
     p.init();
     Rom rom;
-    rom.loadFile(inputFile);
+    if (inputIsAsm) {
+        Assembler assembler;
+        if (!assembler.loadFile(inputFile)) {
+            printf("unable to read from file '%s'\n", inputFile.c_str());
+            return 1;
+        }
+        rom.bytes = assembler.generate();
 
+        if (assembler.getError().has_value()) {
+            printf("%s:%i: error: %s\n", inputFile.c_str(),
+                   assembler.getError().value().line,
+                   assembler.getError().value().msg.c_str());
+            return 1;
+        }
+    } else {
+        rom.loadFile(inputFile);
+    }
     Chip8::CPU emu({.logs = verbose});
     emu.init(&rom, &p);
     emu.run();
