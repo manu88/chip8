@@ -46,6 +46,7 @@
 		598365642D9319E4003B3793 /* Exceptions for "src" folder in "asm" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Assembler.cpp,
 				FileLoader.cpp,
 				InstructionParser.cpp,
 			);
