@@ -39,7 +39,7 @@ void printUsage() {
     printf("usage: inputfile [-h] [-v] [-a] \n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
-    printf("-a: compile inputfile\n");
+    printf("-a: compile input file\n");
 }
 
 int main(int argc, const char *argv[]) {

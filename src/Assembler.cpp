@@ -130,8 +130,7 @@ uint16_t parseNumber(const std::string &str, bool &valid) {
 
 bool isNumber(const std::string &s) {
     if (s[0] == '0' && std::tolower(s[1]) == 'x') {
-        auto sub = s.substr(2);
-        return isNumber(sub);
+        return isNumber(s.substr(2));
     }
     return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) {
                              return !std::isxdigit(c);
@@ -345,7 +344,6 @@ static uint16_t generateMachineCode(const Instruction &inst,
 
 uint16_t Assembler::processLine(const std::string &line,
                                 Assembler::OptionalError &error) {
-    // printf("Line: '%s'\n", line.c_str());
     Instruction inst = splitInstruction(line);
     if (inst.op.empty()) {
         printf("Unable to parse OP from line '%s'\n", line.c_str());
