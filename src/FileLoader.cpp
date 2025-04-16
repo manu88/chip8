@@ -23,6 +23,7 @@ static bool readFile(const std::string &filename, Chip8::Bytes &bytes) {
     // read the data:
     bytes.resize(fileSize / 2);
     file.read((char *)&bytes[0], fileSize);
+    file.close();
     return true;
 }
 

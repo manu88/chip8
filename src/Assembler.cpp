@@ -46,6 +46,7 @@ bool Assembler::loadFile(const std::string &path) {
     }
     _code = std::string((std::istreambuf_iterator<char>(infile)),
                         std::istreambuf_iterator<char>());
+    infile.close();
     return true;
 }
 
