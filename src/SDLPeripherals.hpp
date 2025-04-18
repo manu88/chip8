@@ -7,7 +7,6 @@
 #pragma once
 #include "Peripherals.hpp"
 #include <SDL2/SDL.h>
-#include <vector>
 
 typedef struct TTF_Font TTF_Font;
 
@@ -31,14 +30,6 @@ class SDLPeripherals : public Chip8::Peripherals {
     bool shouldStop() override;
 
   private:
-    struct DrawCommand {
-        uint16_t x;
-        uint16_t y;
-        uint16_t height;
-        uint16_t i;
-    };
-    std::vector<DrawCommand> _commands;
-
     void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;

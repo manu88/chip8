@@ -7,6 +7,7 @@
 
 #pragma once
 #include <stdint.h>
+#include <vector>
 
 namespace Chip8 {
 class Memory;
@@ -32,5 +33,14 @@ class Peripherals {
     virtual uint8_t waitKeyPress();
     virtual void clearDisplay();
     virtual bool shouldStop() { return false; }
+
+  protected:
+    struct DrawCommand {
+        uint16_t x;
+        uint16_t y;
+        uint16_t height;
+        uint16_t i;
+    };
+    std::vector<DrawCommand> _commands;
 };
 } // namespace Chip8
