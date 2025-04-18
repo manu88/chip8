@@ -9,6 +9,7 @@
 #include "Memory.hpp"
 #include <locale.h>
 #include <string>
+#include <unistd.h>
 
 bool TermPeripherals::init() {
     initscr();
@@ -50,13 +51,14 @@ void TermPeripherals::renderSprite(const Chip8::Memory &memory,
 void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
-    refresh();
     box(_win, 0, 0);
-    wrefresh(_win);
+    
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
+    wrefresh(_win);
     refresh();
+    usleep(params.timeoutMS * 1000);
 }
 
 uint8_t TermPeripherals::waitKeyPress() {
