@@ -59,7 +59,6 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
         uint8_t v = sprite.data[y];
         for (int x = 0; x < 8; x++) {
             if (v & 0x0001) {
-
                 SDL_Rect r;
                 r.x = OFFSET + (cmd.x + 7 - x) * SCALE_FACTOR;
                 r.y = OFFSET + (cmd.y + y) * SCALE_FACTOR;

@@ -6,6 +6,7 @@
 //
 
 #include "TermPeripherals.hpp"
+#include "Memory.hpp"
 #include <locale.h>
 #include <string>
 
@@ -101,27 +102,45 @@ bool TermPeripherals::init() {
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
+void TermPeripherals::renderSprite(const Chip8::Memory &memory,
+                                   const DrawCommand &cmd) {
+    const auto sprite = memory.getSpriteData(cmd.i);
+    for (int y = 0; y < cmd.height; y++) {
+        uint8_t v = sprite.data[y];
+        for (int x = 0; x < 8; x++) {
+            int xP = (cmd.x + 7 - x);
+            int yP = (cmd.y + y);
+            if (v & 0x0001) {
+                mvwprintw(_win, yP, xP, "#");
+            } else {
+                mvwprintw(_win, yP, xP, " ");
+            }
+            v >>= 1;
+        }
+    }
+}
+
 void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
+    refresh();
     box(_win, 0, 0);
     wrefresh(_win);
-    mvprintw(0, 0, "frame %li", params.frameId);
+    for (const auto &cmd : _commands) {
+        renderSprite(memory, cmd);
+    }
     refresh();
 }
 
 void TermPeripherals::draw(uint16_t x, uint16_t y, uint16_t height,
-                           uint16_t i) {}
+                           uint16_t i) {
 
-uint8_t TermPeripherals::waitKeyPress() {
-    mvprintw(0, 0, "enter key");
-    int c = wgetch(_win);
-    mvprintw(1, 1,
-             "Character pressed is = %3d Hopefully it can be printed as '%c'",
-             c, c);
-    refresh();
-    return c;
+    _commands.push_back({x, y, height, i});
 }
 
-void TermPeripherals::clearDisplay() { refresh(); }
+uint8_t TermPeripherals::waitKeyPress() {
+    return Peripherals::getKeyCode(wgetch(_win));
+}
+
+void TermPeripherals::clearDisplay() { _commands.clear(); }
 bool TermPeripherals::shouldStop() { return false; }

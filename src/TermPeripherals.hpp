@@ -24,5 +24,6 @@ class TermPeripherals : public Chip8::Peripherals {
     bool shouldStop() override;
 
   private:
+    void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     WINDOW *_win;
 };
