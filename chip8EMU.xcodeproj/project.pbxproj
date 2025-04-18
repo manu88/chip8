@@ -26,6 +26,9 @@
 		5957ED6E2D972FC800C1A4BD /* FileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */; };
 		598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364CD2D91CA44003B3793 /* SDL2.framework */; };
 		598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */; };
+		59E39A3A2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */; };
+		59E39A3B2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */; };
+		59E39A3D2D9B0B89002757D4 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 59E39A3C2D9B0B89002757D4 /* libncurses.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -82,6 +85,9 @@
 		598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL2_ttf.dylib; path = ../../../../../opt/homebrew/lib/libSDL2_ttf.dylib; sourceTree = "<group>"; };
 		598364DB2D92FACD003B3793 /* asm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = asm; sourceTree = BUILT_PRODUCTS_DIR; };
 		598365692D942D40003B3793 /* hello.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello.asm; sourceTree = "<group>"; };
+		59E39A382D9AA66F002757D4 /* TermPeripherals.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TermPeripherals.hpp; sourceTree = "<group>"; };
+		59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TermPeripherals.cpp; sourceTree = "<group>"; };
+		59E39A3C2D9B0B89002757D4 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59E39A3D2D9B0B89002757D4 /* libncurses.tbd in Frameworks */,
 				598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */,
 				598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */,
 			);
@@ -123,6 +130,8 @@
 				5957ED522D972F1700C1A4BD /* Peripherals.cpp */,
 				5957ED532D972F1700C1A4BD /* Rom.hpp */,
 				5957ED542D972F1700C1A4BD /* Rom.cpp */,
+				59E39A382D9AA66F002757D4 /* TermPeripherals.hpp */,
+				59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */,
 				5957ED552D972F1700C1A4BD /* SDLPeripherals.hpp */,
 				5957ED562D972F1700C1A4BD /* SDLPeripherals.cpp */,
 			);
@@ -166,6 +175,7 @@
 		598364CA2D91C87F003B3793 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				59E39A3C2D9B0B89002757D4 /* libncurses.tbd */,
 				598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */,
 				598364CD2D91CA44003B3793 /* SDL2.framework */,
 				598364CB2D91C880003B3793 /* SDL2 */,
@@ -274,6 +284,7 @@
 				5957ED5D2D972F1700C1A4BD /* InstructionParser.cpp in Sources */,
 				5957ED5E2D972F1700C1A4BD /* Emulator.cpp in Sources */,
 				5957ED5F2D972F1700C1A4BD /* main.cpp in Sources */,
+				59E39A3B2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59E39A3A2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */,
 				5957ED6C2D972FB200C1A4BD /* Memory.cpp in Sources */,
 				5957ED662D972F8100C1A4BD /* Disassembler.cpp in Sources */,
 				5957ED6A2D972FA300C1A4BD /* InstructionParser.cpp in Sources */,

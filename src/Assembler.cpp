@@ -16,9 +16,10 @@
 #include <string>
 
 static void ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-                return !std::isspace(ch);
-            }));
+    auto pos = std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    });
+    s.erase(s.begin(), pos);
 }
 
 static void rtrim(std::string &s) {
@@ -273,7 +274,7 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
 uint16_t generateDxyn(const std::vector<std::string> &args,
                       Assembler::OptionalError &error) {
     // Dxyn - DRW Vx, Vy, nibble
-    
+
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
     if (!valid) {

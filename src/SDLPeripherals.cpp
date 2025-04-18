@@ -21,7 +21,7 @@ SDLPeripherals::SDLPeripherals() {
     _font = TTF_OpenFont("/opt/Arial.ttf", FONT_SIZE);
 }
 
-void SDLPeripherals::init() {
+bool SDLPeripherals::init() {
     SDL_Init(SDL_INIT_EVERYTHING);
 
     int width = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
@@ -34,6 +34,7 @@ void SDLPeripherals::init() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
+    return true;
 }
 
 SDLPeripherals::~SDLPeripherals() {

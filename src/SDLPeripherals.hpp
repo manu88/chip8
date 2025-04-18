@@ -21,7 +21,7 @@ class SDLPeripherals : public Chip8::Peripherals {
     SDLPeripherals();
     ~SDLPeripherals();
 
-    void init();
+    bool init() override;
 
     void update(const Chip8::Memory &memory, const Chip8::Registers &registers,
                 const Chip8::Peripherals::UpdateParams &params) override;

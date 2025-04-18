@@ -10,6 +10,7 @@
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include "SDLPeripherals.hpp"
+#include "TermPeripherals.hpp"
 #include <iostream>
 
 bool checkFlag(int argc, const char *argv[], const char *flag) {
@@ -36,10 +37,35 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-v] [-a] \n");
+    printf("usage: inputfile [-h] [-v] [-a] [-g]\n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
     printf("-a: compile input file\n");
+    printf("-g: use GUI\n");
+}
+
+static Chip8::Peripherals *createPeripherals(bool useGui) {
+    if (useGui) {
+        return new SDLPeripherals();
+    }
+    return new TermPeripherals();
+}
+
+static bool buildAsm(const std::string &inputFile, Rom &rom) {
+    Assembler assembler;
+    if (!assembler.loadFile(inputFile)) {
+        printf("unable to read from file '%s'\n", inputFile.c_str());
+        return false;
+    }
+    rom.bytes = assembler.generate();
+
+    if (assembler.getError().has_value()) {
+        printf("%s:%i: error: %s\n", inputFile.c_str(),
+               assembler.getError().value().line,
+               assembler.getError().value().msg.c_str());
+        return false;
+    }
+    return true;
 }
 
 int main(int argc, const char *argv[]) {
@@ -65,28 +91,25 @@ int main(int argc, const char *argv[]) {
         inputIsAsm = true;
     }
 
-    SDLPeripherals p;
-    p.init();
+    bool useGUI = false;
+    if (checkFlag(argc, argv, "-g")) {
+        useGUI = true;
+    }
+
     Rom rom;
     if (inputIsAsm) {
-        Assembler assembler;
-        if (!assembler.loadFile(inputFile)) {
-            printf("unable to read from file '%s'\n", inputFile.c_str());
-            return 1;
-        }
-        rom.bytes = assembler.generate();
-
-        if (assembler.getError().has_value()) {
-            printf("%s:%i: error: %s\n", inputFile.c_str(),
-                   assembler.getError().value().line,
-                   assembler.getError().value().msg.c_str());
+        if (!buildAsm(inputFile, rom)) {
             return 1;
         }
     } else {
         rom.loadFile(inputFile);
     }
+    auto p = createPeripherals(useGUI);
+    p->init();
+
     Chip8::CPU emu({.logs = verbose});
-    emu.init(&rom, &p);
+    emu.init(&rom, p);
     emu.run();
+    delete p;
     return 0;
 }
