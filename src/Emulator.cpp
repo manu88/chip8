@@ -40,6 +40,7 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 }
 
 void Chip8::CPU::run() {
+    long frameId = 0;
     while (!_peripherals->shouldStop()) {
         const auto before = std::chrono::system_clock::now();
         uint16_t pc = _registers.pc;
@@ -55,6 +56,7 @@ void Chip8::CPU::run() {
             std::chrono::system_clock::now() - before;
         Chip8::Peripherals::UpdateParams params;
         params.timeoutMS = CYCLE_MS - cpuDuration.count();
+        params.frameId = frameId;
         if (params.timeoutMS < 0) {
             params.timeoutMS = CYCLE_MS;
         }
@@ -63,6 +65,7 @@ void Chip8::CPU::run() {
         const std::chrono::duration<double, std::milli> completeCycle =
             std::chrono::system_clock::now() - before;
         updateTimers(completeCycle.count());
+        frameId++;
     }
 }
 

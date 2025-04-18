@@ -22,8 +22,7 @@ class TermPeripherals : public Chip8::Peripherals {
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
     bool shouldStop() override;
-    
-private:
-    WINDOW* _win;
-    int _count = 0;
+
+  private:
+    WINDOW *_win;
 };

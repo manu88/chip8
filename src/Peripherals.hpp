@@ -18,11 +18,12 @@ class Peripherals {
     enum { SCREEN_HEIGTH = 32 };
 
     virtual ~Peripherals() {}
-    
+
     virtual bool init() = 0;
 
     struct UpdateParams {
         int timeoutMS;
+        long frameId;
     };
 
     virtual void update(const Memory &memory, const Registers &registers,

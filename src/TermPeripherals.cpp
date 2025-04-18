@@ -9,7 +9,6 @@
 #include <locale.h>
 #include <string>
 
-
 const char *choices[] = {
     "Choice 1", "Choice 2", "Choice 3", "Choice 4", "Exit",
 };
@@ -92,7 +91,8 @@ bool TermPeripherals::init() {
     int startx = 4;
     int starty = 4;
 
-    _win = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, starty, startx);
+    _win = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, starty,
+                  startx);
     keypad(_win, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
@@ -106,24 +106,22 @@ void TermPeripherals::update(const Chip8::Memory &memory,
                              const UpdateParams &params) {
     box(_win, 0, 0);
     wrefresh(_win);
+    mvprintw(0, 0, "frame %li", params.frameId);
     refresh();
-    _count++;
-    
 }
 
 void TermPeripherals::draw(uint16_t x, uint16_t y, uint16_t height,
-                           uint16_t i) {
-    
-   
-}
+                           uint16_t i) {}
 
 uint8_t TermPeripherals::waitKeyPress() {
-    mvprintw(0,0, "%i: enter key", _count);
+    mvprintw(0, 0, "enter key");
     int c = wgetch(_win);
-    mvprintw(1, 1, "Character pressed is = %3d Hopefully it can be printed as '%c'", c, c);
+    mvprintw(1, 1,
+             "Character pressed is = %3d Hopefully it can be printed as '%c'",
+             c, c);
     refresh();
     return c;
 }
 
-void TermPeripherals::clearDisplay() {}
+void TermPeripherals::clearDisplay() { refresh(); }
 bool TermPeripherals::shouldStop() { return false; }
