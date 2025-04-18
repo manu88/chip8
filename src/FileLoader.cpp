@@ -33,7 +33,7 @@ bool Chip8::loadFile(const std::string &path, Chip8::Bytes &bytes) {
     }
 
     for (int i = 0; i < bytes.size(); i++) {
-        bytes[i] = (bytes[i] >> 8) | (bytes[i] << 8);
+        bytes[i] = ((uint16_t)(bytes[i] >> 8)) | ((uint16_t)(bytes[i] << 8));
     }
     return true;
 }
