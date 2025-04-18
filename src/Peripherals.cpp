@@ -23,7 +23,7 @@ void Chip8::Peripherals::update(
 
 void Chip8::Peripherals::draw(uint16_t x, uint16_t y, uint16_t height,
                               uint16_t i) {
-    printf("Draw at x=0X%0X, y=0X%0X height=0X%0X, i=0X%0X\n", x, y, height, i);
+    _commands.push_back({x, y, height, i});
 }
 
 /*static*/ uint8_t Chip8::Peripherals::getKeyCode(char key) {

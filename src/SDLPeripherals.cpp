@@ -155,10 +155,6 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     }
 }
 
-void SDLPeripherals::draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i) {
-    _commands.push_back({x, y, height, i});
-}
-
 uint8_t SDLPeripherals::waitKeyPress() {
     bool done = false;
     SDL_Event e;
