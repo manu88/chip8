@@ -171,55 +171,7 @@ uint8_t SDLPeripherals::waitKeyPress() {
             }
             if (e.type == SDL_KEYUP) {
                 const char key = SDL_GetKeyName(e.key.keysym.sym)[0];
-                // hackish
-                if (key == '0') {
-                    return 0;
-                }
-                if (key == '1') {
-                    return 1;
-                }
-                if (key == '2') {
-                    return 2;
-                }
-                if (key == '3') {
-                    return 3;
-                }
-                if (key == '4') {
-                    return 4;
-                }
-                if (key == '5') {
-                    return 5;
-                }
-                if (key == '6') {
-                    return 6;
-                }
-                if (key == '7') {
-                    return 7;
-                }
-                if (key == '8') {
-                    return 8;
-                }
-                if (key == '9') {
-                    return 9;
-                }
-                if (std::tolower(key) == 'a') {
-                    return 10;
-                }
-                if (std::tolower(key) == 'b') {
-                    return 11;
-                }
-                if (std::tolower(key) == 'c') {
-                    return 12;
-                }
-                if (std::tolower(key) == 'd') {
-                    return 13;
-                }
-                if (std::tolower(key) == 'e') {
-                    return 14;
-                }
-                if (std::tolower(key) == 'f') {
-                    return 15;
-                }
+                return Peripherals::getKeyCode(key);
             }
         }
     }
