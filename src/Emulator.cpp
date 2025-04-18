@@ -34,7 +34,6 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
     if (_delayTimer > 0) {
         _delayTimer -= 1;
         if (_delayTimer == 0) {
-            printf("Delay timer complete!\n");
         }
     }
 }
