@@ -7,9 +7,10 @@
 
 #include "Disassembler.hpp"
 
-static void toUpper(std::string &str){
+static void toUpper(std::string &str) {
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
+
 static std::string hex(uint16_t value) {
     char str[16];
     char *p = &str[16];
@@ -23,7 +24,7 @@ static std::string hex(uint16_t value) {
     *p = 'x';
     p--;
     *p = '0';
-    auto ret =std::string(p, &str[16] - p);
+    auto ret = std::string(p, &str[16] - p);
     toUpper(ret);
     return ret;
 }
@@ -59,10 +60,15 @@ bool Disassembler::onJump(uint16_t addr) {
     _text += "JP " + hex(addr);
     return true;
 }
-bool Disassembler::onCallSubroutine(uint16_t addr) { return false; }
+bool Disassembler::onCallSubroutine(uint16_t addr) {
+    _text += "CALL " + hex(addr);
+    return true;
+}
+
 bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) { return false; }
 bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
-    return false;
+    _text += "SNE V" + std::to_string(reg) + ", " + hex(val);
+    return true;
 }
 bool Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
     return false;
@@ -100,7 +106,10 @@ bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
 }
 bool Disassembler::onSkipIfKeyPressed(uint16_t reg) { return false; }
 bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
-bool Disassembler::onSetVxToDelayTimer(uint16_t reg) { return false; }
+bool Disassembler::onSetVxToDelayTimer(uint16_t reg) {
+    _text += "LD V" + std::to_string(reg) + ", DT";
+    return true;
+}
 bool Disassembler::onWaitKeyPressed(uint16_t reg) {
     _text += "LD V" + std::to_string(reg) + ", K";
     return true;
