@@ -93,6 +93,7 @@ bool Chip8::CPU::onCLS() {
     return true;
 }
 bool Chip8::CPU::onRET() {
+    assert(_registers.sp >= 1);
     _registers.sp -= 1;
     _registers.pc = _mem.stack[_registers.sp] + 1;
     return true;

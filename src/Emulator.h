@@ -23,7 +23,8 @@ namespace Chip8 {
 class Peripherals;
 
 struct Registers {
-    uint16_t v[16];
+    enum {Size = 16};
+    uint16_t v[Size];
     uint16_t i;
 
     uint16_t pc;
@@ -31,7 +32,7 @@ struct Registers {
 
     Registers() { reset(); }
     void reset() {
-        memset(v, 0, 16);
+        memset(v, 0, Size);
         i = 0;
         sp = 0;
         pc = ROM_ADDR;
