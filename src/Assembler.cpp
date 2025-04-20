@@ -396,6 +396,36 @@ uint16_t generateSE(const std::vector<std::string> &args,
     return 0;
 }
 
+uint16_t generateSNE(const std::vector<std::string> &args,
+                    Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    if(std::tolower(args.at(1)[0]) == 'v'){
+        //9xy0 - SNE Vx, Vy
+        valid = false;
+        uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+        if (!valid) {
+            error = {.msg = "invalid register address '" + args.at(1) + "'"};
+            return 0;
+        }
+        return 0x9000 + (reg0 << 8) + (reg1 << 4);
+    }else{
+        valid = false;
+        uint16_t val = parseNumber(args[1], valid);
+        if (!valid) {
+            error = {.msg = "invalid value '" + args[1] + "'"};
+            return 0;
+        }
+        assert(val <= 0x0FF);
+        //4xkk - SNE Vx, byte
+        return 0x4000 + (reg0 << 8) + val;
+    }
+}
+
 uint16_t generateJP(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
 
@@ -440,6 +470,8 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generateJP(inst.args, error);
     } else if (inst.op == "SE") {
         return generateSE(inst.args, error);
+    } else if (inst.op == "SNE") {
+        return generateSNE(inst.args, error);
     } else if (inst.op == "SKNP") {
         return generateSKNP(inst.args, error);
     }

@@ -22,7 +22,7 @@ static std::string hex(uint16_t value, bool prefix = true) {
     } while (value > 0);
     if (prefix) {
         p--;
-        *p = 'x';
+        *p = 'X';
         p--;
         *p = '0';
     }
@@ -101,9 +101,12 @@ bool Disassembler::onSubVyToVx(uint16_t regX, uint16_t regY) { return false; }
 bool Disassembler::onShiftRightVx(uint16_t reg) { return false; }
 bool Disassembler::onSubVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Disassembler::onShiftLeftVx(uint16_t reg) { return false; }
+
 bool Disassembler::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
-    return false;
+    _text += "SNE V" + hex(regX, false) + ", V" + hex(regY, false);
+    return true;
 }
+
 bool Disassembler::onSetI(uint16_t addr) {
     _text += "LD I, " + hex(addr);
     return true;

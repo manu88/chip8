@@ -45,6 +45,8 @@ static void RunTests1() {
     TestValidInstruction("SE VA, 0X12");
     TestValidInstruction("LD DT, V3");
     TestValidInstruction("SKNP V6");
+    TestValidInstruction("SNE V2, VA");
+    TestValidInstruction("SNE V2, 0X12");
 }
 
 static void TestInvalidASM(const std::string &code) {
