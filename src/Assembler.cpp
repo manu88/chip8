@@ -448,7 +448,7 @@ uint16_t generateADD(const std::vector<std::string> &args,
     return 0;
 }
 
-uint16_t generateCALL(const std::string arg, Assembler::OptionalError &error) {
+uint16_t generate2nnn(const std::string arg, Assembler::OptionalError &error) {
     // 2nnn - CALL addr
     bool addrValid = false;
     uint16_t val = parseNumber(arg, addrValid);
@@ -564,7 +564,7 @@ static uint16_t generateMachineCode(const Instruction &inst,
     } else if (inst.op == "ADD") {
         return generateADD(inst.args, error);
     } else if (inst.op == "CALL") {
-        return generateCALL(inst.args.at(0), error);
+        return generate2nnn(inst.args.at(0), error);
     } else if (inst.op == "SYS") {
         return generate0nnn(inst.args.at(0), error);
     }
