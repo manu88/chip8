@@ -448,6 +448,19 @@ uint16_t generateADD(const std::vector<std::string> &args,
     return 0;
 }
 
+uint16_t generateCALL(const std::string arg,
+                      Assembler::OptionalError &error) {
+    //2nnn - CALL addr
+    bool addrValid = false;
+    uint16_t val = parseNumber(arg, addrValid);
+    if (!addrValid) {
+        error = {.msg = "invalid value '" + arg + "'"};
+        return 0;
+    }
+    uint16_t ret = 0x2000 + val;
+    return ret;
+}
+
 uint16_t generateSE(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
     if (std::tolower(args.at(1)[0]) == 'v') {
@@ -540,6 +553,8 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generateSKNP(inst.args, error);
     } else if (inst.op == "ADD") {
         return generateADD(inst.args, error);
+    } else if(inst.op == "CALL"){
+        return generateCALL(inst.args.at(0), error);
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;

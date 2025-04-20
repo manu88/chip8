@@ -50,6 +50,7 @@ static void RunTests1() {
     TestValidInstruction("ADD V0, 0X1");
     TestValidInstruction("ADD V0, VC");
     TestValidInstruction("ADD I, VC");
+    TestValidInstruction("CALL 0X124");
 }
 
 static void TestInvalidASM(const std::string &code) {
