@@ -96,8 +96,13 @@ bool Disassembler::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Disassembler::onOrValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Disassembler::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Disassembler::onXOrValToVx(uint16_t reg, uint16_t val) { return false; }
-bool Disassembler::onAddVyToVx(uint16_t regX, uint16_t regY) { return false; }
-bool Disassembler::onSubVyToVx(uint16_t regX, uint16_t regY) { return false; }
+bool Disassembler::onAddVyToVx(uint16_t regX, uint16_t regY) {
+    _text += "ADD V" + hex(regX, false) + ", V" + hex(regY, false);
+    return true;
+}
+
+bool Disassembler::onSubVyToVx(uint16_t regX, uint16_t regY) { return true; }
+
 bool Disassembler::onShiftRightVx(uint16_t reg) { return false; }
 bool Disassembler::onSubVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Disassembler::onShiftLeftVx(uint16_t reg) { return false; }
@@ -145,7 +150,11 @@ bool Disassembler::onSetSoundTimer(uint16_t reg) {
     _text += "LD ST, V" + hex(reg, false);
     return true;
 }
-bool Disassembler::onAddVxToI(uint16_t reg) { return false; }
+bool Disassembler::onAddVxToI(uint16_t reg) {
+    _text += "ADD I, V" + hex(reg, false);
+    return true;
+}
+
 bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {
     _text += "LD F, V" + hex(reg, false);
     return true;

@@ -381,6 +381,70 @@ uint16_t generateSKNP(const std::vector<std::string> &args,
         return 0;
     }
     return 0xE0A1 + (reg0 << 8);
+}
+
+uint16_t generate8xy4(const std::string &arg0, const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0x8004 + (reg0 << 8) + (reg1 << 4);
+    return ret;
+}
+
+uint16_t generate7xkk(const std::string &arg0, const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool argValid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, argValid);
+    if (!argValid) {
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    argValid = false;
+    uint16_t val = parseNumber(arg1, argValid);
+    if (!argValid) {
+        error = {.msg = "invalid value '" + arg1 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0x7000 + (reg0 << 8) + val;
+    return ret;
+}
+
+uint16_t generateFx1E(const std::string &arg, Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg = parseRegisterAddr(arg, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg + "'"};
+        return 0;
+    }
+    uint16_t ret = 0XF01E + (reg << 8);
+    return ret;
+}
+
+uint16_t generateADD(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (std::tolower(args.at(0)[0]) == 'v') {
+        if (std::tolower(args.at(1)[0]) == 'v') {
+            //  8xy4 - ADD Vx, Vy
+            return generate8xy4(args.at(0), args.at(1), error);
+        } else {
+            //  7xkk - ADD Vx, byte
+            return generate7xkk(args.at(0), args.at(1), error);
+        }
+    } else if (args.at(0) == "I") {
+        // Fx1E - ADD I, Vx
+        return generateFx1E(args.at(1), error);
+    }
+    error = {.msg = "unexpected value '" + args.at(0) + "'"};
     return 0;
 }
 
@@ -397,15 +461,15 @@ uint16_t generateSE(const std::vector<std::string> &args,
 }
 
 uint16_t generateSNE(const std::vector<std::string> &args,
-                    Assembler::OptionalError &error) {
+                     Assembler::OptionalError &error) {
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
     if (!valid) {
         error = {.msg = "invalid register address '" + args.at(0) + "'"};
         return 0;
     }
-    if(std::tolower(args.at(1)[0]) == 'v'){
-        //9xy0 - SNE Vx, Vy
+    if (std::tolower(args.at(1)[0]) == 'v') {
+        // 9xy0 - SNE Vx, Vy
         valid = false;
         uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
         if (!valid) {
@@ -413,7 +477,7 @@ uint16_t generateSNE(const std::vector<std::string> &args,
             return 0;
         }
         return 0x9000 + (reg0 << 8) + (reg1 << 4);
-    }else{
+    } else {
         valid = false;
         uint16_t val = parseNumber(args[1], valid);
         if (!valid) {
@@ -421,7 +485,7 @@ uint16_t generateSNE(const std::vector<std::string> &args,
             return 0;
         }
         assert(val <= 0x0FF);
-        //4xkk - SNE Vx, byte
+        // 4xkk - SNE Vx, byte
         return 0x4000 + (reg0 << 8) + val;
     }
 }
@@ -474,6 +538,8 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generateSNE(inst.args, error);
     } else if (inst.op == "SKNP") {
         return generateSKNP(inst.args, error);
+    } else if (inst.op == "ADD") {
+        return generateADD(inst.args, error);
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;
