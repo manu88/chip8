@@ -172,8 +172,9 @@ uint16_t generateAnnn(const std::string &arg, Assembler::OptionalError &error) {
     return ret;
 }
 
-uint16_t generateFx07(const std::string &arg0, Assembler::OptionalError &error) {
-    
+uint16_t generateFx07(const std::string &arg0,
+                      Assembler::OptionalError &error) {
+
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
     if (!valid) {
@@ -181,6 +182,18 @@ uint16_t generateFx07(const std::string &arg0, Assembler::OptionalError &error) 
         return 0;
     }
     uint16_t ret = 0xF007 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateFx15(const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg1 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0xF015 + (reg0 << 8);
     return ret;
 }
 
@@ -206,7 +219,7 @@ uint16_t generate6xkk(const std::string &arg0, const std::string &arg1,
                       Assembler::OptionalError &error) {
     bool argValid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, argValid);
-    if(!argValid){
+    if (!argValid) {
         error = {.msg = "invalid value '" + arg0 + "'"};
         return 0;
     }
@@ -224,7 +237,7 @@ uint16_t generateFx0A(const std::string &arg0,
                       Assembler::OptionalError &error) {
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
-    if(!valid){
+    if (!valid) {
         error = {.msg = "invalid value '" + arg0 + "'"};
         return 0;
     }
@@ -232,11 +245,10 @@ uint16_t generateFx0A(const std::string &arg0,
     return ret;
 }
 
-uint16_t generateFx65(const std::string arg0,
-                      Assembler::OptionalError &error) {
+uint16_t generateFx65(const std::string arg0, Assembler::OptionalError &error) {
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
-    if(!valid){
+    if (!valid) {
         error = {.msg = "invalid value '" + arg0 + "'"};
         return 0;
     }
@@ -271,6 +283,9 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
         }
         // Annn - LD I, addr
         return generateAnnn(args[1], error);
+    } else if (args.at(0) == "DT") {
+        // LD DT, Vx
+        return generateFx15(args.at(1), error);
     } else if (std::tolower(args.at(0)[0]) == 'v') {
         if (args.size() != 2) {
             error = {.msg = "missing arguments"};
