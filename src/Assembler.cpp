@@ -372,6 +372,18 @@ uint16_t generate3xkk(const std::string &arg0, const std::string &arg1,
     return 0x3000 + (reg0 << 8) + val;
 }
 
+uint16_t generateSKNP(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    return 0xE0A1 + (reg0 << 8);
+    return 0;
+}
+
 uint16_t generateSE(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
     if (std::tolower(args.at(1)[0]) == 'v') {
@@ -428,6 +440,8 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generateJP(inst.args, error);
     } else if (inst.op == "SE") {
         return generateSE(inst.args, error);
+    } else if (inst.op == "SKNP") {
+        return generateSKNP(inst.args, error);
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;
