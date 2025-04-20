@@ -258,8 +258,8 @@ uint16_t generateFx65(const std::string arg0, Assembler::OptionalError &error) {
 
 uint16_t generateLDMachineCode(const std::vector<std::string> &args,
                                Assembler::OptionalError &error) {
-    if (args.size() == 0) {
-        error = {.msg = "no arguments provided"};
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments"};
         return 0;
     }
     if (args.at(0) == "F") {
@@ -270,50 +270,26 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
         // Fx29 - LD F, Vx
         return generateFX29(args[1], error);
     } else if (args.at(0) == "ST") {
-        if (args.size() != 2) {
-            error = {.msg = "missing arguments"};
-            return 0;
-        }
         // Fx18 - LD ST, Vx
         return generateFX18(args[1], error);
     } else if (args.at(0) == "I") {
-        if (args.size() != 2) {
-            error = {.msg = "missing arguments"};
-            return 0;
-        }
         // Annn - LD I, addr
         return generateAnnn(args[1], error);
     } else if (args.at(0) == "DT") {
         // LD DT, Vx
         return generateFx15(args.at(1), error);
     } else if (std::tolower(args.at(0)[0]) == 'v') {
-        if (args.size() != 2) {
-            error = {.msg = "missing arguments"};
-            return 0;
-        }
         if (std::tolower(args.at(1)[0]) == 'v') {
-            if (args.size() != 2) {
-                error = {.msg = "missing arguments"};
-                return 0;
-            }
             // 8xy0 - LD Vx, Vy
             return generate8xy0(args[0], args[1], error);
         } else if (args.at(1) == "DT") {
             // Fx07 - LD Vx, DT
             return generateFx07(args[0], error);
         } else if (std::tolower(args.at(1)[0]) == 'k') {
-            if (args.size() != 2) {
-                error = {.msg = "missing arguments"};
-                return 0;
-            }
             // Fx0A - LD Vx, K
             return generateFx0A(args[0], error);
         } else if (isNumber(args.at(1))) {
             // 6xkk - LD Vx, byte
-            if (args.size() != 2) {
-                error = {.msg = "missing arguments"};
-                return 0;
-            }
             return generate6xkk(args[0], args[1], error);
         } else if (args.at(1) == "I") {
             // Fx65 - LD Vx, I
@@ -329,7 +305,10 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
 uint16_t generateDxyn(const std::vector<std::string> &args,
                       Assembler::OptionalError &error) {
     // Dxyn - DRW Vx, Vy, nibble
-
+    if (args.size() != 3) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
     if (!valid) {
@@ -374,6 +353,10 @@ uint16_t generate3xkk(const std::string &arg0, const std::string &arg1,
 
 uint16_t generateSKNP(const std::vector<std::string> &args,
                       Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
     if (!valid) {
@@ -432,6 +415,10 @@ uint16_t generateFx1E(const std::string &arg, Assembler::OptionalError &error) {
 
 uint16_t generateADD(const std::vector<std::string> &args,
                      Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     if (std::tolower(args.at(0)[0]) == 'v') {
         if (std::tolower(args.at(1)[0]) == 'v') {
             //  8xy4 - ADD Vx, Vy
@@ -448,23 +435,33 @@ uint16_t generateADD(const std::vector<std::string> &args,
     return 0;
 }
 
-uint16_t generate2nnn(const std::string arg, Assembler::OptionalError &error) {
+uint16_t generate2nnn(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     // 2nnn - CALL addr
     bool addrValid = false;
-    uint16_t val = parseNumber(arg, addrValid);
+    uint16_t val = parseNumber(args.at(0), addrValid);
     if (!addrValid) {
-        error = {.msg = "invalid value '" + arg + "'"};
+        error = {.msg = "invalid value '" + args.at(0) + "'"};
         return 0;
     }
     uint16_t ret = 0x2000 + val;
     return ret;
 }
 
-uint16_t generate0nnn(const std::string arg, Assembler::OptionalError &error) {
+uint16_t generate0nnn(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     bool addrValid = false;
-    uint16_t val = parseNumber(arg, addrValid);
+    uint16_t val = parseNumber(args.at(0), addrValid);
     if (!addrValid) {
-        error = {.msg = "invalid value '" + arg + "'"};
+        error = {.msg = "invalid value '" + args.at(0) + "'"};
         return 0;
     }
     assert(val <= 0XFFF);
@@ -473,6 +470,10 @@ uint16_t generate0nnn(const std::string arg, Assembler::OptionalError &error) {
 
 uint16_t generateSE(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     if (std::tolower(args.at(1)[0]) == 'v') {
         // 5xy0 - SE Vx, Vy
     } else {
@@ -485,6 +486,10 @@ uint16_t generateSE(const std::vector<std::string> &args,
 
 uint16_t generateSNE(const std::vector<std::string> &args,
                      Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
     if (!valid) {
@@ -516,6 +521,10 @@ uint16_t generateSNE(const std::vector<std::string> &args,
 uint16_t generateJP(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
 
+    if (args.size() < 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
     if (args.size() == 2 && args[0] == "V0") {
         // Bnnn - JP V0, addr
         // note: only V0 addr is valid,
@@ -564,9 +573,9 @@ static uint16_t generateMachineCode(const Instruction &inst,
     } else if (inst.op == "ADD") {
         return generateADD(inst.args, error);
     } else if (inst.op == "CALL") {
-        return generate2nnn(inst.args.at(0), error);
+        return generate2nnn(inst.args, error);
     } else if (inst.op == "SYS") {
-        return generate0nnn(inst.args.at(0), error);
+        return generate0nnn(inst.args, error);
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;

@@ -79,6 +79,38 @@ static void RunTests2() {
     TestInvalidASM("DRW foo, V67, foo");
     TestInvalidASM("JP bar");
     TestInvalidASM("DRW V3, VT, 0x5");
+    
+    // missing arguments
+    TestInvalidASM("LD V2");
+    TestInvalidASM("LD I, ");
+    TestInvalidASM("LD V3");
+    TestInvalidASM("LD VC");
+    TestInvalidASM("LD V4");
+    TestInvalidASM("LD V1");
+    TestInvalidASM("LD VD");
+    TestInvalidASM("LD ST");
+    TestInvalidASM("LD F");
+    TestInvalidASM("DRW V3, V4");
+    TestInvalidASM("DRW V3, ");
+    TestInvalidASM("JP ");
+    TestInvalidASM("JP V0");
+    TestInvalidASM("LD V1");
+    TestInvalidASM("LD VB");
+    TestInvalidASM("LD V4, LOL");
+    TestInvalidASM("LD V1");
+    TestInvalidASM("SE VA");
+    TestInvalidASM("SE VA, foo");
+    TestInvalidASM("LD DT");
+    TestInvalidASM("LD DT, 0X12");
+    TestInvalidASM("SKNP ");
+    TestInvalidASM("SNE V2");
+    TestInvalidASM("SNE V2");
+    TestInvalidASM("ADD V0");
+    TestInvalidASM("ADD V0");
+    TestInvalidASM("ADD I");
+    TestInvalidASM("ADD J");
+    TestInvalidASM("CALL ");
+    TestInvalidASM("SYS ");
 }
 
 void RunTests() {
