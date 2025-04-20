@@ -44,7 +44,9 @@ std::string Disassembler::generate() {
             printf("Error at instruction 0X%04X\n", instr);
             return "";
         }
-        _text += "  ;  " + hex(currentInstruction);
+        if(params.showOriginalInstructionAsComment){
+            _text += "  ;  " + hex(currentInstruction);
+        }
         _text += "\n";
     }
     return _text;
