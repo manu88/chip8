@@ -31,9 +31,9 @@ class Disassembler : public Chip8::InstructionParser {
 
   private:
     bool onCLS() override;
-    bool onRET()override;
-    bool onCallMachine(uint16_t addr)override;
-    bool onJump(uint16_t addr)override;
+    bool onRET() override;
+    bool onCallMachine(uint16_t addr) override;
+    bool onJump(uint16_t addr) override;
     bool onCallSubroutine(uint16_t addr) override;
     bool onSkipIfVxIsVal(uint16_t reg, uint16_t val) override;
     bool onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) override;

@@ -92,6 +92,7 @@ bool Chip8::CPU::onCLS() {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onRET() {
     assert(_registers.sp >= 1);
     _registers.sp -= 1;
@@ -111,12 +112,14 @@ bool Chip8::CPU::onJump(uint16_t addr) {
     _registers.pc = addr;
     return true;
 }
+
 bool Chip8::CPU::onCallSubroutine(uint16_t addr) {
     _mem.stack[_registers.sp] = _registers.pc;
     _registers.sp += 1;
     _registers.pc = addr;
     return true;
 }
+
 bool Chip8::CPU::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {
     if (_registers.v[reg] == val) {
         _registers.pc += 1;
@@ -124,6 +127,7 @@ bool Chip8::CPU::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
     if (_registers.v[reg] != val) {
         _registers.pc += 1;
@@ -131,6 +135,7 @@ bool Chip8::CPU::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
     if (_registers.v[regX] == _registers.v[regY]) {
         _registers.pc += 1;
@@ -138,16 +143,19 @@ bool Chip8::CPU::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSetVx(uint16_t reg, uint16_t val) {
     _registers.v[reg] = val;
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onAddValToVx(uint16_t reg, uint16_t val) {
     _registers.v[reg] += val;
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Chip8::CPU::onOrValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Chip8::CPU::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
@@ -157,21 +165,26 @@ bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) { return false; }
 bool Chip8::CPU::onShiftRightVx(uint16_t reg) { return false; }
 bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Chip8::CPU::onShiftLeftVx(uint16_t reg) { return false; }
+
 bool Chip8::CPU::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
     return false;
 }
+
 bool Chip8::CPU::onSetI(uint16_t addr) {
     _registers.i = addr;
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onJumpToLoc(uint16_t val) { return false; }
+
 bool Chip8::CPU::onRand(uint16_t reg, uint16_t val) {
     uint8_t randomVal = _uint8Distrib(_rng);
     _registers.v[reg] = randomVal & val;
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     _peripherals->draw(_registers.v[regX], _registers.v[regY], nimble,
                        _registers.i);
@@ -181,32 +194,39 @@ bool Chip8::CPU::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
 
 bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) { return false; }
 bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
+
 bool Chip8::CPU::onSetVxToDelayTimer(uint16_t reg) {
     _registers.v[reg] = _delayTimer;
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onWaitKeyPressed(uint16_t reg) {
     _registers.v[reg] = _peripherals->waitKeyPress();
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSetDelayTimer(uint16_t reg) {
     _delayTimer = _registers.v[reg];
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onSetSoundTimer(uint16_t reg) {
     _soundTimer = _registers.v[reg];
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onAddVxToI(uint16_t reg) { return false; }
+
 bool Chip8::CPU::onSetIToSpriteLoc(uint16_t reg) {
     _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
     uint32_t result = dec2bcd_r(_registers.v[reg]); // 0X 0000 0000 0000 0000
     const uint8_t d0 = result & 0x000F;
@@ -224,6 +244,7 @@ bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onStoreVnInI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
         _mem.setValueAtAddr(_registers.i + i, _registers.v[i]);
@@ -231,6 +252,7 @@ bool Chip8::CPU::onStoreVnInI(uint16_t reg) {
     _registers.pc += 1;
     return true;
 }
+
 bool Chip8::CPU::onReadVnFromI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
         _registers.v[i] = _mem.getValueAtAddr(_registers.i + i);

@@ -79,7 +79,7 @@ static void RunTests2() {
     TestInvalidASM("DRW foo, V67, foo");
     TestInvalidASM("JP bar");
     TestInvalidASM("DRW V3, VT, 0x5");
-    
+
     // missing arguments
     TestInvalidASM("LD V2");
     TestInvalidASM("LD I, ");

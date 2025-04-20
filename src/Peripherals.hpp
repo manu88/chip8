@@ -33,7 +33,7 @@ class Peripherals {
     virtual uint8_t waitKeyPress();
     virtual void clearDisplay();
     virtual bool shouldStop() { return false; }
-    
+
     static uint8_t getKeyCode(char key);
 
   protected:

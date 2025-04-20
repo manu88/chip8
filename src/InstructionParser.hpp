@@ -29,7 +29,7 @@ class InstructionParser {
     } // 4xkk
     virtual bool onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
         return false;
-    }                                                                  // 5xy0
+    } // 5xy0
     virtual bool onSetVx(uint16_t reg, uint16_t val) { return false; } // 6xkk
     virtual bool onAddValToVx(uint16_t reg, uint16_t val) {
         return false;
@@ -51,21 +51,21 @@ class InstructionParser {
     } // 8xy4
     virtual bool onSubVyToVx(uint16_t regX, uint16_t regY) {
         return false;
-    }                                                           // 8xy5
+    } // 8xy5
     virtual bool onShiftRightVx(uint16_t reg) { return false; } // 8xy6
     virtual bool onSubVxToVy(uint16_t regX, uint16_t regY) {
         return false;
-    }                                                          // 8xy7
+    } // 8xy7
     virtual bool onShiftLeftVx(uint16_t reg) { return false; } // 8xyE
     virtual bool onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
         return false;
-    }                                                                 // 9xy0
+    } // 9xy0
     virtual bool onSetI(uint16_t addr) { return false; }              // Annn
     virtual bool onJumpToLoc(uint16_t val) { return false; }          // Bnnn
     virtual bool onRand(uint16_t reg, uint16_t val) { return false; } // Cxkk
     virtual bool onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
         return false;
-    }                                                                  // Dxyn
+    } // Dxyn
     virtual bool onSkipIfKeyPressed(uint16_t reg) { return false; }    // Ex9E
     virtual bool onSkipIfKeyNotPressed(uint16_t reg) { return false; } // ExA1
     virtual bool onSetVxToDelayTimer(uint16_t reg) { return false; }   // Fx07

@@ -52,7 +52,7 @@ void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
     box(_win, 0, 0);
-    
+
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
