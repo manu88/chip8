@@ -11,7 +11,7 @@ static void toUpper(std::string &str) {
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
-static std::string hex(uint16_t value) {
+static std::string hex(uint16_t value, bool prefix = true) {
     char str[16];
     char *p = &str[16];
     do {
@@ -20,10 +20,12 @@ static std::string hex(uint16_t value) {
         value /= 16;
         *p = digit >= 10 ? 'a' + (digit - 10) : '0' + digit;
     } while (value > 0);
-    p--;
-    *p = 'x';
-    p--;
-    *p = '0';
+    if (prefix) {
+        p--;
+        *p = 'x';
+        p--;
+        *p = '0';
+    }
     auto ret = std::string(p, &str[16] - p);
     toUpper(ret);
     return ret;
@@ -69,24 +71,24 @@ bool Disassembler::onCallSubroutine(uint16_t addr) {
 }
 
 bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {
-    _text += "SE V" + std::to_string(reg) + ", " + hex(val);
+    _text += "SE V" + hex(reg, false) + ", " + hex(val);
     return true;
 }
 
 bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
-    _text += "SNE V" + std::to_string(reg) + ", " + hex(val);
+    _text += "SNE V" + hex(reg, false) + ", " + hex(val);
     return true;
 }
 bool Disassembler::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
     return false;
 }
 bool Disassembler::onSetVx(uint16_t reg, uint16_t val) {
-    _text += "LD V" + std::to_string(reg) + ", " + hex(val);
+    _text += "LD V" + hex(reg, false) + ", " + hex(val);
     return true;
 }
 
 bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {
-    _text += "ADD V" + std::to_string(reg) + ", " + hex(val);
+    _text += "ADD V" + hex(reg, false) + ", " + hex(val);
     return true;
 }
 
@@ -119,35 +121,36 @@ bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
 bool Disassembler::onSkipIfKeyPressed(uint16_t reg) { return false; }
 
 bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) {
-    _text += "SKNP V" + std::to_string(reg);
+    _text += "SKNP V" + hex(reg, false);
     return true;
 }
 
 bool Disassembler::onSetVxToDelayTimer(uint16_t reg) {
-    _text += "LD V" + std::to_string(reg) + ", DT";
+    _text += "LD V" + hex(reg, false) + ", DT";
     return true;
 }
+
 bool Disassembler::onWaitKeyPressed(uint16_t reg) {
-    _text += "LD V" + std::to_string(reg) + ", K";
+    _text += "LD V" + hex(reg, false) + ", K";
     return true;
 }
 bool Disassembler::onSetDelayTimer(uint16_t reg) {
-    _text += "LD DT, V" + std::to_string(reg);
+    _text += "LD DT, V" + hex(reg, false);
     return true;
 }
 bool Disassembler::onSetSoundTimer(uint16_t reg) {
-    _text += "LD ST, V" + std::to_string(reg);
+    _text += "LD ST, V" + hex(reg, false);
     return true;
 }
 bool Disassembler::onAddVxToI(uint16_t reg) { return false; }
 bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {
-    _text += "LD F, V" + std::to_string(reg);
+    _text += "LD F, V" + hex(reg, false);
     return true;
 }
 bool Disassembler::onStoreBCDOfVxInI(uint16_t reg) { return false; }
 bool Disassembler::onStoreVnInI(uint16_t reg) { return false; }
 
 bool Disassembler::onReadVnFromI(uint16_t reg) {
-    _text += "LD V" + std::to_string(reg) + ", I";
+    _text += "LD V" + hex(reg, false) + ", I";
     return true;
 }

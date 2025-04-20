@@ -16,9 +16,8 @@
 #include <string>
 
 static void ltrim(std::string &s) {
-    auto pos = std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    });
+    auto pos = std::find_if(s.begin(), s.end(),
+                            [](unsigned char ch) { return !std::isspace(ch); });
     s.erase(s.begin(), pos);
 }
 
@@ -173,6 +172,18 @@ uint16_t generateAnnn(const std::string &arg, Assembler::OptionalError &error) {
     return ret;
 }
 
+uint16_t generateFx07(const std::string &arg0, Assembler::OptionalError &error) {
+    
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0xF007 + (reg0 << 8);
+    return ret;
+}
+
 uint16_t generate8xy0(const std::string &arg0, const std::string &arg1,
                       Assembler::OptionalError &error) {
     bool valid = false;
@@ -193,8 +204,13 @@ uint16_t generate8xy0(const std::string &arg0, const std::string &arg1,
 
 uint16_t generate6xkk(const std::string &arg0, const std::string &arg1,
                       Assembler::OptionalError &error) {
-    uint8_t reg0 = std::atoi(arg0.c_str() + 1);
     bool argValid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, argValid);
+    if(!argValid){
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    argValid = false;
     uint16_t val = parseNumber(arg1, argValid);
     if (!argValid) {
         error = {.msg = "invalid value '" + arg1 + "'"};
@@ -204,9 +220,27 @@ uint16_t generate6xkk(const std::string &arg0, const std::string &arg1,
     return ret;
 }
 
-uint16_t generateFx0A(const std::string &arg0) {
-    uint8_t reg0 = std::atoi(arg0.c_str() + 1);
+uint16_t generateFx0A(const std::string &arg0,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if(!valid){
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
     uint16_t ret = 0xF00A + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateFx65(const std::string arg0,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if(!valid){
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0xF065 + (reg0 << 8);
     return ret;
 }
 
@@ -249,13 +283,16 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
             }
             // 8xy0 - LD Vx, Vy
             return generate8xy0(args[0], args[1], error);
+        } else if (args.at(1) == "DT") {
+            // Fx07 - LD Vx, DT
+            return generateFx07(args[0], error);
         } else if (std::tolower(args.at(1)[0]) == 'k') {
             if (args.size() != 2) {
                 error = {.msg = "missing arguments"};
                 return 0;
             }
             // Fx0A - LD Vx, K
-            return generateFx0A(args[0]);
+            return generateFx0A(args[0], error);
         } else if (isNumber(args.at(1))) {
             // 6xkk - LD Vx, byte
             if (args.size() != 2) {
@@ -263,6 +300,9 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
                 return 0;
             }
             return generate6xkk(args[0], args[1], error);
+        } else if (args.at(1) == "I") {
+            // Fx65 - LD Vx, I
+            return generateFx65(args[0], error);
         }
         error = {.msg = "unknown argument " + args[1]};
         return 0;
@@ -298,8 +338,40 @@ uint16_t generateDxyn(const std::vector<std::string> &args,
     return ret;
 }
 
+uint16_t generate3xkk(const std::string &arg0, const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+
+    valid = false;
+    uint8_t val = parseNumber(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg1 + "'"};
+        return 0;
+    }
+    assert(val <= 0XFF);
+    return 0x3000 + (reg0 << 8) + val;
+}
+
+uint16_t generateSE(const std::vector<std::string> &args,
+                    Assembler::OptionalError &error) {
+    if (std::tolower(args.at(1)[0]) == 'v') {
+        // 5xy0 - SE Vx, Vy
+    } else {
+        // 3xkk - SE Vx, byte
+        return generate3xkk(args[0], args[1], error);
+    }
+    error = {.msg = "unexpected value '" + args[1] + "'"};
+    return 0;
+}
+
 uint16_t generateJP(const std::vector<std::string> &args,
                     Assembler::OptionalError &error) {
+
     if (args.size() == 2 && args[0] == "V0") {
         // Bnnn - JP V0, addr
         // note: only V0 addr is valid,
@@ -339,6 +411,8 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generateDxyn(inst.args, error);
     } else if (inst.op == "JP") {
         return generateJP(inst.args, error);
+    } else if (inst.op == "SE") {
+        return generateSE(inst.args, error);
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;
