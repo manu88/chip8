@@ -39,7 +39,7 @@ std::string Disassembler::generate() {
     }
     for (const auto &instr : _bytes) {
         if (!exec(instr)) {
-            printf("Error at instruction 0X%0X\n", instr);
+            printf("Error at instruction 0X%04X\n", instr);
             return "";
         }
         _text += "\n";
@@ -55,7 +55,10 @@ bool Disassembler::onRET() {
     _text += "RET";
     return true;
 }
-bool Disassembler::onCallMachine(uint16_t addr) { return false; }
+bool Disassembler::onCallMachine(uint16_t addr) {
+    _text += "SYS " + hex(addr);
+    return true;
+}
 bool Disassembler::onJump(uint16_t addr) {
     _text += "JP " + hex(addr);
     return true;
@@ -65,7 +68,11 @@ bool Disassembler::onCallSubroutine(uint16_t addr) {
     return true;
 }
 
-bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) { return false; }
+bool Disassembler::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {
+    _text += "SE V" + std::to_string(reg) + ", " + hex(val);
+    return true;
+}
+
 bool Disassembler::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
     _text += "SNE V" + std::to_string(reg) + ", " + hex(val);
     return true;
@@ -77,7 +84,12 @@ bool Disassembler::onSetVx(uint16_t reg, uint16_t val) {
     _text += "LD V" + std::to_string(reg) + ", " + hex(val);
     return true;
 }
-bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) { return false; }
+
+bool Disassembler::onAddValToVx(uint16_t reg, uint16_t val) {
+    _text += "ADD V" + std::to_string(reg) + ", " + hex(val);
+    return true;
+}
+
 bool Disassembler::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
 bool Disassembler::onOrValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Disassembler::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
@@ -105,7 +117,12 @@ bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     return true;
 }
 bool Disassembler::onSkipIfKeyPressed(uint16_t reg) { return false; }
-bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
+
+bool Disassembler::onSkipIfKeyNotPressed(uint16_t reg) {
+    _text += "SKNP V" + std::to_string(reg);
+    return true;
+}
+
 bool Disassembler::onSetVxToDelayTimer(uint16_t reg) {
     _text += "LD V" + std::to_string(reg) + ", DT";
     return true;
@@ -129,4 +146,8 @@ bool Disassembler::onSetIToSpriteLoc(uint16_t reg) {
 }
 bool Disassembler::onStoreBCDOfVxInI(uint16_t reg) { return false; }
 bool Disassembler::onStoreVnInI(uint16_t reg) { return false; }
-bool Disassembler::onReadVnFromI(uint16_t reg) { return false; }
+
+bool Disassembler::onReadVnFromI(uint16_t reg) {
+    _text += "LD V" + std::to_string(reg) + ", I";
+    return true;
+}
