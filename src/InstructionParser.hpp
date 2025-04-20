@@ -16,6 +16,7 @@ class InstructionParser {
     bool exec(uint16_t instruction);
 
   protected:
+    uint16_t currentInstruction;
     virtual bool onCLS() { return false; }                         // 00E0
     virtual bool onRET() { return false; }                         // 00EE
     virtual bool onCallMachine(uint16_t addr) { return false; }    // 0nnn
