@@ -53,6 +53,8 @@ static void RunTests1() {
     TestValidInstruction("ADD I, VC");
     TestValidInstruction("CALL 0X124");
     TestValidInstruction("SYS 0X124");
+    TestValidInstruction("RND V1, 0X24");
+    TestValidInstruction("LD B, V1");
 }
 
 static void TestInvalidASM(const std::string &code) {
@@ -112,9 +114,23 @@ static void RunTests2() {
     TestInvalidASM("ADD J");
     TestInvalidASM("CALL ");
     TestInvalidASM("SYS ");
+    TestInvalidASM("RND ");
+    TestInvalidASM("RND V0");
+    TestInvalidASM("LD B, 0X12");
+    TestInvalidASM("LD B");
+}
+
+
+static void RunTests3_ForwardLabel(){
+    std::string inCode = "CALL print\nprint:\nLD I, 0X500";
+    Assembler a(inCode);
+    auto b = a.generate();
+    assert(a.getError() == std::nullopt);
+    assert(b.size() > 0);
 }
 
 void RunTests() {
     RunTests1();
     RunTests2();
+    RunTests3_ForwardLabel();
 }

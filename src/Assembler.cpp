@@ -14,6 +14,7 @@
 #include <sstream>
 #include <streambuf>
 #include <string>
+#include "Memory.hpp"
 
 static void ltrim(std::string &s) {
     auto pos = std::find_if(s.begin(), s.end(),
@@ -36,53 +37,6 @@ static void removeComments(std::string &s) {
     s.resize(found);
 }
 
-Assembler::Assembler(const std::string &code) : _code(code) {}
-Assembler::Assembler() : Assembler("") {}
-
-bool Assembler::loadFile(const std::string &path) {
-    std::ifstream infile(path);
-    if (!infile.good()) {
-        return false;
-    }
-    _code = std::string((std::istreambuf_iterator<char>(infile)),
-                        std::istreambuf_iterator<char>());
-    infile.close();
-    return true;
-}
-
-Chip8::Bytes Assembler::generate() {
-    Chip8::Bytes ret;
-
-    std::istringstream iss(_code);
-    int lineNum = 1;
-    for (std::string line; std::getline(iss, line);) {
-        rtrim(line);
-        ltrim(line);
-        removeComments(line);
-        if (line.size() > 0) {
-            OptionalError err = std::nullopt;
-            uint16_t byte = processLine(line, err);
-            if (err) {
-                _error = err;
-                _error.value().line = lineNum;
-                return {};
-            }
-            if (byte == 0) {
-                printf("Unable to generate output for line %i\n", lineNum);
-                return {};
-            }
-            ret.push_back(byte);
-        }
-        lineNum++;
-    }
-    return ret;
-}
-
-struct Instruction {
-    std::string op;
-    std::vector<std::string> args;
-};
-
 std::vector<std::string> splitArguments(const std::string &argsStr) {
     std::vector<std::string> args;
     std::istringstream f(argsStr);
@@ -95,14 +49,86 @@ std::vector<std::string> splitArguments(const std::string &argsStr) {
     return args;
 }
 
-Instruction splitInstruction(const std::string &line) {
-
+Assembler::Instruction splitInstruction(const std::string &line) {
     std::size_t found = line.find(" ");
     if (found == std::string::npos) {
         return {line};
     }
     const std::string strArgs = line.substr(found + 1);
     return {line.substr(0, found), splitArguments(strArgs)};
+}
+
+Assembler::Assembler(const std::string &code) : _originalCode(code) {}
+Assembler::Assembler() : Assembler("") {}
+
+bool Assembler::loadFile(const std::string &path) {
+    std::ifstream infile(path);
+    if (!infile.good()) {
+        return false;
+    }
+    _originalCode = std::string((std::istreambuf_iterator<char>(infile)),
+                                std::istreambuf_iterator<char>());
+    infile.close();
+    return true;
+}
+
+Chip8::Bytes Assembler::generate() {
+    if (!preprocess()) {
+        return {};
+    }
+    return process();
+}
+
+bool Assembler::preprocess() {
+    _instructions.clear();
+    std::istringstream iss(_originalCode);
+    int lineNum = 1;
+    uint16_t addr = Chip8::Memory::ROM_START;
+    for (std::string line; std::getline(iss, line);) {
+        rtrim(line);
+        ltrim(line);
+        removeComments(line);
+        if (!line.empty()) {
+            Instruction inst = splitInstruction(line);
+            inst.originalLineNum = lineNum;
+            if (inst.op.empty()) {
+                printf("Unable to parse OP from line '%s'\n", line.c_str());
+                return false;
+            }
+            if (inst.isLabel()) {
+                if(!addLabel(inst.getLabel(), addr)){
+                    printf("duplicate label'%s'\n", inst.getLabel().c_str());
+                    return false;
+                }
+            }
+            _instructions.push_back(inst);
+            addr += 2;
+        }
+        lineNum++;
+    }
+    return true;
+}
+
+Chip8::Bytes Assembler::process() {
+    Chip8::Bytes ret;
+    for (const auto &inst : _instructions) {
+        OptionalError err = std::nullopt;
+        uint16_t byteCode = generateMachineCode(inst, err);
+        if (err) {
+            _error = err;
+            _error.value().line = inst.originalLineNum;
+            return {};
+        }
+        if (byteCode == 0) {
+            continue;
+        }
+        uint8_t b0 = byteCode >> 8;
+        uint8_t b1 = (uint8_t)byteCode;
+        ret.push_back(b0);
+        ret.push_back(b1);
+        _currentAddr += 2;
+    }
+    return ret;
 }
 
 uint8_t parseRegisterAddr(const std::string &str, bool &valid) {
@@ -245,7 +271,8 @@ uint16_t generateFx0A(const std::string &arg0,
     return ret;
 }
 
-uint16_t generateFx65(const std::string arg0, Assembler::OptionalError &error) {
+uint16_t generateFx65(const std::string &arg0,
+                      Assembler::OptionalError &error) {
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
     if (!valid) {
@@ -253,6 +280,18 @@ uint16_t generateFx65(const std::string arg0, Assembler::OptionalError &error) {
         return 0;
     }
     uint16_t ret = 0xF065 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateFx33(const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg1 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0xF033 + (reg0 << 8);
     return ret;
 }
 
@@ -297,6 +336,9 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
         }
         error = {.msg = "unknown argument " + args[1]};
         return 0;
+    } else if (args.at(0) == "B") {
+        // Fx33 - LD B, Vx
+        return generateFx33(args[1], error);
     }
     error = {.msg = "unknown '" + args.at(0) + "' LD argument"};
     return 0;
@@ -435,20 +477,30 @@ uint16_t generateADD(const std::vector<std::string> &args,
     return 0;
 }
 
-uint16_t generate2nnn(const std::vector<std::string> &args,
-                      Assembler::OptionalError &error) {
+uint16_t Assembler::generate2nnn(const std::vector<std::string> &args,
+                                 Assembler::OptionalError &error) {
     if (args.size() != 1) {
         error = {.msg = "invalid number of arguments"};
         return 0;
     }
-    // 2nnn - CALL addr
-    bool addrValid = false;
-    uint16_t val = parseNumber(args.at(0), addrValid);
-    if (!addrValid) {
+
+    uint16_t addr = 0;
+    if (isNumber(args.at(0))) {
+        bool addrValid = false;
+        addr = parseNumber(args.at(0), addrValid);
+        if (!addrValid) {
+            error = {.msg = "invalid value '" + args.at(0) + "'"};
+            return 0;
+        }
+    } else if (_labels.count(args.at(0))) {
+        addr = _labels.at(args.at(0));
+    } else {
         error = {.msg = "invalid value '" + args.at(0) + "'"};
         return 0;
     }
-    uint16_t ret = 0x2000 + val;
+
+    // 2nnn - CALL addr
+    uint16_t ret = 0x2000 + addr;
     return ret;
 }
 
@@ -466,6 +518,31 @@ uint16_t generate0nnn(const std::vector<std::string> &args,
     }
     assert(val <= 0XFFF);
     return val;
+}
+
+uint16_t generateCxkk(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+
+    valid = false;
+    uint8_t val = parseNumber(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + args.at(1) + "'"};
+        return 0;
+    }
+    assert(val <= 0XFF);
+    return 0xC000 + (reg0 << 8) + val;
+    // Cxkk -  RND Vx, byte
+    return 0;
 }
 
 uint16_t generateSE(const std::vector<std::string> &args,
@@ -518,8 +595,8 @@ uint16_t generateSNE(const std::vector<std::string> &args,
     }
 }
 
-uint16_t generateJP(const std::vector<std::string> &args,
-                    Assembler::OptionalError &error) {
+uint16_t Assembler::generateJP(const std::vector<std::string> &args,
+                               Assembler::OptionalError &error) {
 
     if (args.size() < 1) {
         error = {.msg = "invalid number of arguments"};
@@ -537,12 +614,17 @@ uint16_t generateJP(const std::vector<std::string> &args,
         assert(addr <= 0xFFF);
         // bnnn - JP addr
         return 0xB000 + addr;
-    } else if (isNumber(args[0])) {
-        bool addrValid = false;
-        uint16_t addr = parseNumber(args[0], addrValid);
-        if (!addrValid) {
-            error = {.msg = "invalid value '" + args[1] + "'"};
-            return 0;
+    } else if (isNumber(args[0]) || _labels.count(args[0])) {
+        uint16_t addr = 0;
+        if (_labels.count(args[0])) {
+            addr = _labels.at(args[0]);
+        } else {
+            bool addrValid = false;
+            addr = parseNumber(args[0], addrValid);
+            if (!addrValid) {
+                error = {.msg = "invalid value '" + args[1] + "'"};
+                return 0;
+            }
         }
         assert(addr <= 0xFFF);
         // 1nnn - JP addr
@@ -552,8 +634,8 @@ uint16_t generateJP(const std::vector<std::string> &args,
     return 0;
 }
 
-static uint16_t generateMachineCode(const Instruction &inst,
-                                    Assembler::OptionalError &error) {
+uint16_t Assembler::generateMachineCode(const Instruction &inst,
+                                        Assembler::OptionalError &error) {
     if (inst.op == "CLS") {
         return 0x00E0;
     } else if (inst.op == "RET") {
@@ -576,6 +658,11 @@ static uint16_t generateMachineCode(const Instruction &inst,
         return generate2nnn(inst.args, error);
     } else if (inst.op == "SYS") {
         return generate0nnn(inst.args, error);
+    } else if (inst.op == "RND") {
+        return generateCxkk(inst.args, error);
+    } else if (inst.isLabel()) {
+        // ignore labels, they are already taken care of by preprocess
+        return 0;
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;
@@ -590,4 +677,20 @@ uint16_t Assembler::processLine(const std::string &line,
     }
 
     return generateMachineCode(inst, error);
+}
+
+bool Assembler::addLabel(const std::string &label, uint16_t addr){
+    if (_labels.count(label) != 0) {
+        return false;
+    }
+    _labels[label] = addr;
+    return true;
+}
+
+bool Assembler::addLabel(const std::string &label) {
+    return addLabel(label, _currentAddr);
+}
+
+uint16_t Assembler::getAddrForLabel(const std::string &label) const {
+    return 0;
 }

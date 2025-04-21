@@ -18,7 +18,7 @@ int runAssembler(const std::string &srcFilePath,
         printf("unable to read from file '%s'\n", srcFilePath.c_str());
         return 1;
     }
-    auto binary = assembler.generate();
+    Chip8::Bytes binary = assembler.generate();
 
     if (assembler.getError().has_value()) {
         printf("%s:%i: error: %s\n", srcFilePath.c_str(),
@@ -34,8 +34,7 @@ int runAssembler(const std::string &srcFilePath,
         return 1;
     }
     for (const auto b : binary) {
-        uint16_t byte = (b >> 8) | (b << 8);
-        fs.write(reinterpret_cast<const char *>(&byte), 2);
+        fs.write(reinterpret_cast<const char *>(&b), 1);
     }
     fs.close();
     return 0;

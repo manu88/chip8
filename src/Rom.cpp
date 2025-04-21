@@ -13,10 +13,11 @@ bool Rom::loadFile(const std::string &path) {
 
 void Rom::dump() {
     int i = 0;
-    for (uint16_t b : bytes) {
+    printf(" rom size = %zi\n", bytes.size());
+    for (uint8_t b : bytes) {
         if (i % 8 == 0)
             printf("\n 0X%0X: ", i);
-        printf("0X%04X ", b);
+        printf("0X%02X ", b);
         i++;
     }
     printf("\n");

@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace Chip8 {
-using Bytes = std::vector<uint16_t>;
+using Bytes = std::vector<uint8_t>;
 
 bool loadFile(const std::string &path, Bytes &bytes);
 } // namespace Chip8

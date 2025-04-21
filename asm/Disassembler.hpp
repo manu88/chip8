@@ -31,6 +31,7 @@ class Disassembler : public Chip8::InstructionParser {
     Parameters params;
 
   private:
+    bool onNOP() override;
     bool onCLS() override;
     bool onRET() override;
     bool onCallMachine(uint16_t addr) override;

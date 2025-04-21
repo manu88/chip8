@@ -102,7 +102,10 @@ int main(int argc, const char *argv[]) {
             return 1;
         }
     } else {
-        rom.loadFile(inputFile);
+        if(!rom.loadFile(inputFile)){
+            printf("unable to read from file '%s'\n", inputFile.c_str());
+            return 1;
+        }
     }
     auto p = createPeripherals(useGUI);
     p->init();

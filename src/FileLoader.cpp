@@ -10,8 +10,8 @@
 #include <stdint.h>
 #include <vector>
 
-static bool readFile(const std::string &filename, Chip8::Bytes &bytes) {
-    std::ifstream file(filename, std::ios::binary);
+bool Chip8::loadFile(const std::string &path, Chip8::Bytes &bytes) {
+    std::ifstream file(path, std::ios::binary);
 
     if (!file.good()) {
         return false;
@@ -21,19 +21,8 @@ static bool readFile(const std::string &filename, Chip8::Bytes &bytes) {
     file.seekg(0, std::ios::beg);
 
     // read the data:
-    bytes.resize(fileSize / 2);
+    bytes.resize(fileSize);
     file.read((char *)&bytes[0], fileSize);
     file.close();
-    return true;
-}
-
-bool Chip8::loadFile(const std::string &path, Chip8::Bytes &bytes) {
-    if (!readFile(path, bytes)) {
-        return false;
-    }
-
-    for (int i = 0; i < bytes.size(); i++) {
-        bytes[i] = ((uint16_t)(bytes[i] >> 8)) | ((uint16_t)(bytes[i] << 8));
-    }
     return true;
 }

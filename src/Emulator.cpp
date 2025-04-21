@@ -24,26 +24,26 @@ void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
 
 void Chip8::CPU::reset() {
     _registers.reset();
-    _soundTimer = 0;
     _startTime = std::chrono::system_clock::now();
     _rng.seed((unsigned int)_startTime.time_since_epoch().count());
     _uint8Distrib = std::uniform_int_distribution<uint8_t>();
 }
 
 void Chip8::CPU::updateTimers(double totalDurationMS) {
-    if (_delayTimer > 0) {
-        _delayTimer -= 1;
-        if (_delayTimer == 0) {
+    if (_registers.delayTimer > 0) {
+        _registers.delayTimer -= 1;
+        if (_registers.delayTimer == 0) {
         }
     }
 }
+
+void Chip8::CPU::advancePC() { _registers.pc += 2; }
 
 void Chip8::CPU::run() {
     long frameId = 0;
     while (!_peripherals->shouldStop()) {
         const auto before = std::chrono::system_clock::now();
         uint16_t pc = _registers.pc;
-
         if (!execAt(pc)) {
             if (_conf.logs) {
                 printf("Unable to exec instruction at pc=0X%0X\n", pc);
@@ -83,25 +83,33 @@ void Chip8::CPU::dump() {
 }
 
 bool Chip8::CPU::execAt(uint16_t memLoc) {
-    uint16_t instruction = _mem.getValueAtAddr(memLoc);
+    uint8_t b0 = _mem.getValueAtAddr(memLoc);
+    uint8_t b1 = _mem.getValueAtAddr(memLoc + 1);
+    uint16_t instruction = (b0 << 8) + b1;
     return exec(instruction);
+}
+
+bool Chip8::CPU::onNOP(){
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onCLS() {
     _peripherals->clearDisplay();
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onRET() {
     assert(_registers.sp >= 1);
     _registers.sp -= 1;
-    _registers.pc = _mem.stack[_registers.sp] + 1;
+    _registers.pc = _mem.stack[_registers.sp];
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onCallMachine(uint16_t addr) {
-    _registers.pc += 1;
+    advancePC();
     if (_conf.logs) {
         printf("[ignored] Call machine code at addr : 0x%x\n", addr);
     }
@@ -122,37 +130,37 @@ bool Chip8::CPU::onCallSubroutine(uint16_t addr) {
 
 bool Chip8::CPU::onSkipIfVxIsVal(uint16_t reg, uint16_t val) {
     if (_registers.v[reg] == val) {
-        _registers.pc += 1;
+        advancePC();
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onSkipIfVxIsNotVal(uint16_t reg, uint16_t val) {
     if (_registers.v[reg] != val) {
-        _registers.pc += 1;
+        advancePC();
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onSkipIfVxIsVy(uint16_t regX, uint16_t regY) {
     if (_registers.v[regX] == _registers.v[regY]) {
-        _registers.pc += 1;
+        advancePC();
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onSetVx(uint16_t reg, uint16_t val) {
     _registers.v[reg] = val;
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onAddValToVx(uint16_t reg, uint16_t val) {
     _registers.v[reg] += val;
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -172,7 +180,7 @@ bool Chip8::CPU::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
 
 bool Chip8::CPU::onSetI(uint16_t addr) {
     _registers.i = addr;
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -181,14 +189,14 @@ bool Chip8::CPU::onJumpToLoc(uint16_t val) { return false; }
 bool Chip8::CPU::onRand(uint16_t reg, uint16_t val) {
     uint8_t randomVal = _uint8Distrib(_rng);
     _registers.v[reg] = randomVal & val;
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     _peripherals->draw(_registers.v[regX], _registers.v[regY], nimble,
                        _registers.i);
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -196,26 +204,26 @@ bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) { return false; }
 bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
 
 bool Chip8::CPU::onSetVxToDelayTimer(uint16_t reg) {
-    _registers.v[reg] = _delayTimer;
-    _registers.pc += 1;
+    _registers.v[reg] = _registers.delayTimer;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onWaitKeyPressed(uint16_t reg) {
     _registers.v[reg] = _peripherals->waitKeyPress();
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onSetDelayTimer(uint16_t reg) {
-    _delayTimer = _registers.v[reg];
-    _registers.pc += 1;
+    _registers.delayTimer = _registers.v[reg];
+    advancePC();
     return true;
 }
 
 bool Chip8::CPU::onSetSoundTimer(uint16_t reg) {
-    _soundTimer = _registers.v[reg];
-    _registers.pc += 1;
+    _registers.soundTimer = _registers.v[reg];
+    advancePC();
     return true;
 }
 
@@ -223,7 +231,7 @@ bool Chip8::CPU::onAddVxToI(uint16_t reg) { return false; }
 
 bool Chip8::CPU::onSetIToSpriteLoc(uint16_t reg) {
     _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -241,7 +249,7 @@ bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
     if (!_mem.setValueAtAddr(_registers.i + 2, d0)) {
         printf("Error writing 0X%0X at 0X%0X\n", d0, _registers.i + 2);
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -249,7 +257,7 @@ bool Chip8::CPU::onStoreVnInI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
         _mem.setValueAtAddr(_registers.i + i, _registers.v[i]);
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }
 
@@ -257,6 +265,6 @@ bool Chip8::CPU::onReadVnFromI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
         _registers.v[i] = _mem.getValueAtAddr(_registers.i + i);
     }
-    _registers.pc += 1;
+    advancePC();
     return true;
 }

@@ -136,12 +136,16 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
     renderText(renderer, startX, startY + FONT_SIZE, "sp: " + hex(registers.sp),
                _font);
+    renderText(renderer, startX, startY + (FONT_SIZE*2), "delay: " + hex(registers.delayTimer),
+               _font);
+    renderText(renderer, startX, startY + (FONT_SIZE*3), "sound: " + hex(registers.soundTimer),
+               _font);
     for (int i = 0; i < 16; i += 2) {
         std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
         s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
 
         renderText(renderer, startX,
-                   startY + (FONT_SIZE * 2) + (FONT_SIZE / 2 * i), s, _font);
+                   startY + (FONT_SIZE * 4) + (FONT_SIZE / 2 * i), s, _font);
     }
 
     SDL_RenderPresent(renderer);

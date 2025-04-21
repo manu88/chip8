@@ -7,6 +7,7 @@
 
 #pragma once
 #include "FileLoader.hpp"
+#include <map>
 #include <optional>
 #include <string>
 
@@ -19,6 +20,15 @@ class Assembler {
 
     using OptionalError = std::optional<Error>;
 
+    struct Instruction {
+        std::string op;
+        std::vector<std::string> args;
+        int originalLineNum = 0;
+
+        bool isLabel() const { return op[op.size() - 1] == ':'; }
+        std::string getLabel() const { return op.substr(0, op.size() - 1); }
+    };
+
     Assembler();
     Assembler(const std::string &code);
     bool loadFile(const std::string &path);
@@ -28,8 +38,26 @@ class Assembler {
     OptionalError getError() const { return _error; }
 
   private:
+    bool preprocess();
+    Chip8::Bytes process();
     uint16_t processLine(const std::string &line, OptionalError &error);
-    std::string _code;
+    uint16_t generateMachineCode(const Instruction &inst,
+                                 Assembler::OptionalError &error);
+
+    uint16_t generateJP(const std::vector<std::string> &args,
+                        Assembler::OptionalError &error);
+
+    uint16_t generate2nnn(const std::vector<std::string> &args,
+                          Assembler::OptionalError &error);
+
+    std::string _originalCode;
+    std::vector<Instruction> _instructions;
+    uint16_t _currentAddr = 0;
 
     OptionalError _error = std::nullopt;
+
+    bool addLabel(const std::string &label);
+    bool addLabel(const std::string &label, uint16_t addr);
+    uint16_t getAddrForLabel(const std::string &label) const;
+    std::map<std::string, uint16_t> _labels;
 };
