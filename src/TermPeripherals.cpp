@@ -17,11 +17,17 @@ bool TermPeripherals::init() {
     noecho();
     cbreak(); /* Line buffering disabled. pass on everything */
 
-    int startx = 4;
-    int starty = 4;
+    int startX = 4;
+    int startY = 4;
 
-    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, starty,
-                  startx);
+    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, startY,
+                  startX);
+    
+    startX += Peripherals::SCREEN_WIDTH + 4;
+    
+    _stateWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, startY,
+                  startX);
+    
     keypad(_ouputWin, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
@@ -52,11 +58,15 @@ void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
     box(_ouputWin, 0, 0);
+    box(_stateWin, 0, 0);
 
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
+    mvwprintw(_stateWin, 1, 1, "test");
+    mvwprintw(_stateWin, 2, 1, "test1");
     wrefresh(_ouputWin);
+    wrefresh(_stateWin);
     refresh();
     usleep(params.timeoutMS * 1000);
 }
