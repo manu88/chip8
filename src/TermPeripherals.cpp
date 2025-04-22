@@ -6,6 +6,8 @@
 //
 
 #include "TermPeripherals.hpp"
+#include "Emulator.h"
+#include "HexHelpers.hpp"
 #include "Memory.hpp"
 #include <locale.h>
 #include <string>
@@ -20,14 +22,13 @@ bool TermPeripherals::init() {
     int startX = 4;
     int startY = 4;
 
-    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, startY,
-                  startX);
-    
+    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH,
+                       startY, startX);
+
     startX += Peripherals::SCREEN_WIDTH + 4;
-    
-    _stateWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, startY,
-                  startX);
-    
+
+    _stateWin = newwin(24, 24, startY, startX);
+
     keypad(_ouputWin, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
@@ -63,8 +64,14 @@ void TermPeripherals::update(const Chip8::Memory &memory,
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
-    mvwprintw(_stateWin, 1, 1, "test");
-    mvwprintw(_stateWin, 2, 1, "test1");
+    mvwprintw(_stateWin, 1, 1, "pc: %s", hex(registers.pc).c_str());
+    mvwprintw(_stateWin, 2, 1, "sp: %s", hex(registers.sp).c_str());
+    mvwprintw(_stateWin, 3, 1, "delay: %s", hex(registers.delayTimer).c_str());
+    mvwprintw(_stateWin, 4, 1, "sound: %s", hex(registers.soundTimer).c_str());
+    for (int i = 0; i < Chip8::Registers::Size; i++) {
+        mvwprintw(_stateWin, 5 + i, 1, "v[%i]: %s", i,
+                  hex(registers.v[i]).c_str());
+    }
     wrefresh(_ouputWin);
     wrefresh(_stateWin);
     refresh();
