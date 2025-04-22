@@ -24,5 +24,5 @@ class TermPeripherals : public Chip8::Peripherals {
 
   private:
     void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
-    WINDOW *_win;
+    WINDOW *_ouputWin;
 };

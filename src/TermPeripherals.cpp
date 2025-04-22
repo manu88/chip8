@@ -20,9 +20,9 @@ bool TermPeripherals::init() {
     int startx = 4;
     int starty = 4;
 
-    _win = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, starty,
+    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH, starty,
                   startx);
-    keypad(_win, TRUE);
+    keypad(_ouputWin, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
     return true;
@@ -39,9 +39,9 @@ void TermPeripherals::renderSprite(const Chip8::Memory &memory,
             int xP = (cmd.x + 7 - x);
             int yP = (cmd.y + y);
             if (v & 0x0001) {
-                mvwprintw(_win, yP, xP, "#");
+                mvwprintw(_ouputWin, yP, xP, "#");
             } else {
-                mvwprintw(_win, yP, xP, " ");
+                mvwprintw(_ouputWin, yP, xP, " ");
             }
             v >>= 1;
         }
@@ -51,18 +51,18 @@ void TermPeripherals::renderSprite(const Chip8::Memory &memory,
 void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
-    box(_win, 0, 0);
+    box(_ouputWin, 0, 0);
 
     for (const auto &cmd : _commands) {
         renderSprite(memory, cmd);
     }
-    wrefresh(_win);
+    wrefresh(_ouputWin);
     refresh();
     usleep(params.timeoutMS * 1000);
 }
 
 uint8_t TermPeripherals::waitKeyPress() {
-    return Peripherals::getKeyCode(wgetch(_win));
+    return Peripherals::getKeyCode(wgetch(_ouputWin));
 }
 
 void TermPeripherals::clearDisplay() { _commands.clear(); }
