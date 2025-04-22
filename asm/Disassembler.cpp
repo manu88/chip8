@@ -6,30 +6,7 @@
 //
 
 #include "Disassembler.hpp"
-
-static void toUpper(std::string &str) {
-    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-}
-
-static std::string hex(uint16_t value, bool prefix = true) {
-    char str[16];
-    char *p = &str[16];
-    do {
-        p--;
-        uint32_t digit = value % 16;
-        value /= 16;
-        *p = digit >= 10 ? 'a' + (digit - 10) : '0' + digit;
-    } while (value > 0);
-    if (prefix) {
-        p--;
-        *p = 'X';
-        p--;
-        *p = '0';
-    }
-    auto ret = std::string(p, &str[16] - p);
-    toUpper(ret);
-    return ret;
-}
+#include "HexHelpers.hpp"
 
 bool Disassembler::loadFile(const std::string &path) {
     return Chip8::loadFile(path, _bytes);
@@ -136,8 +113,8 @@ bool Disassembler::onRand(uint16_t reg, uint16_t val) {
 }
 
 bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
-    _text += "DRW V" + hex(regX, false) + ", V" + hex(regY, false) +
-             ", " + hex(nimble);
+    _text += "DRW V" + hex(regX, false) + ", V" + hex(regY, false) + ", " +
+             hex(nimble);
     return true;
 }
 bool Disassembler::onSkipIfKeyPressed(uint16_t reg) { return false; }

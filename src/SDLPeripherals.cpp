@@ -7,10 +7,10 @@
 
 #include "SDLPeripherals.hpp"
 #include "Emulator.h"
+#include "HexHelpers.hpp"
 #include "Memory.hpp"
-#include <string>
-
 #include <SDL2/SDL_ttf.h>
+#include <string>
 
 // we draw the 'screen' with a 10,10 offset from top-right side of screen
 #define OFFSET (int)10
@@ -93,22 +93,6 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
-static std::string hex(uint16_t value) {
-    char str[16];
-    char *p = &str[16];
-    do {
-        p--;
-        uint32_t digit = value % 16;
-        value /= 16;
-        *p = digit >= 10 ? 'a' + (digit - 10) : '0' + digit;
-    } while (value > 0);
-    p--;
-    *p = 'x';
-    p--;
-    *p = '0';
-    return std::string(p, &str[16] - p);
-}
-
 void SDLPeripherals::update(const Chip8::Memory &memory,
                             const Chip8::Registers &registers,
                             const Chip8::Peripherals::UpdateParams &params) {
@@ -136,10 +120,10 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
     renderText(renderer, startX, startY + FONT_SIZE, "sp: " + hex(registers.sp),
                _font);
-    renderText(renderer, startX, startY + (FONT_SIZE*2), "delay: " + hex(registers.delayTimer),
-               _font);
-    renderText(renderer, startX, startY + (FONT_SIZE*3), "sound: " + hex(registers.soundTimer),
-               _font);
+    renderText(renderer, startX, startY + (FONT_SIZE * 2),
+               "delay: " + hex(registers.delayTimer), _font);
+    renderText(renderer, startX, startY + (FONT_SIZE * 3),
+               "sound: " + hex(registers.soundTimer), _font);
     for (int i = 0; i < 16; i += 2) {
         std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
         s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
