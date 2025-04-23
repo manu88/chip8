@@ -165,7 +165,7 @@ bool Chip8::CPU::onAddValToVx(uint16_t reg, uint16_t val) {
 }
 
 bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onOrValToVx(uint16_t reg, uint16_t val) { return false; }
+bool Chip8::CPU::onOrValToVx(uint16_t regX, uint16_t regY) { return false; }
 bool Chip8::CPU::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Chip8::CPU::onXOrValToVx(uint16_t reg, uint16_t val) { return false; }
 bool Chip8::CPU::onAddVyToVx(uint16_t regX, uint16_t regY) { return false; }

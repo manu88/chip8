@@ -6,6 +6,7 @@
 //
 
 #include "Assembler.hpp"
+#include "Memory.hpp"
 #include <algorithm>
 #include <assert.h>
 #include <cctype>
@@ -14,7 +15,6 @@
 #include <sstream>
 #include <streambuf>
 #include <string>
-#include "Memory.hpp"
 
 static void ltrim(std::string &s) {
     auto pos = std::find_if(s.begin(), s.end(),
@@ -96,7 +96,7 @@ bool Assembler::preprocess() {
                 return false;
             }
             if (inst.isLabel()) {
-                if(!addLabel(inst.getLabel(), addr)){
+                if (!addLabel(inst.getLabel(), addr)) {
                     printf("duplicate label'%s'\n", inst.getLabel().c_str());
                     return false;
                 }
@@ -145,14 +145,35 @@ uint8_t parseRegisterAddr(const std::string &str, bool &valid) {
     return number;
 }
 
-uint16_t parseNumber(const std::string &str, bool &valid) {
+static uint16_t parseNumber(const std::string &str, uint16_t maxVal,
+                            bool &valid) {
+    uint16_t val = 0;
     try {
         valid = true;
-        return std::stoll(str.c_str(), nullptr, 0);
+        val = std::stoll(str.c_str(), nullptr, 0);
     } catch (const std::invalid_argument &e) {
         valid = false;
         return 0;
     }
+    if (val > maxVal) {
+        valid = false;
+        return 0;
+    }
+    return val;
+}
+
+static uint8_t parseNibble(const std::string &str, bool &valid) {
+    ;
+    return parseNumber(str, 0XF, valid);
+}
+
+static uint8_t parseByte(const std::string &str, bool &valid) {
+    ;
+    return parseNumber(str, 0XFF, valid);
+}
+
+static uint16_t parseAddr(const std::string &str, bool &valid) {
+    return parseNumber(str, 0XFFF, valid);
 }
 
 bool isNumber(const std::string &s) {
@@ -175,6 +196,17 @@ uint16_t generateFX29(const std::string &arg, Assembler::OptionalError &error) {
     return ret;
 }
 
+uint16_t generateFX33(const std::string &arg, Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg = parseRegisterAddr(arg, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg + "'"};
+        return 0;
+    }
+    uint16_t ret = 0XF033 + (reg << 8);
+    return ret;
+}
+
 uint16_t generateFX18(const std::string &arg, Assembler::OptionalError &error) {
     bool valid = false;
     uint8_t reg = parseRegisterAddr(arg, valid);
@@ -188,7 +220,7 @@ uint16_t generateFX18(const std::string &arg, Assembler::OptionalError &error) {
 
 uint16_t generateAnnn(const std::string &arg, Assembler::OptionalError &error) {
     bool argValid = false;
-    uint16_t val = parseNumber(arg, argValid);
+    uint16_t val = parseAddr(arg, argValid);
     if (!argValid) {
         error = {.msg = "invalid value '" + arg + "'"};
         return 0;
@@ -250,7 +282,7 @@ uint16_t generate6xkk(const std::string &arg0, const std::string &arg1,
         return 0;
     }
     argValid = false;
-    uint16_t val = parseNumber(arg1, argValid);
+    uint16_t val = parseByte(arg1, argValid);
     if (!argValid) {
         error = {.msg = "invalid value '" + arg1 + "'"};
         return 0;
@@ -268,6 +300,19 @@ uint16_t generateFx0A(const std::string &arg0,
         return 0;
     }
     uint16_t ret = 0xF00A + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generatefx55(const std::string &arg0,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    //Fx55 - LD [I], Vx
+    uint16_t ret = 0xF055 + (reg0 << 8);
     return ret;
 }
 
@@ -311,9 +356,17 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
     } else if (args.at(0) == "ST") {
         // Fx18 - LD ST, Vx
         return generateFX18(args[1], error);
+    } else if (args.at(0) == "B") {
+        // Fx18 - LD B, Vx
+        return generateFX33(args[1], error);
     } else if (args.at(0) == "I") {
-        // Annn - LD I, addr
-        return generateAnnn(args[1], error);
+        if (std::tolower(args.at(1)[0]) == 'v') {
+            //Fx55 - LD [I], Vx
+            return generatefx55(args[1], error);
+        }else{
+            // Annn - LD I, addr
+            return generateAnnn(args[1], error);
+        }
     } else if (args.at(0) == "DT") {
         // LD DT, Vx
         return generateFx15(args.at(1), error);
@@ -364,13 +417,31 @@ uint16_t generateDxyn(const std::vector<std::string> &args,
         return 0;
     }
     valid = false;
-    uint8_t val = parseNumber(args.at(2), valid);
+    uint8_t val = parseNibble(args.at(2), valid);
     if (!valid) {
         error = {.msg = "invalid value '" + args[2] + "'"};
         return 0;
     }
     assert(val <= 0Xf);
     uint16_t ret = 0xD000 + (reg0 << 8) + (reg1 << 4) + val;
+    return ret;
+}
+
+uint16_t generate5xy0(const std::string &arg0, const std::string &arg1,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0x5000 + (reg0 << 8) + (reg1 << 4);
     return ret;
 }
 
@@ -384,13 +455,28 @@ uint16_t generate3xkk(const std::string &arg0, const std::string &arg1,
     }
 
     valid = false;
-    uint8_t val = parseNumber(arg1, valid);
+    uint8_t val = parseByte(arg1, valid);
     if (!valid) {
         error = {.msg = "invalid value '" + arg1 + "'"};
         return 0;
     }
     assert(val <= 0XFF);
     return 0x3000 + (reg0 << 8) + val;
+}
+
+uint16_t generateSKP(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    return 0xE09E + (reg0 << 8);
 }
 
 uint16_t generateSKNP(const std::vector<std::string> &args,
@@ -435,7 +521,7 @@ uint16_t generate7xkk(const std::string &arg0, const std::string &arg1,
         return 0;
     }
     argValid = false;
-    uint16_t val = parseNumber(arg1, argValid);
+    uint16_t val = parseByte(arg1, argValid);
     if (!argValid) {
         error = {.msg = "invalid value '" + arg1 + "'"};
         return 0;
@@ -487,7 +573,7 @@ uint16_t Assembler::generate2nnn(const std::vector<std::string> &args,
     uint16_t addr = 0;
     if (isNumber(args.at(0))) {
         bool addrValid = false;
-        addr = parseNumber(args.at(0), addrValid);
+        addr = parseAddr(args.at(0), addrValid);
         if (!addrValid) {
             error = {.msg = "invalid value '" + args.at(0) + "'"};
             return 0;
@@ -511,7 +597,7 @@ uint16_t generate0nnn(const std::vector<std::string> &args,
         return 0;
     }
     bool addrValid = false;
-    uint16_t val = parseNumber(args.at(0), addrValid);
+    uint16_t val = parseAddr(args.at(0), addrValid);
     if (!addrValid) {
         error = {.msg = "invalid value '" + args.at(0) + "'"};
         return 0;
@@ -534,7 +620,7 @@ uint16_t generateCxkk(const std::vector<std::string> &args,
     }
 
     valid = false;
-    uint8_t val = parseNumber(args.at(1), valid);
+    uint8_t val = parseByte(args.at(1), valid);
     if (!valid) {
         error = {.msg = "invalid value '" + args.at(1) + "'"};
         return 0;
@@ -553,11 +639,11 @@ uint16_t generateSE(const std::vector<std::string> &args,
     }
     if (std::tolower(args.at(1)[0]) == 'v') {
         // 5xy0 - SE Vx, Vy
+        return generate5xy0(args[0], args[1], error);
     } else {
         // 3xkk - SE Vx, byte
         return generate3xkk(args[0], args[1], error);
     }
-    error = {.msg = "unexpected value '" + args[1] + "'"};
     return 0;
 }
 
@@ -584,7 +670,7 @@ uint16_t generateSNE(const std::vector<std::string> &args,
         return 0x9000 + (reg0 << 8) + (reg1 << 4);
     } else {
         valid = false;
-        uint16_t val = parseNumber(args[1], valid);
+        uint16_t val = parseByte(args[1], valid);
         if (!valid) {
             error = {.msg = "invalid value '" + args[1] + "'"};
             return 0;
@@ -593,6 +679,171 @@ uint16_t generateSNE(const std::vector<std::string> &args,
         // 4xkk - SNE Vx, byte
         return 0x4000 + (reg0 << 8) + val;
     }
+}
+
+uint16_t generateAND(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments, expected 2"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(1) + "'"};
+        return 0;
+    }
+    // 8xy2 - AND Vx, Vy
+    uint16_t ret = 0x8002 + (reg0 << 8) + (reg1 << 4);
+    return ret;
+}
+
+uint16_t generateSUBN(const std::vector<std::string> &args,
+                      Assembler::OptionalError &error) {
+     if (args.size() != 2) {
+         error = {.msg = "invalid number of arguments, expected 2"};
+         return 0;
+     }
+     bool valid = false;
+     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+     if (!valid) {
+         error = {.msg = "invalid register address '" + args.at(0) + "'"};
+         return 0;
+     }
+     valid = false;
+     uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+     if (!valid) {
+         error = {.msg = "invalid register address '" + args.at(1) + "'"};
+         return 0;
+     }
+     // 8xy7 - SUBN Vx, Vy
+     uint16_t ret = 0x8007 + (reg0 << 8) + (reg1 << 4);
+     return ret;
+ }
+
+uint16_t generateSUB(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments, expected 2"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(1) + "'"};
+        return 0;
+    }
+    // 8xy5 - SUB Vx, Vy
+    uint16_t ret = 0x8005 + (reg0 << 8) + (reg1 << 4);
+    return ret;
+}
+
+uint16_t generateSHL(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments, expected 1"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+
+    /*https://en.wikipedia.org/wiki/CHIP-8#cite_note-bitshift-26
+     CHIP-8's opcodes 8XY6 and 8XYE (the bit shift instructions), which were in
+     fact undocumented opcodes in the original interpreter, shifted the value in
+     the register VY and stored the result in VX. The CHIP-48 and SCHIP
+     implementations instead ignored VY, and simply shifted VX
+     */
+
+    // 8xyE - SHL Vx {, Vy}
+    uint16_t ret = 0x800E + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateSHR(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments, expected 1"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+
+    /*https://en.wikipedia.org/wiki/CHIP-8#cite_note-bitshift-26
+     CHIP-8's opcodes 8XY6 and 8XYE (the bit shift instructions), which were in
+     fact undocumented opcodes in the original interpreter, shifted the value in
+     the register VY and stored the result in VX. The CHIP-48 and SCHIP
+     implementations instead ignored VY, and simply shifted VX
+     */
+
+    // 8xy6 - SHR Vx {, Vy}
+    uint16_t ret = 0x8006 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateXOR(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments, expected 2"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(1) + "'"};
+        return 0;
+    }
+    // 8xy3 - XOR Vx, Vy
+    uint16_t ret = 0x8003 + (reg0 << 8) + (reg1 << 4);
+    return ret;
+}
+
+uint16_t generateOR(const std::vector<std::string> &args,
+                    Assembler::OptionalError &error) {
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments, expected 2"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(1) + "'"};
+        return 0;
+    }
+    // 8xy1 - OR Vx, Vy
+    uint16_t ret = 0x8001 + (reg0 << 8) + (reg1 << 4);
+    return ret;
 }
 
 uint16_t Assembler::generateJP(const std::vector<std::string> &args,
@@ -606,7 +857,7 @@ uint16_t Assembler::generateJP(const std::vector<std::string> &args,
         // Bnnn - JP V0, addr
         // note: only V0 addr is valid,
         bool addrValid = false;
-        uint16_t addr = parseNumber(args[1], addrValid);
+        uint16_t addr = parseAddr(args[1], addrValid);
         if (!addrValid) {
             error = {.msg = "invalid value '" + args[1] + "'"};
             return 0;
@@ -620,7 +871,7 @@ uint16_t Assembler::generateJP(const std::vector<std::string> &args,
             addr = _labels.at(args[0]);
         } else {
             bool addrValid = false;
-            addr = parseNumber(args[0], addrValid);
+            addr = parseAddr(args[0], addrValid);
             if (!addrValid) {
                 error = {.msg = "invalid value '" + args[1] + "'"};
                 return 0;
@@ -644,6 +895,20 @@ uint16_t Assembler::generateMachineCode(const Instruction &inst,
         return generateLDMachineCode(inst.args, error);
     } else if (inst.op == "DRW") {
         return generateDxyn(inst.args, error);
+    } else if (inst.op == "OR") {
+        return generateOR(inst.args, error);
+    } else if (inst.op == "XOR") {
+        return generateXOR(inst.args, error);
+    } else if (inst.op == "SHR") {
+        return generateSHR(inst.args, error);
+    } else if (inst.op == "SHL") {
+        return generateSHL(inst.args, error);
+    } else if (inst.op == "SUBN") {
+        return generateSUBN(inst.args, error);
+    } else if (inst.op == "SUB") {
+        return generateSUB(inst.args, error);
+    } else if (inst.op == "AND") {
+        return generateAND(inst.args, error);
     } else if (inst.op == "JP") {
         return generateJP(inst.args, error);
     } else if (inst.op == "SE") {
@@ -658,6 +923,8 @@ uint16_t Assembler::generateMachineCode(const Instruction &inst,
         return generate2nnn(inst.args, error);
     } else if (inst.op == "SYS") {
         return generate0nnn(inst.args, error);
+    } else if (inst.op == "SKP") {
+        return generateSKP(inst.args, error);
     } else if (inst.op == "RND") {
         return generateCxkk(inst.args, error);
     } else if (inst.isLabel()) {
@@ -679,7 +946,7 @@ uint16_t Assembler::processLine(const std::string &line,
     return generateMachineCode(inst, error);
 }
 
-bool Assembler::addLabel(const std::string &label, uint16_t addr){
+bool Assembler::addLabel(const std::string &label, uint16_t addr) {
     if (_labels.count(label) != 0) {
         return false;
     }

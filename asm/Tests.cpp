@@ -129,8 +129,48 @@ static void RunTests3_ForwardLabel(){
     assert(b.size() > 0);
 }
 
+static void AllInstructions(){
+    TestValidInstruction("CLS");
+    TestValidInstruction("RET");
+    TestValidInstruction("SYS 0XFA1");
+    TestValidInstruction("JP 0XFA1");
+    TestValidInstruction("CALL 0XFA1");
+    TestValidInstruction("SE VA, 0XA1");
+    TestValidInstruction("SNE VB, 0XF1");
+    TestValidInstruction("SE V0, V1");
+    TestValidInstruction("LD VD, 0XA1");
+    TestValidInstruction("ADD VA, 0XA1");
+    TestValidInstruction("LD V1, V2");
+    TestValidInstruction("OR V4, V3");
+    TestValidInstruction("AND V5, V6");
+    TestValidInstruction("XOR V8, V7");
+    TestValidInstruction("ADD V9, VA");
+    TestValidInstruction("SUB VC, VB");
+    TestValidInstruction("SHR VD");// {, Vy}");
+    TestValidInstruction("SUBN V1, V2");
+    TestValidInstruction("SHL V3"); //{, Vy}");
+    TestValidInstruction("SNE V4, VB");
+    TestValidInstruction("LD I, 0XFA1");
+    TestValidInstruction("JP V0, 0XFA1");
+    TestValidInstruction("RND V1, 0XF1");
+    TestValidInstruction("DRW V2, V3, 0XA");
+    TestValidInstruction("SKP VA");
+    TestValidInstruction("SKNP VB");
+    TestValidInstruction("LD VC, DT");
+    TestValidInstruction("LD VD, 0XFF");
+    TestValidInstruction("LD DT, VA");
+    TestValidInstruction("LD ST, VB");
+    TestValidInstruction("ADD I, VC");
+    TestValidInstruction("LD F, VD");
+    TestValidInstruction("LD B, VE");
+    TestValidInstruction("LD I, VA");
+    TestValidInstruction("LD B, VA");
+    TestValidInstruction("LD VA, I");
+}
+
 void RunTests() {
     RunTests1();
     RunTests2();
     RunTests3_ForwardLabel();
+    AllInstructions();
 }

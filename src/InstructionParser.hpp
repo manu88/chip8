@@ -39,7 +39,7 @@ class InstructionParser {
     virtual bool onSetVxToVy(uint16_t regX, uint16_t regY) {
         return false;
     } // 8xy0
-    virtual bool onOrValToVx(uint16_t reg, uint16_t val) {
+    virtual bool onOrValToVx(uint16_t regX, uint16_t regY) {
         return false;
     } // 8xy1
     virtual bool onAndValToVx(uint16_t reg, uint16_t val) {
