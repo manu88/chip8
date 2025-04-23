@@ -102,7 +102,7 @@ int main(int argc, const char *argv[]) {
             return 1;
         }
     } else {
-        if(!rom.loadFile(inputFile)){
+        if (!rom.loadFile(inputFile)) {
             printf("unable to read from file '%s'\n", inputFile.c_str());
             return 1;
         }

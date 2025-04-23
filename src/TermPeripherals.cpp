@@ -81,7 +81,7 @@ void TermPeripherals::update(const Chip8::Memory &memory,
 uint8_t TermPeripherals::waitKeyPress() {
     mvprintw(1, 0, "waiting input");
     refresh();
-    int key =wgetch(_ouputWin);
+    int key = wgetch(_ouputWin);
     mvprintw(1, 0, "             ");
     refresh();
     return Peripherals::getKeyCode(key);

@@ -120,8 +120,7 @@ static void RunTests2() {
     TestInvalidASM("LD B");
 }
 
-
-static void RunTests3_ForwardLabel(){
+static void RunTests3_ForwardLabel() {
     std::string inCode = "CALL print\nprint:\nLD I, 0X500";
     Assembler a(inCode);
     auto b = a.generate();
@@ -129,7 +128,7 @@ static void RunTests3_ForwardLabel(){
     assert(b.size() > 0);
 }
 
-static void AllInstructions(){
+static void AllInstructions() {
     TestValidInstruction("CLS");
     TestValidInstruction("RET");
     TestValidInstruction("SYS 0XFA1");
@@ -146,7 +145,7 @@ static void AllInstructions(){
     TestValidInstruction("XOR V8, V7");
     TestValidInstruction("ADD V9, VA");
     TestValidInstruction("SUB VC, VB");
-    TestValidInstruction("SHR VD");// {, Vy}");
+    TestValidInstruction("SHR VD"); // {, Vy}");
     TestValidInstruction("SUBN V1, V2");
     TestValidInstruction("SHL V3"); //{, Vy}");
     TestValidInstruction("SNE V4, VB");

@@ -9,7 +9,7 @@
 
 bool Chip8::InstructionParser::exec(uint16_t instruction) {
     currentInstruction = instruction;
-    if (instruction == 0){
+    if (instruction == 0) {
         return onNOP();
     }
     if (instruction == 0x00E0) {

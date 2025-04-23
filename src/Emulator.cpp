@@ -89,7 +89,7 @@ bool Chip8::CPU::execAt(uint16_t memLoc) {
     return exec(instruction);
 }
 
-bool Chip8::CPU::onNOP(){
+bool Chip8::CPU::onNOP() {
     advancePC();
     return true;
 }

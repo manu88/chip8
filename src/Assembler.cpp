@@ -311,7 +311,7 @@ uint16_t generatefx55(const std::string &arg0,
         error = {.msg = "invalid value '" + arg0 + "'"};
         return 0;
     }
-    //Fx55 - LD [I], Vx
+    // Fx55 - LD [I], Vx
     uint16_t ret = 0xF055 + (reg0 << 8);
     return ret;
 }
@@ -361,9 +361,9 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
         return generateFX33(args[1], error);
     } else if (args.at(0) == "I") {
         if (std::tolower(args.at(1)[0]) == 'v') {
-            //Fx55 - LD [I], Vx
+            // Fx55 - LD [I], Vx
             return generatefx55(args[1], error);
-        }else{
+        } else {
             // Annn - LD I, addr
             return generateAnnn(args[1], error);
         }
@@ -465,7 +465,7 @@ uint16_t generate3xkk(const std::string &arg0, const std::string &arg1,
 }
 
 uint16_t generateSKP(const std::vector<std::string> &args,
-                      Assembler::OptionalError &error) {
+                     Assembler::OptionalError &error) {
     if (args.size() != 1) {
         error = {.msg = "invalid number of arguments"};
         return 0;
@@ -706,26 +706,26 @@ uint16_t generateAND(const std::vector<std::string> &args,
 
 uint16_t generateSUBN(const std::vector<std::string> &args,
                       Assembler::OptionalError &error) {
-     if (args.size() != 2) {
-         error = {.msg = "invalid number of arguments, expected 2"};
-         return 0;
-     }
-     bool valid = false;
-     uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
-     if (!valid) {
-         error = {.msg = "invalid register address '" + args.at(0) + "'"};
-         return 0;
-     }
-     valid = false;
-     uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
-     if (!valid) {
-         error = {.msg = "invalid register address '" + args.at(1) + "'"};
-         return 0;
-     }
-     // 8xy7 - SUBN Vx, Vy
-     uint16_t ret = 0x8007 + (reg0 << 8) + (reg1 << 4);
-     return ret;
- }
+    if (args.size() != 2) {
+        error = {.msg = "invalid number of arguments, expected 2"};
+        return 0;
+    }
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(0) + "'"};
+        return 0;
+    }
+    valid = false;
+    uint8_t reg1 = parseRegisterAddr(args.at(1), valid);
+    if (!valid) {
+        error = {.msg = "invalid register address '" + args.at(1) + "'"};
+        return 0;
+    }
+    // 8xy7 - SUBN Vx, Vy
+    uint16_t ret = 0x8007 + (reg0 << 8) + (reg1 << 4);
+    return ret;
+}
 
 uint16_t generateSUB(const std::vector<std::string> &args,
                      Assembler::OptionalError &error) {

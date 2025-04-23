@@ -9,7 +9,7 @@
 
 #include <map>
 #include <stdint.h>
-#define ROM_ADDR (uint16_t) 0x0200
+#define ROM_ADDR (uint16_t)0x0200
 // #define SPRITE_ADDR (uint16_t) 0x100
 
 class Rom;
@@ -21,7 +21,7 @@ class Memory {
 
   public:
     enum { STACK_SIZE = 16 };
-    enum { ROM_START = ROM_ADDR};
+    enum { ROM_START = ROM_ADDR };
 
     bool isValid(uint16_t addr) const;
     void setRom(Rom *rom);

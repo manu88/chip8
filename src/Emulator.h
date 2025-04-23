@@ -32,7 +32,7 @@ struct Registers {
 
     uint16_t soundTimer = 0;
     uint16_t delayTimer = 0;
-    
+
     Registers() { reset(); }
     void reset() {
         memset(v, 0, Size);
@@ -106,8 +106,6 @@ class CPU : public InstructionParser {
 
     Memory _mem;
     Peripherals *_peripherals;
-
-
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
 
