@@ -27,6 +27,7 @@
 		598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */; };
 		59C245F12DB7A79C00250429 /* HexHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F02DB7A79C00250429 /* HexHelpers.cpp */; };
 		59C245F22DB7A79C00250429 /* HexHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F02DB7A79C00250429 /* HexHelpers.cpp */; };
+		59C245F52DBA19BA00250429 /* EmulatorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F42DBA19BA00250429 /* EmulatorTests.cpp */; };
 		59E39A3B2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */; };
 		59E39A3D2D9B0B89002757D4 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 59E39A3C2D9B0B89002757D4 /* libncurses.tbd */; };
 /* End PBXBuildFile section */
@@ -87,6 +88,8 @@
 		598365692D942D40003B3793 /* hello.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello.asm; sourceTree = "<group>"; };
 		59C245EF2DB7A79C00250429 /* HexHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HexHelpers.hpp; sourceTree = "<group>"; };
 		59C245F02DB7A79C00250429 /* HexHelpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HexHelpers.cpp; sourceTree = "<group>"; };
+		59C245F32DBA19BA00250429 /* EmulatorTests.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EmulatorTests.hpp; sourceTree = "<group>"; };
+		59C245F42DBA19BA00250429 /* EmulatorTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EmulatorTests.cpp; sourceTree = "<group>"; };
 		59E39A382D9AA66F002757D4 /* TermPeripherals.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TermPeripherals.hpp; sourceTree = "<group>"; };
 		59E39A392D9AA66F002757D4 /* TermPeripherals.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TermPeripherals.cpp; sourceTree = "<group>"; };
 		59E39A3C2D9B0B89002757D4 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
@@ -128,6 +131,8 @@
 				5957ED4C2D972F1700C1A4BD /* InstructionParser.hpp */,
 				5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */,
 				5957ED4E2D972F1700C1A4BD /* main.cpp */,
+				59C245F32DBA19BA00250429 /* EmulatorTests.hpp */,
+				59C245F42DBA19BA00250429 /* EmulatorTests.cpp */,
 				5957ED4F2D972F1700C1A4BD /* Memory.hpp */,
 				5957ED502D972F1700C1A4BD /* Memory.cpp */,
 				5957ED512D972F1700C1A4BD /* Peripherals.hpp */,
@@ -289,6 +294,7 @@
 				5957ED5E2D972F1700C1A4BD /* Emulator.cpp in Sources */,
 				5957ED5F2D972F1700C1A4BD /* main.cpp in Sources */,
 				59E39A3B2D9AA66F002757D4 /* TermPeripherals.cpp in Sources */,
+				59C245F52DBA19BA00250429 /* EmulatorTests.cpp in Sources */,
 				59C245F22DB7A79C00250429 /* HexHelpers.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,15 +7,12 @@
 
 #include "Assembler.hpp"
 #include "Emulator.h"
+#include "EmulatorTests.hpp"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include "SDLPeripherals.hpp"
 #include "TermPeripherals.hpp"
 #include <iostream>
-
-static int runTests(){
-    return 0;
-}
 
 bool checkFlag(int argc, const char *argv[], const char *flag) {
     for (int i = 0; i < argc; i++) {
@@ -81,7 +78,7 @@ int main(int argc, const char *argv[]) {
     }
     if (checkFlag(argc, argv, "-t")) {
         printf("run tests\n");
-        return runTests();
+        return runEmulatorTests();
     }
     if (argc < 2 || argv[1][0] == '-') {
         printf("Error: no input file\n");
