@@ -55,7 +55,11 @@ class CPU : public InstructionParser {
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
     void run();
+    void runOnce();
     void dump();
+
+    Registers &getRegisters() { return _registers; }
+    Memory &getMemory() { return _mem; }
 
   private:
     void advancePC();

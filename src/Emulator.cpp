@@ -40,18 +40,21 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 
 void Chip8::CPU::advancePC() { _registers.pc += 2; }
 
+void Chip8::CPU::runOnce(){
+    uint16_t pc = _registers.pc;
+    if (!execAt(pc)) {
+        if (_conf.logs) {
+            printf("Unable to exec instruction at pc=0X%0X\n", pc);
+        }
+        return;
+    }
+}
+
 void Chip8::CPU::run() {
     long frameId = 0;
     while (!_peripherals->shouldStop()) {
         const auto before = std::chrono::system_clock::now();
-        uint16_t pc = _registers.pc;
-        if (!execAt(pc)) {
-            if (_conf.logs) {
-                printf("Unable to exec instruction at pc=0X%0X\n", pc);
-            }
-            return;
-        }
-
+        runOnce();
         const std::chrono::duration<double, std::milli> cpuDuration =
             std::chrono::system_clock::now() - before;
         Chip8::Peripherals::UpdateParams params;
