@@ -8,6 +8,7 @@
 #include "Emulator.h"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
+#include <algorithm>
 #include <assert.h>
 #include <iostream>
 #include <stdio.h>
@@ -164,18 +165,88 @@ bool Chip8::CPU::onAddValToVx(uint16_t reg, uint16_t val) {
     return true;
 }
 
-bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onOrValToVx(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onAndValToVx(uint16_t reg, uint16_t val) { return false; }
-bool Chip8::CPU::onXOrValToVx(uint16_t reg, uint16_t val) { return false; }
-bool Chip8::CPU::onAddVyToVx(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onShiftRightVx(uint16_t reg) { return false; }
-bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) { return false; }
-bool Chip8::CPU::onShiftLeftVx(uint16_t reg) { return false; }
+bool Chip8::CPU::onSetVxToVy(uint16_t regX, uint16_t regY) {
+    // Stores the value of register Vy in register Vx.
+    _registers.v[regX] = _registers.v[regY];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onOrValToVx(uint16_t regX, uint16_t regY) {
+    // 8xy1 - OR Vx, Vy
+    _registers.v[regX] |= _registers.v[regY];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onAndValToVx(uint16_t regX, uint16_t regY) {
+    // Set Vx = Vx AND Vy.
+    _registers.v[regX] &= _registers.v[regY];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onXOrValToVx(uint16_t regX, uint16_t regY) {
+    // Set Vx = Vx XOR Vy.
+    _registers.v[regX] ^= _registers.v[regY];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onAddVyToVx(uint16_t regX, uint16_t regY) {
+    // Set Vx = Vx + Vy, set VF = carry.
+    uint16_t result = _registers.v[regX] + _registers.v[regY];
+    _registers.v[regX] = (uint8_t)result;
+    _registers.v[0xF] = result >= 0XFF ? 1 : 0;
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) {
+    // Set Vx = Vx - Vy, set VF = NOT borrow.
+    //  If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from
+    //  Vx, and the results stored in Vx.
+    _registers.v[0xF] = _registers.v[regX] > _registers.v[regY] ? 1 : 0;
+    _registers.v[regX] -= _registers.v[regY];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onShiftRightVx(uint16_t reg) {
+    // Set Vx = Vx SHR 1.
+    // If the least-significant bit of Vx is 1, then VF is set to 1, otherwise
+    // 0. Then Vx is divided by 2.
+    _registers.v[0xF] = _registers.v[reg] & 1;
+    _registers.v[reg] >>= 1;
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) {
+    // Set Vx = Vy - Vx, set VF = NOT borrow.
+    // If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from
+    // Vy, and the results stored in Vx.
+    _registers.v[0xF] = _registers.v[regY] > _registers.v[regX] ? 1 : 0;
+    _registers.v[regX] = _registers.v[regY] - _registers.v[regX];
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onShiftLeftVx(uint16_t reg) {
+    // Set Vx = Vx SHL 1.
+    _registers.v[0xF] = _registers.v[reg] & 1;
+    _registers.v[reg] <<= 1;
+    advancePC();
+    advancePC();
+    return true;
+}
 
 bool Chip8::CPU::onSkipNextIfVxIsNotVy(uint16_t regX, uint16_t regY) {
-    return false;
+    if (_registers.v[regX] != _registers.v[regY]) {
+        advancePC();
+    }
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onSetI(uint16_t addr) {
@@ -184,7 +255,13 @@ bool Chip8::CPU::onSetI(uint16_t addr) {
     return true;
 }
 
-bool Chip8::CPU::onJumpToLoc(uint16_t val) { return false; }
+bool Chip8::CPU::onJumpToLoc(uint16_t val) {
+    // Jump to location nnn + V0.
+    uint16_t addr = val + _registers.v[0];
+    _registers.pc = addr;
+    advancePC();
+    return true;
+}
 
 bool Chip8::CPU::onRand(uint16_t reg, uint16_t val) {
     uint8_t randomVal = _uint8Distrib(_rng);
@@ -200,17 +277,33 @@ bool Chip8::CPU::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
     return true;
 }
 
-bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) { return false; }
-bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) { return false; }
-
-bool Chip8::CPU::onSetVxToDelayTimer(uint16_t reg) {
-    _registers.v[reg] = _registers.delayTimer;
+bool Chip8::CPU::onWaitKeyPressed(uint16_t reg) {
+    _registers.v[reg] = _peripherals->waitKeyPress();
     advancePC();
     return true;
 }
 
-bool Chip8::CPU::onWaitKeyPressed(uint16_t reg) {
-    _registers.v[reg] = _peripherals->waitKeyPress();
+bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) {
+    // Skip next instruction if key with the value of Vx is pressed.
+    auto keys = _peripherals->getKeyPressed();
+    if (std::find(keys.begin(), keys.end(), _registers.v[reg]) != keys.end()) {
+        advancePC();
+    }
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) {
+    auto keys = _peripherals->getKeyPressed();
+    if (std::find(keys.begin(), keys.end(), _registers.v[reg]) == keys.end()) {
+        advancePC();
+    }
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onSetVxToDelayTimer(uint16_t reg) {
+    _registers.v[reg] = _registers.delayTimer;
     advancePC();
     return true;
 }
@@ -227,7 +320,12 @@ bool Chip8::CPU::onSetSoundTimer(uint16_t reg) {
     return true;
 }
 
-bool Chip8::CPU::onAddVxToI(uint16_t reg) { return false; }
+bool Chip8::CPU::onAddVxToI(uint16_t reg) {
+    // Set I = I + Vx.
+    _registers.i += _registers.v[reg];
+    advancePC();
+    return true;
+}
 
 bool Chip8::CPU::onSetIToSpriteLoc(uint16_t reg) {
     _registers.i = _mem.getSpriteAddr(_registers.v[reg]);

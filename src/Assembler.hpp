@@ -27,6 +27,14 @@ class Assembler {
 
         bool isLabel() const { return op[op.size() - 1] == ':'; }
         std::string getLabel() const { return op.substr(0, op.size() - 1); }
+
+        std::string getCode() const {
+            std::string ret = op;
+            for (const std::string &arg : args) {
+                ret += ", " + arg;
+            }
+            return ret;
+        }
     };
 
     Assembler();

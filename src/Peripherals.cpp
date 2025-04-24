@@ -15,6 +15,10 @@ uint8_t Chip8::Peripherals::waitKeyPress() {
     return 4;
 }
 
+std::vector<uint8_t> Chip8::Peripherals::getKeyPressed(){
+    return {};
+}
+
 void Chip8::Peripherals::clearDisplay() { printf("Display clear\n"); }
 
 void Chip8::Peripherals::update(

@@ -9,7 +9,8 @@
 #include "Rom.hpp"
 #include <assert.h>
 
-static const uint8_t Sprites[][5] = {
+#define NUM_SPRITES 16
+static const uint8_t Sprites[NUM_SPRITES][5] = {
     // 0
     {0b11110000, 0b10010000, 0b10010000, 0b10010000, 0b11110000},
     // 1
@@ -77,5 +78,8 @@ bool Chip8::Memory::setValueAtAddr(uint16_t addr, uint16_t val) {
 uint8_t Chip8::Memory::getSpriteAddr(uint16_t val) const { return val; }
 
 Chip8::Memory::Sprite Chip8::Memory::getSpriteData(uint16_t val) const {
+    if (val >= NUM_SPRITES) {
+        assert(false);
+    }
     return {Sprites[val]};
 }
