@@ -13,6 +13,10 @@
 #include "TermPeripherals.hpp"
 #include <iostream>
 
+static int runTests(){
+    return 0;
+}
+
 bool checkFlag(int argc, const char *argv[], const char *flag) {
     for (int i = 0; i < argc; i++) {
         if (strcmp(argv[i], flag) == 0) {
@@ -37,11 +41,12 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-v] [-a] [-g]\n");
+    printf("usage: inputfile [-h] [-v] [-a] [-g] [-t]\n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
     printf("-a: compile input file\n");
     printf("-g: use GUI\n");
+    printf("-t: run tests\n");
 }
 
 static Chip8::Peripherals *createPeripherals(bool useGui) {
@@ -73,6 +78,10 @@ int main(int argc, const char *argv[]) {
     if (checkFlag(argc, argv, "-h")) {
         printUsage();
         return 0;
+    }
+    if (checkFlag(argc, argv, "-t")) {
+        printf("run tests\n");
+        return runTests();
     }
     if (argc < 2 || argv[1][0] == '-') {
         printf("Error: no input file\n");
