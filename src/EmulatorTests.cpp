@@ -161,8 +161,8 @@ static void testLD7() {
     }
 }
 
-static void testLD8(){
-    //Fx65 - LD Vx, [I]
+static void testLD8() {
+    // Fx65 - LD Vx, [I]
     Chip8::CPU cpu;
     Rom r;
     StubPerih p;
@@ -170,13 +170,84 @@ static void testLD8(){
     for (int i = 0; i < Chip8::Registers::Size; i++) {
         cpu.getMemory().setValueAtAddr(0X400 + i, i);
     }
-    cpu.getRegisters(). i = 0x400;
+    cpu.getRegisters().i = 0x400;
     r.bytes.push_back(0xFF);
     r.bytes.push_back(0x65);
     cpu.runOnce();
 
     for (int i = 0; i < Chip8::Registers::Size; i++) {
         assert(cpu.getRegisters().v[i] == i);
+    }
+}
+
+void testADD1_noCarry() {
+    // 8xy4 - ADD Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    cpu.getRegisters().v[0XA] = 0X04;
+    cpu.getRegisters().v[0XB] = 0X05;
+    r.bytes.push_back(0x8A);
+    r.bytes.push_back(0xB4);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0XA] != 0X09){
+        assert(false);
+    }
+    if(cpu.getRegisters().v[0XF] != 0){
+        assert(false);
+    }
+}
+
+void testADD1_carry() {
+    // 8xy4 - ADD Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    cpu.getRegisters().v[0XA] = 0XFF;
+    cpu.getRegisters().v[0XB] = 0X05;
+    r.bytes.push_back(0x8A);
+    r.bytes.push_back(0xB4);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0XA] != 0X04){
+        assert(false);
+    }
+    if(cpu.getRegisters().v[0XF] != 1){
+        assert(false);
+    }
+}
+
+void testADD2() {
+    // 7xkk - ADD Vx, byte
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    cpu.getRegisters().v[0XB] = 0X02;
+    r.bytes.push_back(0x7B);
+    r.bytes.push_back(0x10);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0XB] != 0X12){
+        assert(false);
+    }
+}
+
+void testADD3() {
+    // Fx1E - ADD I, Vx
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t i = 0X0B;
+    uint8_t vc = 0X02;
+    cpu.getRegisters().i = i;
+    cpu.getRegisters().v[0XC] = vc;
+    r.bytes.push_back(0xFC);
+    r.bytes.push_back(0x1E);
+    cpu.runOnce();
+    if (cpu.getRegisters().i != i + vc){
+        assert(false);
     }
 }
 
@@ -190,13 +261,14 @@ int runEmulatorTests() {
     testLD6();
     testLD7();
     testLD8();
+    testADD1_noCarry();
+    testADD1_carry();
+    testADD2();
+    testADD3();
     return 0;
 }
 
 /*
- 8xy4 - ADD Vx, Vy
- 7xkk - ADD Vx, byte
- Fx1E - ADD I, Vx
  8xy1 - OR Vx, Vy
  8xy2 - AND Vx, Vy
  8xy3 - XOR Vx, Vy
@@ -204,8 +276,7 @@ int runEmulatorTests() {
  8xy6 - SHR Vx {, Vy}
  8xy7 - SUBN Vx, Vy
  8xyE - SHL Vx {, Vy}
- 
- 
+
  00EE - RET
  0nnn - SYS addr
  1nnn - JP addr
