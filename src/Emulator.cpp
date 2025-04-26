@@ -229,7 +229,7 @@ bool Chip8::CPU::onSubVxToVy(uint16_t regX, uint16_t regY) {
     // If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from
     // Vy, and the results stored in Vx.
     _registers.v[0xF] = _registers.v[regY] > _registers.v[regX] ? 1 : 0;
-    _registers.v[regX] = _registers.v[regY] - _registers.v[regX];
+    _registers.v[regX] = (uint8_t)(_registers.v[regY] - _registers.v[regX]);
     advancePC();
     return true;
 }
@@ -286,7 +286,7 @@ bool Chip8::CPU::onWaitKeyPressed(uint16_t reg) {
 
 bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) {
     // Skip next instruction if key with the value of Vx is pressed.
-    auto keys = _peripherals->getKeyPressed();
+    auto keys = _peripherals->getKeysPressed();
     if (std::find(keys.begin(), keys.end(), _registers.v[reg]) != keys.end()) {
         advancePC();
     }
@@ -295,7 +295,7 @@ bool Chip8::CPU::onSkipIfKeyPressed(uint16_t reg) {
 }
 
 bool Chip8::CPU::onSkipIfKeyNotPressed(uint16_t reg) {
-    auto keys = _peripherals->getKeyPressed();
+    auto keys = _peripherals->getKeysPressed();
     if (std::find(keys.begin(), keys.end(), _registers.v[reg]) == keys.end()) {
         advancePC();
     }
