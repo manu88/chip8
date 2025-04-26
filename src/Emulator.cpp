@@ -20,14 +20,13 @@ static uint32_t dec2bcd_r(uint16_t dec) {
 void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
     _mem.setRom(rom);
     _peripherals = peripherals;
+    _peripherals->init();
     reset();
 }
 
 void Chip8::CPU::reset() {
     _registers.reset();
     _startTime = std::chrono::system_clock::now();
-    _rng.seed((unsigned int)_startTime.time_since_epoch().count());
-    _uint8Distrib = std::uniform_int_distribution<uint8_t>();
 }
 
 void Chip8::CPU::updateTimers(double totalDurationMS) {
@@ -40,7 +39,7 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 
 void Chip8::CPU::advancePC() { _registers.pc += 2; }
 
-void Chip8::CPU::runOnce(){
+void Chip8::CPU::runOnce() {
     uint16_t pc = _registers.pc;
     if (!execAt(pc)) {
         if (_conf.logs) {
@@ -210,7 +209,7 @@ bool Chip8::CPU::onSubVyToVx(uint16_t regX, uint16_t regY) {
     //  If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from
     //  Vx, and the results stored in Vx.
     _registers.v[0xF] = _registers.v[regX] > _registers.v[regY] ? 1 : 0;
-    _registers.v[regX] -= _registers.v[regY];
+    _registers.v[regX] = (uint8_t)(_registers.v[regX] - _registers.v[regY]);
     advancePC();
     return true;
 }
@@ -267,7 +266,7 @@ bool Chip8::CPU::onJumpToLoc(uint16_t val) {
 }
 
 bool Chip8::CPU::onRand(uint16_t reg, uint16_t val) {
-    uint8_t randomVal = _uint8Distrib(_rng);
+    uint8_t randomVal = _peripherals->getRand();
     _registers.v[reg] = randomVal & val;
     advancePC();
     return true;

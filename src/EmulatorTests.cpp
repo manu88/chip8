@@ -13,7 +13,6 @@
 
 struct StubPerih : Chip8::Peripherals {
     void resetStubState() { clearDisplayCalled = false; }
-    bool init() override { return true; }
     void clearDisplay() override { clearDisplayCalled = true; }
 
     bool clearDisplayCalled = false;
@@ -191,10 +190,10 @@ void testADD1_noCarry() {
     r.bytes.push_back(0x8A);
     r.bytes.push_back(0xB4);
     cpu.runOnce();
-    if (cpu.getRegisters().v[0XA] != 0X09){
+    if (cpu.getRegisters().v[0XA] != 0X09) {
         assert(false);
     }
-    if(cpu.getRegisters().v[0XF] != 0){
+    if (cpu.getRegisters().v[0XF] != 0) {
         assert(false);
     }
 }
@@ -210,10 +209,10 @@ void testADD1_carry() {
     r.bytes.push_back(0x8A);
     r.bytes.push_back(0xB4);
     cpu.runOnce();
-    if (cpu.getRegisters().v[0XA] != 0X04){
+    if (cpu.getRegisters().v[0XA] != 0X04) {
         assert(false);
     }
-    if(cpu.getRegisters().v[0XF] != 1){
+    if (cpu.getRegisters().v[0XF] != 1) {
         assert(false);
     }
 }
@@ -228,7 +227,7 @@ void testADD2() {
     r.bytes.push_back(0x7B);
     r.bytes.push_back(0x10);
     cpu.runOnce();
-    if (cpu.getRegisters().v[0XB] != 0X12){
+    if (cpu.getRegisters().v[0XB] != 0X12) {
         assert(false);
     }
 }
@@ -246,7 +245,103 @@ void testADD3() {
     r.bytes.push_back(0xFC);
     r.bytes.push_back(0x1E);
     cpu.runOnce();
-    if (cpu.getRegisters().i != i + vc){
+    if (cpu.getRegisters().i != i + vc) {
+        assert(false);
+    }
+}
+
+void testOR() {
+    // 8xy1 - OR Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t v1 = 0X0B;
+    uint8_t v2 = 0X02;
+    cpu.getRegisters().v[0XC] = v1;
+    cpu.getRegisters().v[0XD] = v2;
+    r.bytes.push_back(0x8C);
+    r.bytes.push_back(0xD1);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0XC] != (v1 | v2)) {
+        assert(false);
+    }
+}
+
+void testAND() {
+    // 8xy2 - AND Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t v1 = 0X0B;
+    uint8_t v2 = 0XFF;
+    cpu.getRegisters().v[0X1] = v1;
+    cpu.getRegisters().v[0XE] = v2;
+    r.bytes.push_back(0x81);
+    r.bytes.push_back(0xE2);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0X1] != (v1 & v2)) {
+        assert(false);
+    }
+}
+
+void testXOR() {
+    // 8xy3 - XOR Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t v1 = 0X0B;
+    uint8_t v2 = 0XAA;
+    cpu.getRegisters().v[0X1] = v1;
+    cpu.getRegisters().v[0XE] = v2;
+    r.bytes.push_back(0x81);
+    r.bytes.push_back(0xE3);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0X1] != (v1 ^ v2)) {
+        assert(false);
+    }
+}
+
+void testSUB_1() {
+    // 8xy5 - SUB Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t v1 = 0X0B;
+    uint8_t v2 = 0X01;
+    cpu.getRegisters().v[0X1] = v1;
+    cpu.getRegisters().v[0XE] = v2;
+    r.bytes.push_back(0x81);
+    r.bytes.push_back(0xE5);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0X1] != (v1 - v2)) {
+        assert(false);
+    }
+    if (cpu.getRegisters().v[0XF] != 1) {
+        assert(false);
+    }
+}
+
+void testSUB_2() {
+    // 8xy5 - SUB Vx, Vy
+    Chip8::CPU cpu;
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    uint8_t v1 = 0X01;
+    uint8_t v2 = 0X0B;
+    cpu.getRegisters().v[0X1] = v1;
+    cpu.getRegisters().v[0XE] = v2;
+    r.bytes.push_back(0x81);
+    r.bytes.push_back(0xE5);
+    cpu.runOnce();
+    if (cpu.getRegisters().v[0X1] != uint8_t(v1 - v2)) {
+        assert(false);
+    }
+    if (cpu.getRegisters().v[0XF] != 0) {
         assert(false);
     }
 }
@@ -265,14 +360,15 @@ int runEmulatorTests() {
     testADD1_carry();
     testADD2();
     testADD3();
+    testOR();
+    testAND();
+    testXOR();
+    testSUB_1();
+    testSUB_2();
     return 0;
 }
 
 /*
- 8xy1 - OR Vx, Vy
- 8xy2 - AND Vx, Vy
- 8xy3 - XOR Vx, Vy
- 8xy5 - SUB Vx, Vy
  8xy6 - SHR Vx {, Vy}
  8xy7 - SUBN Vx, Vy
  8xyE - SHL Vx {, Vy}
@@ -281,7 +377,7 @@ int runEmulatorTests() {
  0nnn - SYS addr
  1nnn - JP addr
  Bnnn - JP V0, addr
- 2nnn - CALL addr
+ 2nnn - CALL addrï
 
  9xy0 - SNE Vx, Vy
  4xkk - SNE Vx, byte

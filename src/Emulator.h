@@ -12,7 +12,6 @@
 #include "InstructionParser.hpp"
 #include "Memory.hpp"
 #include <chrono>
-#include <random>
 #include <stdint.h>
 #include <string.h>
 
@@ -50,7 +49,7 @@ class CPU : public InstructionParser {
     enum { DELAY_TIMER_HZ = 60 };
 
     CPU() : CPU(Config{}) {}
-    CPU(const Config &config) : _conf(config), _rng(_randomDevice()) {}
+    CPU(const Config &config) : _conf(config) {}
 
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
@@ -112,9 +111,5 @@ class CPU : public InstructionParser {
     Peripherals *_peripherals;
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
-
-    std::random_device _randomDevice;
-    std::mt19937 _rng;
-    std::uniform_int_distribution<uint8_t> _uint8Distrib;
 };
 } // namespace Chip8

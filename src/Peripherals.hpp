@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include <random>
 #include <stdint.h>
 #include <vector>
 
@@ -18,9 +19,10 @@ class Peripherals {
     enum { SCREEN_WIDTH = 64 };
     enum { SCREEN_HEIGTH = 32 };
 
+    Peripherals() : _rng(_randomDevice()) {}
     virtual ~Peripherals() {}
 
-    virtual bool init() = 0;
+    virtual bool init();
 
     struct UpdateParams {
         int timeoutMS;
@@ -34,6 +36,7 @@ class Peripherals {
     virtual std::vector<uint8_t> getKeyPressed();
     virtual void clearDisplay();
     virtual bool shouldStop() { return false; }
+    virtual uint16_t getRand();
 
     static uint8_t getKeyCode(char key);
 
@@ -45,5 +48,10 @@ class Peripherals {
         uint16_t i;
     };
     std::vector<DrawCommand> _commands;
+
+  private:
+    std::random_device _randomDevice;
+    std::mt19937 _rng;
+    std::uniform_int_distribution<uint8_t> _uint8Distrib;
 };
 } // namespace Chip8

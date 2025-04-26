@@ -8,6 +8,13 @@
 #include "Peripherals.hpp"
 #include <stdio.h>
 
+bool Chip8::Peripherals::init() {
+    auto startTime = std::chrono::system_clock::now();
+    _rng.seed((unsigned int)startTime.time_since_epoch().count());
+    _uint8Distrib = std::uniform_int_distribution<uint8_t>();
+    return true;
+}
+
 uint8_t Chip8::Peripherals::waitKeyPress() {
     printf("Wait for key press\n");
     int val = getchar();
@@ -15,9 +22,7 @@ uint8_t Chip8::Peripherals::waitKeyPress() {
     return 4;
 }
 
-std::vector<uint8_t> Chip8::Peripherals::getKeyPressed(){
-    return {};
-}
+std::vector<uint8_t> Chip8::Peripherals::getKeyPressed() { return {}; }
 
 void Chip8::Peripherals::clearDisplay() { printf("Display clear\n"); }
 
@@ -82,3 +87,5 @@ void Chip8::Peripherals::draw(uint16_t x, uint16_t y, uint16_t height,
     }
     return 0;
 }
+
+uint16_t Chip8::Peripherals::getRand() { return _uint8Distrib(_rng); }
