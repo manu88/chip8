@@ -6,6 +6,7 @@
 //
 
 #include "Assembler.hpp"
+#include "HexHelpers.hpp"
 #include "Memory.hpp"
 #include <algorithm>
 #include <assert.h>
@@ -57,9 +58,6 @@ Assembler::Instruction splitInstruction(const std::string &line) {
     const std::string strArgs = line.substr(found + 1);
     return {line.substr(0, found), splitArguments(strArgs)};
 }
-
-Assembler::Assembler(const std::string &code) : _originalCode(code) {}
-Assembler::Assembler() : Assembler("") {}
 
 bool Assembler::loadFile(const std::string &path) {
     std::ifstream infile(path);
@@ -129,60 +127,6 @@ Chip8::Bytes Assembler::process() {
         _currentAddr += 2;
     }
     return ret;
-}
-
-uint8_t parseRegisterAddr(const std::string &str, bool &valid) {
-    if (std::tolower(str[0]) != 'v') {
-        valid = false;
-        return 0;
-    }
-    if (isxdigit(str.c_str()[1]) == 0) {
-        valid = false;
-        return 0;
-    }
-    uint8_t number = (uint8_t)std::strtol(str.c_str() + 1, NULL, 16);
-    valid = number <= 0XF;
-    return number;
-}
-
-static uint16_t parseNumber(const std::string &str, uint16_t maxVal,
-                            bool &valid) {
-    uint16_t val = 0;
-    try {
-        valid = true;
-        val = std::stoll(str.c_str(), nullptr, 0);
-    } catch (const std::invalid_argument &e) {
-        valid = false;
-        return 0;
-    }
-    if (val > maxVal) {
-        valid = false;
-        return 0;
-    }
-    return val;
-}
-
-static uint8_t parseNibble(const std::string &str, bool &valid) {
-    ;
-    return parseNumber(str, 0XF, valid);
-}
-
-static uint8_t parseByte(const std::string &str, bool &valid) {
-    ;
-    return parseNumber(str, 0XFF, valid);
-}
-
-static uint16_t parseAddr(const std::string &str, bool &valid) {
-    return parseNumber(str, 0XFFF, valid);
-}
-
-bool isNumber(const std::string &s) {
-    if (s[0] == '0' && std::tolower(s[1]) == 'x') {
-        return isNumber(s.substr(2));
-    }
-    return !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) {
-                             return !std::isxdigit(c);
-                         }) == s.end();
 }
 
 uint16_t generateFX29(const std::string &arg, Assembler::OptionalError &error) {
@@ -340,8 +284,44 @@ uint16_t generateFx33(const std::string &arg1,
     return ret;
 }
 
-uint16_t generateLDMachineCode(const std::vector<std::string> &args,
-                               Assembler::OptionalError &error) {
+uint16_t generateFx30(const std::string &arg0,
+                      Assembler::OptionalError &error) {
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0XF030 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateFx75(const std::string arg1, Assembler::OptionalError &error) {
+    //Fx75 - LD R, Vx
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg1, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg1 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0XF075 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t generateFx85(const std::string arg0, Assembler::OptionalError &error) {
+    //Fx85 - LD Vx, R
+    bool valid = false;
+    uint8_t reg0 = parseRegisterAddr(arg0, valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    uint16_t ret = 0XF085 + (reg0 << 8);
+    return ret;
+}
+
+uint16_t Assembler::generateLDMachineCode(const std::vector<std::string> &args,
+                                          Assembler::OptionalError &error) {
     if (args.size() != 2) {
         error = {.msg = "invalid number of arguments"};
         return 0;
@@ -386,18 +366,26 @@ uint16_t generateLDMachineCode(const std::vector<std::string> &args,
         } else if (args.at(1) == "I") {
             // Fx65 - LD Vx, I
             return generateFx65(args[0], error);
+        }else if(_conf.superInstructions && args.at(1) == "R"){
+            return generateFx85(args.at(0), error);
         }
         error = {.msg = "unknown argument " + args[1]};
         return 0;
     } else if (args.at(0) == "B") {
         // Fx33 - LD B, Vx
         return generateFx33(args[1], error);
+    } else if (_conf.superInstructions) {
+        if (args.at(0) == "HF") {
+            return generateFx30(args.at(1), error);
+        }else if(args.at(0) == "R"){
+            return generateFx75(args.at(1), error);
+        }
     }
     error = {.msg = "unknown '" + args.at(0) + "' LD argument"};
     return 0;
 }
 
-uint16_t generateDxyn(const std::vector<std::string> &args,
+uint16_t Assembler::generateDxyn(const std::vector<std::string> &args,
                       Assembler::OptionalError &error) {
     // Dxyn - DRW Vx, Vy, nibble
     if (args.size() != 3) {
@@ -423,6 +411,10 @@ uint16_t generateDxyn(const std::vector<std::string> &args,
         return 0;
     }
     assert(val <= 0Xf);
+    if(val == 0 && !_conf.superInstructions){
+        error = {.msg = "special value 0 is for super chip only"};
+        return 0;
+    }
     uint16_t ret = 0xD000 + (reg0 << 8) + (reg1 << 4) + val;
     return ret;
 }
@@ -885,6 +877,22 @@ uint16_t Assembler::generateJP(const std::vector<std::string> &args,
     return 0;
 }
 
+uint16_t generateSCD(const std::vector<std::string> &args,
+                     Assembler::OptionalError &error) {
+    if (args.size() != 1) {
+        error = {.msg = "invalid number of arguments"};
+        return 0;
+    }
+    bool valid = false;
+    // 00Cn
+    uint8_t n = parseNibble(args.at(0), valid);
+    if (!valid) {
+        error = {.msg = "invalid value '" + args[0] + "'"};
+        return 0;
+    }
+    return 0X00C0 + n;
+}
+
 uint16_t Assembler::generateMachineCode(const Instruction &inst,
                                         Assembler::OptionalError &error) {
     if (inst.op == "CLS") {
@@ -930,6 +938,20 @@ uint16_t Assembler::generateMachineCode(const Instruction &inst,
     } else if (inst.isLabel()) {
         // ignore labels, they are already taken care of by preprocess
         return 0;
+    } else if (_conf.superInstructions) {
+        if (inst.op == "EXIT") {
+            return 0X00FD;
+        } else if (inst.op == "SCR") {
+            return 0X00FB;
+        } else if (inst.op == "SCL") {
+            return 0X00FC;
+        } else if (inst.op == "LOW") {
+            return 0X00FE;
+        } else if (inst.op == "HIGH") {
+            return 0X00FF;
+        } else if (inst.op == "SCD") {
+            return generateSCD(inst.args, error);
+        }
     }
     error = {.msg = "unrecognized instruction mnemonic '" + inst.op + "'"};
     return 0;

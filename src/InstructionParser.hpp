@@ -82,6 +82,20 @@ class InstructionParser {
     virtual bool onStoreVnInI(uint16_t reg) { return false; }          // Fx55
     virtual bool onReadVnFromI(uint16_t reg) { return false; }         // Fx65
 
+    // superChip instructions
+    virtual bool onExit() { return false; }                           // 00FD
+    virtual bool onSCR() { return false; }                            // 00FB
+    virtual bool onSCL() { return false; }                            // 00FC
+    virtual bool onScrollDown(uint8_t n) { return false; }            // 00Cn
+    virtual bool onLowRes() { return false; }                         // 00FE
+    virtual bool onHighRes() { return false; }                        // 00FF
+    virtual bool onSetIToBigSpriteLoc(uint16_t reg) { return false; } // Fx30
+    virtual bool onSaveFlagRegister(uint16_t reg) { return false; }   // Fx75
+    virtual bool onLoadFlagRegister(uint16_t reg) { return false; }   // Fx85
+    virtual bool onSuperChipDisplay(uint16_t regX, uint16_t regY) {
+        return false;
+    } // DxY0
+
     uint16_t currentInstruction;
     const Config _conf;
 

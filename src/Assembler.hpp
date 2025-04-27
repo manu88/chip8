@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 #include <string>
+#include "Config.h"
 
 class Assembler {
   public:
@@ -37,8 +38,9 @@ class Assembler {
         }
     };
 
-    Assembler();
-    Assembler(const std::string &code);
+    Assembler(const std::string &code, Chip8::Config conf = Chip8::Config()) : _originalCode(code), _conf(conf) {}
+    Assembler(Chip8::Config conf = Chip8::Config()) : Assembler("", conf) {}
+    
     bool loadFile(const std::string &path);
 
     Chip8::Bytes generate();
@@ -51,10 +53,12 @@ class Assembler {
     uint16_t processLine(const std::string &line, OptionalError &error);
     uint16_t generateMachineCode(const Instruction &inst,
                                  Assembler::OptionalError &error);
-
+    uint16_t generateLDMachineCode(const std::vector<std::string> &args,
+                                   Assembler::OptionalError &error);
     uint16_t generateJP(const std::vector<std::string> &args,
                         Assembler::OptionalError &error);
-
+    uint16_t generateDxyn(const std::vector<std::string> &args,
+                          Assembler::OptionalError &error);
     uint16_t generate2nnn(const std::vector<std::string> &args,
                           Assembler::OptionalError &error);
 
@@ -68,4 +72,6 @@ class Assembler {
     bool addLabel(const std::string &label, uint16_t addr);
     uint16_t getAddrForLabel(const std::string &label) const;
     std::map<std::string, uint16_t> _labels;
+    
+    Chip8::Config _conf;
 };

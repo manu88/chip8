@@ -18,7 +18,29 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
         return onRET();
     } else {
         const uint16_t opcode1 = (instruction & 0xF000) >> 12;
-        if (opcode1 == 0) { // call 0NNN
+        if (opcode1 == 0) {
+            if (_conf.superInstructions && instruction == 0X00FD) {
+                return onExit();
+            } else if (instruction == 0X00FB) {
+                // 00FB - SCR : Scroll display 4 pixels right
+                return onSCR();
+            } else if (instruction == 0X00FC) {
+                // 00FC - SCL : Scroll display 4 pixels left
+                return onSCL();
+            } else if ((instruction & 0XFFF0) == 0X00C0) {
+                const uint16_t n = instruction & 0x000F;
+                return onScrollDown(n);
+            } else if (instruction == 0X00FE) {
+                // 00FE - LOW : Disable extended screen mode
+                return onLowRes();
+            } else if (instruction == 0X00FF) {
+                /* 00FF - HIGH : Enable extended screen mode for full-screen
+                 graphics Enable 128x64 high resolution graphics mode.. A sprite
+                 of 16x16 size is available.
+                 */
+                return onHighRes();
+            }
+            // call 0NNN
             uint16_t addr = instruction & 0x0FFF;
             return onCallMachine(addr);
 
@@ -108,6 +130,9 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
             const uint16_t reg1 = (instruction & 0x0F00) >> 8;
             const uint16_t reg2 = (instruction & 0x00F0) >> 4;
             const uint16_t val = instruction & 0x000F;
+            if(_conf.superInstructions && val == 0){
+                return onSuperChipDisplay(reg1, reg2);
+            }
             return onDisplay(reg1, reg2, val);
 
         } else if ((instruction & 0xF0FF) == 0xE09E) {
@@ -141,7 +166,9 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
         } else if ((instruction & 0xF0FF) == 0xF029) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onSetIToSpriteLoc(reg);
-
+        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF030){
+            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            return onSetIToBigSpriteLoc(reg);
         } else if ((instruction & 0xF0FF) == 0xF033) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onStoreBCDOfVxInI(reg);
@@ -153,7 +180,32 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
         } else if ((instruction & 0xF0FF) == 0xF065) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onReadVnFromI(reg);
+        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF075){
+            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            return onSaveFlagRegister(reg);
+        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF085){
+            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            return onLoadFlagRegister(reg);
         }
     }
+    if (_conf.superInstructions) {
+        return execSuperInstruction(instruction);
+    }
+    return false;
+}
+
+bool Chip8::InstructionParser::execSuperInstruction(uint16_t instruction) {
+    /*
+    - Dxy0 - DRW Vx, Vy, 0 : Show N-byte sprite from M(I) at coords (VX,VY), VF
+     := collision. If N=0 and extended mode, show 16x16 sprite. Fx30 - LD HF, Vx
+     : Point I to 10-byte font sprite for digit VX (0..9) Fx75 - LD R, Vx :
+     Store V0..VX in RPL user flags (X <= 7) Fx85 - LD Vx, R : Read V0..VX from
+     RPL user flags (X <= 7)
+
+     Fx30 - LD HF, Vx
+     Fx75 - LD R, Vx
+     Fx85 - LD Vx, R
+
+     */
     return false;
 }

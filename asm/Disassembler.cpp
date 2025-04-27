@@ -7,6 +7,7 @@
 
 #include "Disassembler.hpp"
 #include "HexHelpers.hpp"
+#include <assert.h>
 
 bool Disassembler::loadFile(const std::string &path) {
     return Chip8::loadFile(path, _bytes);
@@ -149,8 +150,14 @@ bool Disassembler::onRand(uint16_t reg, uint16_t val) {
 }
 
 bool Disassembler::onDisplay(uint16_t regX, uint16_t regY, uint8_t nimble) {
+    assert(nimble != 0);
     _text += "DRW V" + hex(regX, false) + ", V" + hex(regY, false) + ", " +
              hex(nimble);
+    return true;
+}
+
+bool Disassembler::onSuperChipDisplay(uint16_t regX, uint16_t regY) {
+    _text += "DRW V" + hex(regX, false) + ", V" + hex(regY, false) + ", 0";
     return true;
 }
 
@@ -208,3 +215,49 @@ bool Disassembler::onReadVnFromI(uint16_t reg) {
     _text += "LD V" + hex(reg, false) + ", I";
     return true;
 }
+
+bool Disassembler::onExit() {
+    _text += "EXIT";
+    return true;
+}
+
+bool Disassembler::onSCR() {
+    _text += "SCR";
+    return true;
+}
+
+bool Disassembler::onSCL() {
+    _text += "SCL";
+    return true;
+}
+
+bool Disassembler::onScrollDown(uint8_t n) {
+    _text += "SCD " + hex(n);
+    return true;
+}
+
+bool Disassembler::onLowRes() {
+    _text += "LOW";
+    return true;
+}
+
+bool Disassembler::onHighRes() {
+    _text += "HIGH";
+    return true;
+}
+
+bool Disassembler::onSetIToBigSpriteLoc(uint16_t reg){
+    _text += "LD HF, V" + hex(reg, false);
+    return true;
+}
+
+bool Disassembler::onSaveFlagRegister(uint16_t reg) {
+    _text += "LD R, V" + hex(reg, false);
+    return true;
+}
+
+bool Disassembler::onLoadFlagRegister(uint16_t reg) {
+    _text += "LD V" + hex(reg, false) + ", R";
+    return true;
+}
+
