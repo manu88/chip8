@@ -4,10 +4,8 @@ This repo holds the source code of a [chip8](https://en.wikipedia.org/wiki/CHIP-
 The UI is implemented using SDL and ncurses.
 
 Todo:
-- Complete chip8 instruction set
 - Add support for super-chip8
 - Add sound support
-- Complete asm/disasm implementation
 
 ## some useful links
 http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
