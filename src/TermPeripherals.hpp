@@ -21,9 +21,12 @@ class TermPeripherals : public Chip8::Peripherals {
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
     bool shouldStop() override;
+    void signalExit() override;
 
   private:
     void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     WINDOW *_ouputWin;
     WINDOW *_stateWin;
+
+    bool _shouldStop = false;
 };

@@ -334,6 +334,12 @@ bool Chip8::CPU::onSetIToSpriteLoc(uint16_t reg) {
     return true;
 }
 
+bool Chip8::CPU::onSetIToBigSpriteLoc(uint16_t reg) {
+    _registers.i = _mem.getSpriteAddr(_registers.v[reg]);
+    advancePC();
+    return true;
+}
+
 bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
     uint32_t result = dec2bcd_r(_registers.v[reg]); // 0X 0000 0000 0000 0000
     const uint8_t d0 = result & 0x000F;
@@ -380,18 +386,21 @@ bool Chip8::CPU::onExit() {
 }
 
 bool Chip8::CPU::onSCR() {
-    assert(false);
-    return false;
+    _peripherals->scroll(Peripherals::ScrollDirection::Right, 1);
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onSCL() {
-    assert(false);
-    return false;
+    _peripherals->scroll(Peripherals::ScrollDirection::Left, 1);
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onScrollDown(uint8_t n) {
-    assert(false);
-    return false;
+    _peripherals->scroll(Peripherals::ScrollDirection::Down, n);
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onLowRes() {
@@ -407,11 +416,6 @@ bool Chip8::CPU::onHighRes() {
         advancePC();
         return true;
     }
-    return false;
-}
-
-bool Chip8::CPU::onSetIToBigSpriteLoc(uint16_t reg) {
-    assert(false);
     return false;
 }
 

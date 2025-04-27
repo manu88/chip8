@@ -55,15 +55,17 @@ uint8_t reverse(uint8_t x) {
 void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
                                   const SDLPeripherals::DrawCommand &cmd) {
     const auto sprite = memory.getSpriteData(cmd.i);
+    int factor =
+        _highRes ? (int)HIGH_RES_SCALE_FACTOR : (int)LOW_RES_SCALE_FACTOR;
     for (int y = 0; y < cmd.height; y++) {
         uint8_t v = sprite.data[y];
         for (int x = 0; x < 8; x++) {
             if (v & 0x0001) {
                 SDL_Rect r;
-                r.x = OFFSET + (cmd.x + 7 - x) * LOW_RES_SCALE_FACTOR;
-                r.y = OFFSET + (cmd.y + y) * LOW_RES_SCALE_FACTOR;
-                r.w = LOW_RES_SCALE_FACTOR;
-                r.h = LOW_RES_SCALE_FACTOR;
+                r.x = OFFSET + (cmd.x + 7 - x) * factor;
+                r.y = OFFSET + (cmd.y + y) * factor;
+                r.w = factor;
+                r.h = factor;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 SDL_RenderFillRect(renderer, &r);
             }
@@ -115,15 +117,20 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     }
 
     // render machine stats
-    const int startX = (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
+    const int startX =
+        (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
     const int startY = 10;
     renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
-    renderText(renderer, startX, startY + FONT_SIZE, "sp: " + hex(registers.sp),
-               _font);
-    renderText(renderer, startX, startY + (FONT_SIZE * 2),
+    int inc = 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               "sp: " + hex(registers.sp), _font);
+    inc += 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
                "delay: " + hex(registers.delayTimer), _font);
-    renderText(renderer, startX, startY + (FONT_SIZE * 3),
+    inc += 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
                "sound: " + hex(registers.soundTimer), _font);
+    inc += 1;
     for (int i = 0; i < 16; i += 2) {
         std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
         s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
@@ -131,7 +138,10 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
         renderText(renderer, startX,
                    startY + (FONT_SIZE * 4) + (FONT_SIZE / 2 * i), s, _font);
     }
-
+    inc += 8;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               std::string("mode: ") + (_highRes ? "HIGH" : "LOW"), _font);
+    inc += 1;
     SDL_RenderPresent(renderer);
 
     SDL_Event e;
@@ -170,4 +180,8 @@ bool SDLPeripherals::changeMode(bool highRes) {
     printf("SDL: switch mode from %i to %i\n", _highRes, highRes);
     _highRes = highRes;
     return true;
+}
+
+void SDLPeripherals::scroll(ScrollDirection direction, uint8_t amount) {
+    printf("scroll %i %i\n", direction, amount);
 }

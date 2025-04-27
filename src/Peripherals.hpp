@@ -19,6 +19,9 @@ class Peripherals {
     enum { LOW_RES_SCREEN_WIDTH = 64 };
     enum { LOW_RES_SCREEN_HEIGTH = 32 };
 
+    enum { HIGH_RES_SCREEN_WIDTH = 128 };
+    enum { HIGH_RES_SCREEN_HEIGTH = 64 };
+
     Peripherals() : _rng(_randomDevice()) {}
     virtual ~Peripherals() {}
 
@@ -38,6 +41,13 @@ class Peripherals {
     virtual void clearDisplay();
     virtual bool shouldStop() { return false; }
     virtual uint16_t getRand();
+
+    enum ScrollDirection {
+        Left,
+        Right,
+        Down,
+    };
+    virtual void scroll(ScrollDirection direction, uint8_t amount) {}
 
     static uint8_t getKeyCode(char key);
 

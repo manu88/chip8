@@ -22,8 +22,8 @@ bool TermPeripherals::init() {
     int startX = 4;
     int startY = 4;
 
-    _ouputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH, Peripherals::LOW_RES_SCREEN_WIDTH,
-                       startY, startX);
+    _ouputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH,
+                       Peripherals::LOW_RES_SCREEN_WIDTH, startY, startX);
 
     startX += Peripherals::LOW_RES_SCREEN_WIDTH + 4;
 
@@ -88,4 +88,7 @@ uint8_t TermPeripherals::waitKeyPress() {
 }
 
 void TermPeripherals::clearDisplay() { _commands.clear(); }
-bool TermPeripherals::shouldStop() { return false; }
+
+bool TermPeripherals::shouldStop() { return _shouldStop; }
+
+void TermPeripherals::signalExit() { _shouldStop = true; }

@@ -16,7 +16,14 @@ class Memory;
 
 class SDLPeripherals : public Chip8::Peripherals {
   public:
+    // Make sure that LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR EQUALS
+    // HIGH_RES_SCREEN_WIDTH * HIGH_RES_SCALE_FACTOR and LOW_RES_SCREEN_HEIGHT *
+    // LOW_RES_SCALE_FACTOR EQUALS HIGH_RES_SCREEN_HEIGHT *
+    // HIGH_RES_SCALE_FACTOR so that the SDL window's size remains the same when
+    // switching mode.
     enum { LOW_RES_SCALE_FACTOR = 10 };
+    enum { HIGH_RES_SCALE_FACTOR = 5 };
+
     SDLPeripherals();
     ~SDLPeripherals();
 
@@ -30,6 +37,8 @@ class SDLPeripherals : public Chip8::Peripherals {
 
     bool changeMode(bool highRes) override;
     void signalExit() override;
+
+    void scroll(ScrollDirection direction, uint8_t amount) override;
 
   private:
     void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);

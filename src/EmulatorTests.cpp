@@ -40,6 +40,15 @@ struct StubPerih : Chip8::Peripherals {
     }
     bool highResMode = false;
     bool changeModeCalled = false;
+
+    void scroll(ScrollDirection direction, uint8_t amount) override {
+        scrollCalled = true;
+        dir = direction;
+        scrollAmount = amount;
+    }
+    bool scrollCalled = false;
+    ScrollDirection dir = Down;
+    uint8_t scrollAmount = 40;
 };
 
 static void testCLS() {
@@ -888,8 +897,53 @@ static void testLOW() {
     assert(!p.highResMode);
 }
 
+static void testSCL() {
+    // 00FC
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xFC);
+    cpu.runOnce();
+    assert(p.scrollCalled);
+    assert(p.scrollAmount == 1);
+    assert(p.dir == Chip8::Peripherals::Left);
+}
+
+static void testSCR() {
+    // 00FB
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xFB);
+    cpu.runOnce();
+    assert(p.scrollCalled);
+    assert(p.scrollAmount == 1);
+    assert(p.dir == Chip8::Peripherals::Right);
+}
+
+static void testSCD() {
+    // 00Cn
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xCA);
+    cpu.runOnce();
+    assert(p.scrollCalled);
+    assert(p.scrollAmount == 0XA);
+    assert(p.dir == Chip8::Peripherals::Down);
+}
+
 static void testSuperChip() {
     testEXIT();
     testHIGH();
     testLOW();
+    testSCL();
+    testSCR();
+    testSCD();
 }
