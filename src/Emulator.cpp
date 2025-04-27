@@ -340,13 +340,16 @@ bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
     const uint8_t d1 = (result & 0x00F0) >> 4;
     const uint8_t d2 = (result & 0x0F00) >> 8;
     if (!_mem.setValueAtAddr(_registers.i, d2)) {
-        printf("Error writing 0X%0X at 0X%0X\n", d2, _registers.i);
+        printf("Error writing 0X%04X at 0X%04X\n", d2, _registers.i);
+        return false;
     }
     if (!_mem.setValueAtAddr(_registers.i + 1, d1)) {
-        printf("Error writing 0X%0X at 0X%0X\n", d1, _registers.i + 1);
+        printf("Error writing 0X%04X at 0X%04X\n", d1, _registers.i + 1);
+        return false;
     }
     if (!_mem.setValueAtAddr(_registers.i + 2, d0)) {
-        printf("Error writing 0X%0X at 0X%0X\n", d0, _registers.i + 2);
+        printf("Error writing 0X%04X at 0X%04X\n", d0, _registers.i + 2);
+        return false;
     }
     advancePC();
     return true;
@@ -354,7 +357,9 @@ bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
 
 bool Chip8::CPU::onStoreVnInI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
-        _mem.setValueAtAddr(_registers.i + i, _registers.v[i]);
+        if(!_mem.setValueAtAddr(_registers.i + i, _registers.v[i])){
+            return false;
+        }
     }
     advancePC();
     return true;
