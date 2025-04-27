@@ -68,7 +68,8 @@ uint8_t Chip8::Memory::getValueAtAddr(uint16_t addr) const {
 }
 
 bool Chip8::Memory::setValueAtAddr(uint16_t addr, uint16_t val) {
-    if (addr < ROM_ADDR + _rom->size()) {
+    // write in ROM region prohibited
+    if (addr >= ROM_ADDR && addr < ROM_ADDR + _rom->size()) {
         return false;
     }
     _ram[addr] = val;
