@@ -10,5 +10,6 @@
 namespace Chip8 {
 struct Config {
     bool logs = false;
+    bool superInstructions = false;
 };
 } // namespace Chip8
