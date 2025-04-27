@@ -6,7 +6,7 @@
 //
 
 #include "SDLPeripherals.hpp"
-#include "Emulator.h"
+#include "Emulator.hpp"
 #include "HexHelpers.hpp"
 #include "Memory.hpp"
 #include <SDL2/SDL_ttf.h>

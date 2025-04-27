@@ -6,7 +6,7 @@
 //
 
 #include "EmulatorTests.hpp"
-#include "Emulator.h"
+#include "Emulator.hpp"
 #include "Peripherals.hpp"
 #include "Rom.hpp"
 #include <assert.h>

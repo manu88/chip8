@@ -6,7 +6,7 @@
 //
 
 #include "TermPeripherals.hpp"
-#include "Emulator.h"
+#include "Emulator.hpp"
 #include "HexHelpers.hpp"
 #include "Memory.hpp"
 #include <locale.h>

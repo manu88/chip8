@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "Config.h"
+#include "Config.hpp"
 #include <stdint.h>
 
 namespace Chip8 {

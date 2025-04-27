@@ -10,7 +10,7 @@
 #include <map>
 #include <optional>
 #include <string>
-#include "Config.h"
+#include "Config.hpp"
 
 class Assembler {
   public:

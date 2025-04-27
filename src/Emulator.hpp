@@ -8,7 +8,7 @@
 
 #pragma one
 
-#include "Config.h"
+#include "Config.hpp"
 #include "InstructionParser.hpp"
 #include "Memory.hpp"
 #include <chrono>

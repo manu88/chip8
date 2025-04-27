@@ -58,8 +58,8 @@
 		5957ED442D972D3000C1A4BD /* hello2.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello2.asm; sourceTree = "<group>"; };
 		5957ED452D972F1700C1A4BD /* Assembler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Assembler.hpp; path = ../src/Assembler.hpp; sourceTree = "<group>"; };
 		5957ED462D972F1700C1A4BD /* Assembler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Assembler.cpp; path = ../src/Assembler.cpp; sourceTree = "<group>"; };
-		5957ED472D972F1700C1A4BD /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Config.h; path = ../src/Config.h; sourceTree = "<group>"; };
-		5957ED482D972F1700C1A4BD /* Emulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Emulator.h; path = ../src/Emulator.h; sourceTree = "<group>"; };
+		5957ED472D972F1700C1A4BD /* Config.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Config.hpp; sourceTree = "<group>"; };
+		5957ED482D972F1700C1A4BD /* Emulator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Emulator.hpp; sourceTree = "<group>"; };
 		5957ED492D972F1700C1A4BD /* Emulator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Emulator.cpp; path = ../src/Emulator.cpp; sourceTree = "<group>"; };
 		5957ED4A2D972F1700C1A4BD /* FileLoader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = FileLoader.hpp; path = ../src/FileLoader.hpp; sourceTree = "<group>"; };
 		5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FileLoader.cpp; path = ../src/FileLoader.cpp; sourceTree = "<group>"; };
@@ -123,8 +123,8 @@
 				59C245F02DB7A79C00250429 /* HexHelpers.cpp */,
 				5957ED452D972F1700C1A4BD /* Assembler.hpp */,
 				5957ED462D972F1700C1A4BD /* Assembler.cpp */,
-				5957ED472D972F1700C1A4BD /* Config.h */,
-				5957ED482D972F1700C1A4BD /* Emulator.h */,
+				5957ED472D972F1700C1A4BD /* Config.hpp */,
+				5957ED482D972F1700C1A4BD /* Emulator.hpp */,
 				5957ED492D972F1700C1A4BD /* Emulator.cpp */,
 				5957ED4A2D972F1700C1A4BD /* FileLoader.hpp */,
 				5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */,
