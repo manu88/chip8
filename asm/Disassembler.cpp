@@ -246,7 +246,7 @@ bool Disassembler::onHighRes() {
     return true;
 }
 
-bool Disassembler::onSetIToBigSpriteLoc(uint16_t reg){
+bool Disassembler::onSetIToBigSpriteLoc(uint16_t reg) {
     _text += "LD HF, V" + hex(reg, false);
     return true;
 }
@@ -260,4 +260,3 @@ bool Disassembler::onLoadFlagRegister(uint16_t reg) {
     _text += "LD V" + hex(reg, false) + ", R";
     return true;
 }
-

@@ -123,7 +123,7 @@ static void RunTests2() {
     TestInvalidASM("RND V0");
     TestInvalidASM("LD B, 0X12");
     TestInvalidASM("LD B");
-    
+
     // n=0 is a super chip only
     TestInvalidASM("DRW V3, V4, 0");
 }

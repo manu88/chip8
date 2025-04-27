@@ -297,7 +297,7 @@ uint16_t generateFx30(const std::string &arg0,
 }
 
 uint16_t generateFx75(const std::string arg1, Assembler::OptionalError &error) {
-    //Fx75 - LD R, Vx
+    // Fx75 - LD R, Vx
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg1, valid);
     if (!valid) {
@@ -309,7 +309,7 @@ uint16_t generateFx75(const std::string arg1, Assembler::OptionalError &error) {
 }
 
 uint16_t generateFx85(const std::string arg0, Assembler::OptionalError &error) {
-    //Fx85 - LD Vx, R
+    // Fx85 - LD Vx, R
     bool valid = false;
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
     if (!valid) {
@@ -366,7 +366,7 @@ uint16_t Assembler::generateLDMachineCode(const std::vector<std::string> &args,
         } else if (args.at(1) == "I") {
             // Fx65 - LD Vx, I
             return generateFx65(args[0], error);
-        }else if(_conf.superInstructions && args.at(1) == "R"){
+        } else if (_conf.superInstructions && args.at(1) == "R") {
             return generateFx85(args.at(0), error);
         }
         error = {.msg = "unknown argument " + args[1]};
@@ -377,7 +377,7 @@ uint16_t Assembler::generateLDMachineCode(const std::vector<std::string> &args,
     } else if (_conf.superInstructions) {
         if (args.at(0) == "HF") {
             return generateFx30(args.at(1), error);
-        }else if(args.at(0) == "R"){
+        } else if (args.at(0) == "R") {
             return generateFx75(args.at(1), error);
         }
     }
@@ -386,7 +386,7 @@ uint16_t Assembler::generateLDMachineCode(const std::vector<std::string> &args,
 }
 
 uint16_t Assembler::generateDxyn(const std::vector<std::string> &args,
-                      Assembler::OptionalError &error) {
+                                 Assembler::OptionalError &error) {
     // Dxyn - DRW Vx, Vy, nibble
     if (args.size() != 3) {
         error = {.msg = "invalid number of arguments"};
@@ -411,7 +411,7 @@ uint16_t Assembler::generateDxyn(const std::vector<std::string> &args,
         return 0;
     }
     assert(val <= 0Xf);
-    if(val == 0 && !_conf.superInstructions){
+    if (val == 0 && !_conf.superInstructions) {
         error = {.msg = "special value 0 is for super chip only"};
         return 0;
     }

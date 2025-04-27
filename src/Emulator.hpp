@@ -101,6 +101,18 @@ class CPU : public InstructionParser {
     bool onStoreVnInI(uint16_t reg) override;
     bool onReadVnFromI(uint16_t reg) override;
 
+    // superChip instructions
+    bool onExit() override;
+    bool onSCR() override;
+    bool onSCL() override;
+    bool onScrollDown(uint8_t n) override;
+    bool onLowRes() override;
+    bool onHighRes() override;
+    bool onSetIToBigSpriteLoc(uint16_t reg) override;
+    bool onSaveFlagRegister(uint16_t reg) override;
+    bool onLoadFlagRegister(uint16_t reg) override;
+    bool onSuperChipDisplay(uint16_t regX, uint16_t regY) override;
+
     bool execAt(uint16_t memLoc);
     void updateTimers(double totalDurationMS);
 

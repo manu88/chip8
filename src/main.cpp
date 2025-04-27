@@ -38,12 +38,13 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-v] [-a] [-g] [-t]\n");
+    printf("usage: inputfile [-h] [-v] [-a] [-g] [-t] [-s]\n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
     printf("-a: compile input file\n");
     printf("-g: use GUI\n");
     printf("-t: run tests\n");
+    printf("-s: superchip mode\n");
 }
 
 static Chip8::Peripherals *createPeripherals(bool useGui) {
@@ -53,8 +54,9 @@ static Chip8::Peripherals *createPeripherals(bool useGui) {
     return new TermPeripherals();
 }
 
-static bool buildAsm(const std::string &inputFile, Rom &rom) {
-    Assembler assembler;
+static bool buildAsm(const std::string &inputFile, Rom &rom,
+                     const Chip8::Config &conf) {
+    Assembler assembler(conf);
     if (!assembler.loadFile(inputFile)) {
         printf("unable to read from file '%s'\n", inputFile.c_str());
         return false;
@@ -101,10 +103,17 @@ int main(int argc, const char *argv[]) {
     if (checkFlag(argc, argv, "-g")) {
         useGUI = true;
     }
-
+    bool superChip = false;
+    if (checkFlag(argc, argv, "-s")) {
+        superChip = true;
+    }
     Rom rom;
+    Chip8::Config conf;
+    conf.logs = verbose;
+    conf.superInstructions = superChip;
+
     if (inputIsAsm) {
-        if (!buildAsm(inputFile, rom)) {
+        if (!buildAsm(inputFile, rom, conf)) {
             return 1;
         }
     } else {
@@ -116,7 +125,7 @@ int main(int argc, const char *argv[]) {
     auto p = createPeripherals(useGUI);
     p->init();
 
-    Chip8::CPU emu({.logs = verbose});
+    Chip8::CPU emu(conf);
     emu.init(&rom, p);
     emu.run();
     delete p;

@@ -372,3 +372,60 @@ bool Chip8::CPU::onReadVnFromI(uint16_t reg) {
     advancePC();
     return true;
 }
+
+bool Chip8::CPU::onExit() {
+    _peripherals->signalExit();
+    advancePC();
+    return true;
+}
+
+bool Chip8::CPU::onSCR() {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onSCL() {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onScrollDown(uint8_t n) {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onLowRes() {
+    if (_peripherals->changeMode(false)) {
+        advancePC();
+        return true;
+    }
+    return false;
+}
+
+bool Chip8::CPU::onHighRes() {
+    if (_peripherals->changeMode(true)) {
+        advancePC();
+        return true;
+    }
+    return false;
+}
+
+bool Chip8::CPU::onSetIToBigSpriteLoc(uint16_t reg) {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onSaveFlagRegister(uint16_t reg) {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onLoadFlagRegister(uint16_t reg) {
+    assert(false);
+    return false;
+}
+
+bool Chip8::CPU::onSuperChipDisplay(uint16_t regX, uint16_t regY) {
+    assert(false);
+    return false;
+}

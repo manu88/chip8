@@ -130,7 +130,7 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
             const uint16_t reg1 = (instruction & 0x0F00) >> 8;
             const uint16_t reg2 = (instruction & 0x00F0) >> 4;
             const uint16_t val = instruction & 0x000F;
-            if(_conf.superInstructions && val == 0){
+            if (_conf.superInstructions && val == 0) {
                 return onSuperChipDisplay(reg1, reg2);
             }
             return onDisplay(reg1, reg2, val);
@@ -166,7 +166,8 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
         } else if ((instruction & 0xF0FF) == 0xF029) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onSetIToSpriteLoc(reg);
-        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF030){
+        } else if (_conf.superInstructions &&
+                   (instruction & 0XF0FF) == 0XF030) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onSetIToBigSpriteLoc(reg);
         } else if ((instruction & 0xF0FF) == 0xF033) {
@@ -180,10 +181,12 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
         } else if ((instruction & 0xF0FF) == 0xF065) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onReadVnFromI(reg);
-        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF075){
+        } else if (_conf.superInstructions &&
+                   (instruction & 0XF0FF) == 0XF075) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onSaveFlagRegister(reg);
-        } else if( _conf.superInstructions && (instruction & 0XF0FF) == 0XF085){
+        } else if (_conf.superInstructions &&
+                   (instruction & 0XF0FF) == 0XF085) {
             const uint16_t reg = (instruction & 0x0F00) >> 8;
             return onLoadFlagRegister(reg);
         }

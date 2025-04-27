@@ -28,6 +28,9 @@ class SDLPeripherals : public Chip8::Peripherals {
     void clearDisplay() override;
     bool shouldStop() override;
 
+    bool changeMode(bool highRes) override;
+    void signalExit() override;
+
   private:
     void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     SDL_Window *window = NULL;
@@ -36,4 +39,6 @@ class SDLPeripherals : public Chip8::Peripherals {
     bool quit = false;
 
     TTF_Font *_font;
+
+    bool _highRes = false;
 };

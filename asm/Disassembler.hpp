@@ -81,7 +81,7 @@ class Disassembler : public Chip8::InstructionParser {
     bool onSaveFlagRegister(uint16_t reg) override;
     bool onLoadFlagRegister(uint16_t reg) override;
     bool onSuperChipDisplay(uint16_t regX, uint16_t regY) override;
-    
+
     Chip8::Bytes _bytes;
     std::string _text;
 };

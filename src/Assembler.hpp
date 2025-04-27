@@ -6,11 +6,11 @@
 //
 
 #pragma once
+#include "Config.hpp"
 #include "FileLoader.hpp"
 #include <map>
 #include <optional>
 #include <string>
-#include "Config.hpp"
 
 class Assembler {
   public:
@@ -38,9 +38,10 @@ class Assembler {
         }
     };
 
-    Assembler(const std::string &code, Chip8::Config conf = Chip8::Config()) : _originalCode(code), _conf(conf) {}
+    Assembler(const std::string &code, Chip8::Config conf = Chip8::Config())
+        : _originalCode(code), _conf(conf) {}
     Assembler(Chip8::Config conf = Chip8::Config()) : Assembler("", conf) {}
-    
+
     bool loadFile(const std::string &path);
 
     Chip8::Bytes generate();
@@ -72,6 +73,6 @@ class Assembler {
     bool addLabel(const std::string &label, uint16_t addr);
     uint16_t getAddrForLabel(const std::string &label) const;
     std::map<std::string, uint16_t> _labels;
-    
+
     Chip8::Config _conf;
 };

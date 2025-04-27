@@ -29,6 +29,17 @@ struct StubPerih : Chip8::Peripherals {
     const std::vector<Chip8::Peripherals::DrawCommand> &commands() {
         return _commands;
     }
+
+    void signalExit() override { signalExitSent = true; }
+    bool signalExitSent = false;
+
+    bool changeMode(bool highRes) override {
+        highResMode = highRes;
+        changeModeCalled = true;
+        return true;
+    }
+    bool highResMode = false;
+    bool changeModeCalled = false;
 };
 
 static void testCLS() {
@@ -834,11 +845,51 @@ int runEmulatorTests() {
     testJP2();
     testCALL_RET();
     testSYS();
-    
+
     testSuperChip();
     return 0;
 }
 
-static void testSuperChip(){
-    
+static void testEXIT() {
+    // 00FD
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xFD);
+    cpu.runOnce();
+    assert(p.signalExitSent);
+}
+
+static void testHIGH() {
+    // 00FF
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xFF);
+    cpu.runOnce();
+    assert(p.changeModeCalled);
+    assert(p.highResMode);
+}
+
+static void testLOW() {
+    // 00FE
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0x00);
+    r.bytes.push_back(0xFE);
+    cpu.runOnce();
+    assert(p.changeModeCalled);
+    assert(!p.highResMode);
+}
+
+static void testSuperChip() {
+    testEXIT();
+    testHIGH();
+    testLOW();
 }
