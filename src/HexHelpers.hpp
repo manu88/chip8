@@ -3,6 +3,7 @@
 
 #include <string>
 
+void toUpper(std::string &str);
 std::string hex(uint16_t value, bool prefix = true);
 uint8_t parseRegisterAddr(const std::string &str, bool &valid);
 uint16_t parseNumber(const std::string &str, uint16_t maxVal, bool &valid);

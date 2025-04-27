@@ -56,7 +56,9 @@ Assembler::Instruction splitInstruction(const std::string &line) {
         return {line};
     }
     const std::string strArgs = line.substr(found + 1);
-    return {line.substr(0, found), splitArguments(strArgs)};
+    std::string op = line.substr(0, found);
+    toUpper(op);
+    return {op, splitArguments(strArgs)};
 }
 
 bool Assembler::loadFile(const std::string &path) {

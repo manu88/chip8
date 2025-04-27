@@ -1,7 +1,7 @@
 
 #include "HexHelpers.hpp"
 
-static void toUpper(std::string &str) {
+void toUpper(std::string &str) {
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 }
 
