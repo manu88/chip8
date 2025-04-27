@@ -11,9 +11,9 @@
 #include <fstream>
 #include <iostream>
 
-int runAssembler(const std::string &srcFilePath,
-                 const std::string &outFilePath) {
-    Assembler assembler;
+int runAssembler(const std::string &srcFilePath, const std::string &outFilePath,
+                 bool superChip) {
+    Assembler assembler({.superInstructions = superChip});
     if (!assembler.loadFile(srcFilePath)) {
         printf("unable to read from file '%s'\n", srcFilePath.c_str());
         return 1;
@@ -43,8 +43,8 @@ int runAssembler(const std::string &srcFilePath,
 }
 
 int runDisassembler(const std::string &binFilePath,
-                    const std::string &outFilePath) {
-    Disassembler disassembler;
+                    const std::string &outFilePath, bool superChip) {
+    Disassembler disassembler({.superInstructions = superChip});
     if (!disassembler.loadFile(binFilePath)) {
         printf("unable to read from file '%s'\n", binFilePath.c_str());
         return 1;
@@ -88,10 +88,11 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-d] [-t] [-o ouput.file]\n");
+    printf("usage: inputfile [-h] [-d] [-t] [-s] [-o ouput.file]\n");
     printf("-h: this help\n");
     printf("-d: use disassembler\n");
     printf("-t: run tests\n");
+    printf("-s: superchip mode\n");
 }
 
 int main(int argc, const char *argv[]) {
@@ -122,17 +123,24 @@ int main(int argc, const char *argv[]) {
             return 1;
         }
     }
+
+    bool superChip = false;
+    if (checkFlag(argc, argv, "-s")) {
+        printf("Using superchip mode\n");
+        superChip = true;
+    }
+
     if (useAssembler) {
         if (outputFile == "") {
             outputFile = inputFile + ".bin";
         }
-        return runAssembler(inputFile, outputFile);
+        return runAssembler(inputFile, outputFile, superChip);
 
     } else {
         if (outputFile == "") {
             outputFile = inputFile + ".asm";
         }
-        return runDisassembler(inputFile, outputFile);
+        return runDisassembler(inputFile, outputFile, superChip);
 
         return 0;
     }
