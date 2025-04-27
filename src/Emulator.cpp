@@ -357,7 +357,7 @@ bool Chip8::CPU::onStoreBCDOfVxInI(uint16_t reg) {
 
 bool Chip8::CPU::onStoreVnInI(uint16_t reg) {
     for (int i = 0; i <= reg; i++) {
-        if(!_mem.setValueAtAddr(_registers.i + i, _registers.v[i])){
+        if (!_mem.setValueAtAddr(_registers.i + i, _registers.v[i])) {
             return false;
         }
     }
