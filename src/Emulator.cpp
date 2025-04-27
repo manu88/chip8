@@ -112,10 +112,10 @@ bool Chip8::CPU::onRET() {
 }
 
 bool Chip8::CPU::onCallMachine(uint16_t addr) {
-    advancePC();
     if (_conf.logs) {
         printf("[ignored] Call machine code at addr : 0x%x\n", addr);
     }
+    advancePC();
     return true;
 }
 
