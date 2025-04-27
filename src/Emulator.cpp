@@ -261,7 +261,6 @@ bool Chip8::CPU::onJumpToLoc(uint16_t val) {
     // Jump to location nnn + V0.
     uint16_t addr = val + _registers.v[0];
     _registers.pc = addr;
-    advancePC();
     return true;
 }
 
