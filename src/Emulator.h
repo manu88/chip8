@@ -49,7 +49,7 @@ class CPU : public InstructionParser {
     enum { DELAY_TIMER_HZ = 60 };
 
     CPU() : CPU(Config{}) {}
-    CPU(const Config &config) : _conf(config) {}
+    CPU(const Config &config) : InstructionParser(config) {}
 
     void init(Rom *rom, Peripherals *peripherals);
     void reset();
@@ -101,7 +101,6 @@ class CPU : public InstructionParser {
     bool onStoreVnInI(uint16_t reg) override;
     bool onReadVnFromI(uint16_t reg) override;
 
-    const Config &_conf;
     bool execAt(uint16_t memLoc);
     void updateTimers(double totalDurationMS);
 

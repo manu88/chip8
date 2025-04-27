@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include "Config.h"
 #include <stdint.h>
 
 namespace Chip8 {
@@ -16,7 +17,8 @@ class InstructionParser {
     bool exec(uint16_t instruction);
 
   protected:
-    uint16_t currentInstruction;
+    InstructionParser(const Config &config) : _conf(config) {}
+
     virtual bool onNOP() { return false; }
     virtual bool onCLS() { return false; }                         // 00E0
     virtual bool onRET() { return false; }                         // 00EE
@@ -79,5 +81,8 @@ class InstructionParser {
     virtual bool onStoreBCDOfVxInI(uint16_t reg) { return false; }     // Fx33
     virtual bool onStoreVnInI(uint16_t reg) { return false; }          // Fx55
     virtual bool onReadVnFromI(uint16_t reg) { return false; }         // Fx65
+
+    uint16_t currentInstruction;
+    const Config &_conf;
 };
 } // namespace Chip8
