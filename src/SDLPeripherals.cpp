@@ -24,10 +24,10 @@ SDLPeripherals::SDLPeripherals() {
 bool SDLPeripherals::init() {
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    int width = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
+    int width = (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR;
 
     width += 300; // more space for debug infos
-    int height = (int)Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
+    int height = (int)Peripherals::LOW_RES_SCREEN_HEIGTH * LOW_RES_SCALE_FACTOR;
     height += 20;
     SDL_CreateWindowAndRenderer(width, height, 0, &window, &renderer);
 
@@ -60,10 +60,10 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
         for (int x = 0; x < 8; x++) {
             if (v & 0x0001) {
                 SDL_Rect r;
-                r.x = OFFSET + (cmd.x + 7 - x) * SCALE_FACTOR;
-                r.y = OFFSET + (cmd.y + y) * SCALE_FACTOR;
-                r.w = SCALE_FACTOR;
-                r.h = SCALE_FACTOR;
+                r.x = OFFSET + (cmd.x + 7 - x) * LOW_RES_SCALE_FACTOR;
+                r.y = OFFSET + (cmd.y + y) * LOW_RES_SCALE_FACTOR;
+                r.w = LOW_RES_SCALE_FACTOR;
+                r.h = LOW_RES_SCALE_FACTOR;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 SDL_RenderFillRect(renderer, &r);
             }
@@ -105,8 +105,8 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     SDL_Rect r;
     r.x = OFFSET;
     r.y = OFFSET;
-    r.w = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR;
-    r.h = (int)Peripherals::SCREEN_HEIGTH * SCALE_FACTOR;
+    r.w = (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR;
+    r.h = (int)Peripherals::LOW_RES_SCREEN_HEIGTH * LOW_RES_SCALE_FACTOR;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &r);
 
@@ -115,7 +115,7 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     }
 
     // render machine stats
-    const int startX = (int)Peripherals::SCREEN_WIDTH * SCALE_FACTOR + 20;
+    const int startX = (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
     const int startY = 10;
     renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
     renderText(renderer, startX, startY + FONT_SIZE, "sp: " + hex(registers.sp),

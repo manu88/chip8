@@ -22,10 +22,10 @@ bool TermPeripherals::init() {
     int startX = 4;
     int startY = 4;
 
-    _ouputWin = newwin(Peripherals::SCREEN_HEIGTH, Peripherals::SCREEN_WIDTH,
+    _ouputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH, Peripherals::LOW_RES_SCREEN_WIDTH,
                        startY, startX);
 
-    startX += Peripherals::SCREEN_WIDTH + 4;
+    startX += Peripherals::LOW_RES_SCREEN_WIDTH + 4;
 
     _stateWin = newwin(24, 24, startY, startX);
 

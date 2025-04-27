@@ -191,24 +191,5 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
             return onLoadFlagRegister(reg);
         }
     }
-    if (_conf.superInstructions) {
-        return execSuperInstruction(instruction);
-    }
-    return false;
-}
-
-bool Chip8::InstructionParser::execSuperInstruction(uint16_t instruction) {
-    /*
-    - Dxy0 - DRW Vx, Vy, 0 : Show N-byte sprite from M(I) at coords (VX,VY), VF
-     := collision. If N=0 and extended mode, show 16x16 sprite. Fx30 - LD HF, Vx
-     : Point I to 10-byte font sprite for digit VX (0..9) Fx75 - LD R, Vx :
-     Store V0..VX in RPL user flags (X <= 7) Fx85 - LD Vx, R : Read V0..VX from
-     RPL user flags (X <= 7)
-
-     Fx30 - LD HF, Vx
-     Fx75 - LD R, Vx
-     Fx85 - LD Vx, R
-
-     */
     return false;
 }

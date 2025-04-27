@@ -16,7 +16,7 @@ class Memory;
 
 class SDLPeripherals : public Chip8::Peripherals {
   public:
-    enum { SCALE_FACTOR = 10 };
+    enum { LOW_RES_SCALE_FACTOR = 10 };
     SDLPeripherals();
     ~SDLPeripherals();
 

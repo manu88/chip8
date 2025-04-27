@@ -87,6 +87,7 @@ bool Assembler::preprocess() {
     for (std::string line; std::getline(iss, line);) {
         rtrim(line);
         ltrim(line);
+        toUpper(line);
         removeComments(line);
         if (!line.empty()) {
             Instruction inst = splitInstruction(line);

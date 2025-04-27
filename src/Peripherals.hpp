@@ -16,8 +16,8 @@ class Registers;
 
 class Peripherals {
   public:
-    enum { SCREEN_WIDTH = 64 };
-    enum { SCREEN_HEIGTH = 32 };
+    enum { LOW_RES_SCREEN_WIDTH = 64 };
+    enum { LOW_RES_SCREEN_HEIGTH = 32 };
 
     Peripherals() : _rng(_randomDevice()) {}
     virtual ~Peripherals() {}

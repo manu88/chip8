@@ -98,8 +98,5 @@ class InstructionParser {
 
     uint16_t currentInstruction;
     const Config _conf;
-
-  private:
-    bool execSuperInstruction(uint16_t instruction);
 };
 } // namespace Chip8
