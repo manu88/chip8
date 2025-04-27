@@ -18,7 +18,7 @@
 class Disassembler : public Chip8::InstructionParser {
   public:
     Disassembler(const Chip8::Bytes &bytes)
-        : Chip8::InstructionParser({}), _bytes(bytes) {}
+        : Chip8::InstructionParser(Chip8::Config()), _bytes(bytes) {}
     Disassembler() : Disassembler(Chip8::Bytes()) {}
 
     bool loadFile(const std::string &path);

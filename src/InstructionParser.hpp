@@ -83,6 +83,9 @@ class InstructionParser {
     virtual bool onReadVnFromI(uint16_t reg) { return false; }         // Fx65
 
     uint16_t currentInstruction;
-    const Config &_conf;
+    const Config _conf;
+
+  private:
+    bool execSuperInstruction(uint16_t instruction);
 };
 } // namespace Chip8

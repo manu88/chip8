@@ -48,7 +48,7 @@ class CPU : public InstructionParser {
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
 
-    CPU() : CPU(Config{}) {}
+    CPU() : CPU(Config()) {}
     CPU(const Config &config) : InstructionParser(config) {}
 
     void init(Rom *rom, Peripherals *peripherals);
