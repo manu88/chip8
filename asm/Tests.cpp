@@ -209,10 +209,18 @@ static void SuperChipInstruction() {
         TestValidInstruction("LD HF, V" + hex(i, false), true);
     }
     for (int i = 0; i < 16; i++) {
-        TestValidInstruction("LD R, V" + hex(i, false), true);
+        if (i <= 7) {
+            TestValidInstruction("LD R, V" + hex(i, false), true);
+        } else {
+            TestInvalidASM("LD R, V" + hex(i, false), true);
+        }
     }
     for (int i = 0; i < 16; i++) {
-        TestValidInstruction("LD V" + hex(i, false) + ", R", true);
+        if (i <= 7) {
+            TestValidInstruction("LD V" + hex(i, false) + ", R", true);
+        } else {
+            TestInvalidASM("LD V" + hex(i, false) + ", R", true);
+        }
     }
     TestValidInstruction("DRW VA, VB, 0", true);
 }

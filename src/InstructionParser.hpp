@@ -90,8 +90,8 @@ class InstructionParser {
     virtual bool onLowRes() { return false; }                         // 00FE
     virtual bool onHighRes() { return false; }                        // 00FF
     virtual bool onSetIToBigSpriteLoc(uint16_t reg) { return false; } // Fx30
-    virtual bool onSaveFlagRegister(uint16_t reg) { return false; }   // Fx75
-    virtual bool onLoadFlagRegister(uint16_t reg) { return false; }   // Fx85
+    virtual bool onSaveFlagRegister(uint8_t reg) { return false; }    // Fx75
+    virtual bool onLoadFlagRegister(uint8_t reg) { return false; }    // Fx85
     virtual bool onSuperChipDisplay(uint16_t regX, uint16_t regY) {
         return false;
     } // DxY0

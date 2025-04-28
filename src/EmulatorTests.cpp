@@ -939,6 +939,28 @@ static void testSCD() {
     assert(p.dir == Chip8::Peripherals::Down);
 }
 
+static void testLDR_1() {
+    // Fx30
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0xFA);
+    r.bytes.push_back(0x30);
+    cpu.runOnce();
+}
+
+static void testLDR_2() {
+    // Fx30
+    Chip8::CPU cpu({.superInstructions = true});
+    Rom r;
+    StubPerih p;
+    cpu.init(&r, &p);
+    r.bytes.push_back(0xFA);
+    r.bytes.push_back(0x75);
+    cpu.runOnce();
+}
+
 static void testSuperChip() {
     testEXIT();
     testHIGH();
@@ -946,4 +968,6 @@ static void testSuperChip() {
     testSCL();
     testSCR();
     testSCD();
+    testLDR_1();
+    testLDR_2();
 }

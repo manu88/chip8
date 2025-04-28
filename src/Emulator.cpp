@@ -419,12 +419,12 @@ bool Chip8::CPU::onHighRes() {
     return false;
 }
 
-bool Chip8::CPU::onSaveFlagRegister(uint16_t reg) {
+bool Chip8::CPU::onSaveFlagRegister(uint8_t reg) {
     assert(false);
     return false;
 }
 
-bool Chip8::CPU::onLoadFlagRegister(uint16_t reg) {
+bool Chip8::CPU::onLoadFlagRegister(uint8_t reg) {
     assert(false);
     return false;
 }

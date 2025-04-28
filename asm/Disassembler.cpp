@@ -251,12 +251,12 @@ bool Disassembler::onSetIToBigSpriteLoc(uint16_t reg) {
     return true;
 }
 
-bool Disassembler::onSaveFlagRegister(uint16_t reg) {
+bool Disassembler::onSaveFlagRegister(uint8_t reg) {
     _text += "LD R, V" + hex(reg, false);
     return true;
 }
 
-bool Disassembler::onLoadFlagRegister(uint16_t reg) {
+bool Disassembler::onLoadFlagRegister(uint8_t reg) {
     _text += "LD V" + hex(reg, false) + ", R";
     return true;
 }

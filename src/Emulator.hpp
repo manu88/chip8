@@ -109,8 +109,8 @@ class CPU : public InstructionParser {
     bool onLowRes() override;
     bool onHighRes() override;
     bool onSetIToBigSpriteLoc(uint16_t reg) override;
-    bool onSaveFlagRegister(uint16_t reg) override;
-    bool onLoadFlagRegister(uint16_t reg) override;
+    bool onSaveFlagRegister(uint8_t reg) override;
+    bool onLoadFlagRegister(uint8_t reg) override;
     bool onSuperChipDisplay(uint16_t regX, uint16_t regY) override;
 
     bool execAt(uint16_t memLoc);

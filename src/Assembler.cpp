@@ -307,6 +307,10 @@ uint16_t generateFx75(const std::string arg1, Assembler::OptionalError &error) {
         error = {.msg = "invalid value '" + arg1 + "'"};
         return 0;
     }
+    if (reg0 > 7) {
+        error = {.msg = "invalid reg " + arg1 + ". must be 0..7"};
+        return 0;
+    }
     uint16_t ret = 0XF075 + (reg0 << 8);
     return ret;
 }
@@ -317,6 +321,10 @@ uint16_t generateFx85(const std::string arg0, Assembler::OptionalError &error) {
     uint8_t reg0 = parseRegisterAddr(arg0, valid);
     if (!valid) {
         error = {.msg = "invalid value '" + arg0 + "'"};
+        return 0;
+    }
+    if (reg0 > 7) {
+        error = {.msg = "invalid reg " + arg0 + ". must be 0..7"};
         return 0;
     }
     uint16_t ret = 0XF085 + (reg0 << 8);

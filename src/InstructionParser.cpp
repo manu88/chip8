@@ -6,6 +6,7 @@
 //
 
 #include "InstructionParser.hpp"
+#include <assert.h>
 
 bool Chip8::InstructionParser::exec(uint16_t instruction) {
     currentInstruction = instruction;
@@ -183,11 +184,17 @@ bool Chip8::InstructionParser::exec(uint16_t instruction) {
             return onReadVnFromI(reg);
         } else if (_conf.superInstructions &&
                    (instruction & 0XF0FF) == 0XF075) {
-            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            const uint8_t reg = (instruction & 0x0F00) >> 8;
+            if (reg > 7) {
+                return false;
+            }
             return onSaveFlagRegister(reg);
         } else if (_conf.superInstructions &&
                    (instruction & 0XF0FF) == 0XF085) {
-            const uint16_t reg = (instruction & 0x0F00) >> 8;
+            const uint8_t reg = (instruction & 0x0F00) >> 8;
+            if (reg > 7) {
+                return false;
+            }
             return onLoadFlagRegister(reg);
         }
     }

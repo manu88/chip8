@@ -20,7 +20,8 @@ class Disassembler : public Chip8::InstructionParser {
     Disassembler(const Chip8::Bytes &bytes,
                  Chip8::Config conf = Chip8::Config())
         : Chip8::InstructionParser(conf), _bytes(bytes) {}
-    Disassembler(Chip8::Config conf = Chip8::Config()) : Disassembler(Chip8::Bytes(), conf) {}
+    Disassembler(Chip8::Config conf = Chip8::Config())
+        : Disassembler(Chip8::Bytes(), conf) {}
 
     bool loadFile(const std::string &path);
 
@@ -78,8 +79,8 @@ class Disassembler : public Chip8::InstructionParser {
     bool onLowRes() override;
     bool onHighRes() override;
     bool onSetIToBigSpriteLoc(uint16_t reg) override;
-    bool onSaveFlagRegister(uint16_t reg) override;
-    bool onLoadFlagRegister(uint16_t reg) override;
+    bool onSaveFlagRegister(uint8_t reg) override;
+    bool onLoadFlagRegister(uint8_t reg) override;
     bool onSuperChipDisplay(uint16_t regX, uint16_t regY) override;
 
     Chip8::Bytes _bytes;
