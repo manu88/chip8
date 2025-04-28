@@ -10,8 +10,12 @@
 #include "HexHelpers.hpp"
 #include "Memory.hpp"
 #include <locale.h>
+#include <ncurses.h>
 #include <string>
 #include <unistd.h>
+
+#define nscroll scroll
+#undef scroll
 
 bool TermPeripherals::init() {
     initscr();
@@ -20,12 +24,12 @@ bool TermPeripherals::init() {
     cbreak(); /* Line buffering disabled. pass on everything */
 
     int startX = 4;
-    int startY = 4;
+    int startY = 1;
 
     _ouputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH,
                        Peripherals::LOW_RES_SCREEN_WIDTH, startY, startX);
 
-    startX += Peripherals::LOW_RES_SCREEN_WIDTH + 4;
+    startX += Peripherals::HIGH_RES_SCREEN_WIDTH + 4;
 
     _stateWin = newwin(24, 24, startY, startX);
 
@@ -43,8 +47,8 @@ void TermPeripherals::renderSprite(const Chip8::Memory &memory,
     for (int y = 0; y < cmd.height; y++) {
         uint8_t v = sprite.data[y];
         for (int x = 0; x < 8; x++) {
-            int xP = (cmd.x + 7 - x);
-            int yP = (cmd.y + y);
+            int xP = _scrollXOffset + (cmd.x + 7 - x);
+            int yP = _scrollYOffset + (cmd.y + y);
             if (v & 0x0001) {
                 mvwprintw(_ouputWin, yP, xP, "#");
             } else {
@@ -72,6 +76,7 @@ void TermPeripherals::update(const Chip8::Memory &memory,
         mvwprintw(_stateWin, 5 + i, 1, "v[%i]: %s", i,
                   hex(registers.v[i]).c_str());
     }
+    mvwprintw(_stateWin, 5 + 16, 1, "mode: %s", _highRes ? "HIGH" : "LOW");
     wrefresh(_ouputWin);
     wrefresh(_stateWin);
     refresh();
@@ -92,3 +97,29 @@ void TermPeripherals::clearDisplay() { _commands.clear(); }
 bool TermPeripherals::shouldStop() { return _shouldStop; }
 
 void TermPeripherals::signalExit() { _shouldStop = true; }
+
+bool TermPeripherals::changeMode(bool highRes) {
+    _highRes = highRes;
+    int newW = Peripherals::LOW_RES_SCREEN_HEIGTH;
+    int newH = Peripherals::LOW_RES_SCREEN_WIDTH;
+    if (_highRes) {
+        newW = Peripherals::HIGH_RES_SCREEN_WIDTH;
+        newH = Peripherals::HIGH_RES_SCREEN_HEIGTH;
+    }
+    wresize(_ouputWin, newH, newW);
+    return true;
+}
+
+void TermPeripherals::scroll(ScrollDirection direction, uint8_t amount) {
+    switch (direction) {
+    case Chip8::Peripherals::Down:
+        _scrollYOffset += amount;
+        break;
+    case Chip8::Peripherals::Left:
+        _scrollXOffset -= amount;
+        break;
+    case Chip8::Peripherals::Right:
+        _scrollXOffset += amount;
+        break;
+    }
+}

@@ -43,7 +43,7 @@ void Chip8::CPU::runOnce() {
     uint16_t pc = _registers.pc;
     if (!execAt(pc)) {
         if (_conf.logs) {
-            printf("Unable to exec instruction at pc=0X%0X\n", pc);
+            printf("Unable to exec instruction 0X%0X at pc=0X%0X\n",currentInstruction, pc);
         }
         return;
     }
