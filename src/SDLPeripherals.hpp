@@ -50,4 +50,7 @@ class SDLPeripherals : public Chip8::Peripherals {
     TTF_Font *_font;
 
     bool _highRes = false;
+    
+    int _scrollXOffset = 0;
+    int _scrollYOffset = 0;
 };

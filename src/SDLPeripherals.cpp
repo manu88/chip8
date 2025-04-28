@@ -60,10 +60,12 @@ void SDLPeripherals::renderSprite(const Chip8::Memory &memory,
     for (int y = 0; y < cmd.height; y++) {
         uint8_t v = sprite.data[y];
         for (int x = 0; x < 8; x++) {
+            int xx = _scrollXOffset + OFFSET;
+            int yy = _scrollYOffset + OFFSET;
             if (v & 0x0001) {
                 SDL_Rect r;
-                r.x = OFFSET + (cmd.x + 7 - x) * factor;
-                r.y = OFFSET + (cmd.y + y) * factor;
+                r.x = xx + (cmd.x + 7 - x) * factor;
+                r.y = yy + (cmd.y + y) * factor;
                 r.w = factor;
                 r.h = factor;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
@@ -134,7 +136,6 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
     for (int i = 0; i < 16; i += 2) {
         std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
         s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
-
         renderText(renderer, startX,
                    startY + (FONT_SIZE * 4) + (FONT_SIZE / 2 * i), s, _font);
     }
@@ -183,5 +184,15 @@ bool SDLPeripherals::changeMode(bool highRes) {
 }
 
 void SDLPeripherals::scroll(ScrollDirection direction, uint8_t amount) {
-    printf("scroll %i %i\n", direction, amount);
+    switch (direction) {
+    case Chip8::Peripherals::Down:
+        _scrollYOffset += amount;
+        break;
+    case Chip8::Peripherals::Left:
+        _scrollXOffset -= amount;
+        break;
+    case Chip8::Peripherals::Right:
+        _scrollXOffset += amount;
+        break;
+    }
 }
