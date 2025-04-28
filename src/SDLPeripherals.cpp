@@ -166,10 +166,3 @@ uint8_t SDLPeripherals::waitKeyPress() {
 void SDLPeripherals::clearDisplay() { _commands.clear(); }
 
 bool SDLPeripherals::shouldStop() { return _shouldStop; }
-
-void SDLPeripherals::signalExit() { _shouldStop = true; }
-
-void SDLPeripherals::changeMode(bool highRes) {
-    printf("SDL: switch mode from %i to %i\n", _highRes, highRes);
-    _highRes = highRes;
-}

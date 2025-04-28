@@ -35,9 +35,6 @@ class SDLPeripherals : public Chip8::Peripherals {
     void clearDisplay() override;
     bool shouldStop() override;
 
-    void changeMode(bool highRes) override;
-    void signalExit() override;
-
   private:
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;

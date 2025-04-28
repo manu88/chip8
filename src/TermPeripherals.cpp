@@ -86,15 +86,7 @@ void TermPeripherals::clearDisplay() { _commands.clear(); }
 
 bool TermPeripherals::shouldStop() { return _shouldStop; }
 
-void TermPeripherals::signalExit() { _shouldStop = true; }
-
 void TermPeripherals::changeMode(bool highRes) {
-    _highRes = highRes;
-    int newW = Peripherals::LOW_RES_SCREEN_HEIGTH;
-    int newH = Peripherals::LOW_RES_SCREEN_WIDTH;
-    if (_highRes) {
-        newW = Peripherals::HIGH_RES_SCREEN_WIDTH;
-        newH = Peripherals::HIGH_RES_SCREEN_HEIGTH;
-    }
-    wresize(_ouputWin, newH, newW);
+    Chip8::Peripherals::changeMode(highRes);
+    wresize(_ouputWin, _currentHeight, _currentWidth);
 }

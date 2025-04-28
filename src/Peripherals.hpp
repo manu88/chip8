@@ -31,7 +31,7 @@ class Peripherals {
         int timeoutMS;
         long frameId;
     };
-    virtual void signalExit() {}
+    virtual void signalExit() {_shouldStop = true;}
     virtual void changeMode(bool highRes);
     virtual void update(const Memory &memory, const Registers &registers,
                         const UpdateParams &params);

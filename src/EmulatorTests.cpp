@@ -31,6 +31,7 @@ struct StubPerih : Chip8::Peripherals {
     }
 
     void signalExit() override { signalExitSent = true; }
+
     bool signalExitSent = false;
 
     void changeMode(bool highRes) override {

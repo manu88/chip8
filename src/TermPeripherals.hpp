@@ -24,7 +24,6 @@ class TermPeripherals : public Chip8::Peripherals {
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
     bool shouldStop() override;
-    void signalExit() override;
     void changeMode(bool highRes) override;
 
   private:
