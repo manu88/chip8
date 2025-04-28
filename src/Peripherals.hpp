@@ -32,7 +32,7 @@ class Peripherals {
         long frameId;
     };
     virtual void signalExit() {}
-    virtual bool changeMode(bool highRes) { return false; }
+    virtual void changeMode(bool highRes);
     virtual void update(const Memory &memory, const Registers &registers,
                         const UpdateParams &params);
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i);
@@ -47,11 +47,14 @@ class Peripherals {
         Right,
         Down,
     };
-    virtual void scroll(ScrollDirection direction, uint8_t amount) {}
+    virtual void scroll(ScrollDirection direction, uint8_t amount);
 
     static uint8_t getKeyCode(char key);
 
   protected:
+    
+    uint8_t buffer[HIGH_RES_SCREEN_WIDTH][HIGH_RES_SCREEN_HEIGTH];
+    
     struct DrawCommand {
         uint16_t x;
         uint16_t y;
@@ -60,7 +63,16 @@ class Peripherals {
     };
     std::vector<DrawCommand> _commands;
 
+    bool _shouldStop = false;
+    bool _highRes = false;
+    int _scrollXOffset = 0;
+    int _scrollYOffset = 0;
+    int _currentWidth = LOW_RES_SCREEN_WIDTH;
+    int _currentHeight = LOW_RES_SCREEN_HEIGTH;
+    
   private:
+    void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
+    
     std::random_device _randomDevice;
     std::mt19937 _rng;
     std::uniform_int_distribution<uint8_t> _uint8Distrib;

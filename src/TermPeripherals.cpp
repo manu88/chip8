@@ -41,33 +41,23 @@ bool TermPeripherals::init() {
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
-void TermPeripherals::renderSprite(const Chip8::Memory &memory,
-                                   const DrawCommand &cmd) {
-    const auto sprite = memory.getSpriteData(cmd.i);
-    for (int y = 0; y < cmd.height; y++) {
-        uint8_t v = sprite.data[y];
-        for (int x = 0; x < 8; x++) {
-            int xP = _scrollXOffset + (cmd.x + 7 - x);
-            int yP = _scrollYOffset + (cmd.y + y);
-            if (v & 0x0001) {
-                mvwprintw(_ouputWin, yP, xP, "#");
-            } else {
-                mvwprintw(_ouputWin, yP, xP, " ");
-            }
-            v >>= 1;
-        }
-    }
-}
-
 void TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
+    Chip8::Peripherals::update(memory, registers, params);
     box(_ouputWin, 0, 0);
     box(_stateWin, 0, 0);
 
-    for (const auto &cmd : _commands) {
-        renderSprite(memory, cmd);
+    for (int x = 0; x < _currentWidth; x++) {
+        for (int y = 0; y < _currentHeight; y++) {
+            int xx = _scrollXOffset + x;
+            int yy = _scrollYOffset + y;
+            if (buffer[x][y]) {
+                mvwprintw(_ouputWin, yy, xx, "#");
+            }
+        }
     }
+
     mvwprintw(_stateWin, 1, 1, "pc: %s", hex(registers.pc).c_str());
     mvwprintw(_stateWin, 2, 1, "sp: %s", hex(registers.sp).c_str());
     mvwprintw(_stateWin, 3, 1, "delay: %s", hex(registers.delayTimer).c_str());
@@ -98,7 +88,7 @@ bool TermPeripherals::shouldStop() { return _shouldStop; }
 
 void TermPeripherals::signalExit() { _shouldStop = true; }
 
-bool TermPeripherals::changeMode(bool highRes) {
+void TermPeripherals::changeMode(bool highRes) {
     _highRes = highRes;
     int newW = Peripherals::LOW_RES_SCREEN_HEIGTH;
     int newH = Peripherals::LOW_RES_SCREEN_WIDTH;
@@ -107,19 +97,4 @@ bool TermPeripherals::changeMode(bool highRes) {
         newH = Peripherals::HIGH_RES_SCREEN_HEIGTH;
     }
     wresize(_ouputWin, newH, newW);
-    return true;
-}
-
-void TermPeripherals::scroll(ScrollDirection direction, uint8_t amount) {
-    switch (direction) {
-    case Chip8::Peripherals::Down:
-        _scrollYOffset += amount;
-        break;
-    case Chip8::Peripherals::Left:
-        _scrollXOffset -= amount;
-        break;
-    case Chip8::Peripherals::Right:
-        _scrollXOffset += amount;
-        break;
-    }
 }

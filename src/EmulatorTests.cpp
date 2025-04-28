@@ -33,19 +33,21 @@ struct StubPerih : Chip8::Peripherals {
     void signalExit() override { signalExitSent = true; }
     bool signalExitSent = false;
 
-    bool changeMode(bool highRes) override {
+    void changeMode(bool highRes) override {
         highResMode = highRes;
         changeModeCalled = true;
-        return true;
     }
+
     bool highResMode = false;
     bool changeModeCalled = false;
 
     void scroll(ScrollDirection direction, uint8_t amount) override {
+        Chip8::Peripherals::scroll(direction, amount);
         scrollCalled = true;
         dir = direction;
         scrollAmount = amount;
     }
+
     bool scrollCalled = false;
     ScrollDirection dir = Down;
     uint8_t scrollAmount = 40;

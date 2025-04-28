@@ -35,22 +35,12 @@ class SDLPeripherals : public Chip8::Peripherals {
     void clearDisplay() override;
     bool shouldStop() override;
 
-    bool changeMode(bool highRes) override;
+    void changeMode(bool highRes) override;
     void signalExit() override;
 
-    void scroll(ScrollDirection direction, uint8_t amount) override;
-
   private:
-    void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    bool quit = false;
-
     TTF_Font *_font;
-
-    bool _highRes = false;
-
-    int _scrollXOffset = 0;
-    int _scrollYOffset = 0;
 };

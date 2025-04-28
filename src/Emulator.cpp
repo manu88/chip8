@@ -43,7 +43,8 @@ void Chip8::CPU::runOnce() {
     uint16_t pc = _registers.pc;
     if (!execAt(pc)) {
         if (_conf.logs) {
-            printf("Unable to exec instruction 0X%0X at pc=0X%0X\n",currentInstruction, pc);
+            printf("Unable to exec instruction 0X%0X at pc=0X%0X\n",
+                   currentInstruction, pc);
         }
         return;
     }
@@ -404,19 +405,15 @@ bool Chip8::CPU::onScrollDown(uint8_t n) {
 }
 
 bool Chip8::CPU::onLowRes() {
-    if (_peripherals->changeMode(false)) {
-        advancePC();
-        return true;
-    }
-    return false;
+    _peripherals->changeMode(false);
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onHighRes() {
-    if (_peripherals->changeMode(true)) {
-        advancePC();
-        return true;
-    }
-    return false;
+    _peripherals->changeMode(true);
+    advancePC();
+    return true;
 }
 
 bool Chip8::CPU::onSaveFlagRegister(uint8_t reg) {
