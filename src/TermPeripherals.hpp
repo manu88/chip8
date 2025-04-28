@@ -23,7 +23,6 @@ class TermPeripherals : public Chip8::Peripherals {
                 const UpdateParams &params) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
-    bool shouldStop() override;
     void changeMode(bool highRes) override;
 
   private:

@@ -39,7 +39,7 @@ class Peripherals {
     virtual uint8_t waitKeyPress();
     virtual std::vector<uint8_t> getKeysPressed();
     virtual void clearDisplay();
-    virtual bool shouldStop() { return false; }
+    virtual bool shouldStop() { return _shouldStop; }
     virtual uint16_t getRand();
 
     enum ScrollDirection {

@@ -33,7 +33,6 @@ class SDLPeripherals : public Chip8::Peripherals {
                 const Chip8::Peripherals::UpdateParams &params) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
-    bool shouldStop() override;
 
   private:
     SDL_Window *window = NULL;

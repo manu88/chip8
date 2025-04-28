@@ -84,8 +84,6 @@ uint8_t TermPeripherals::waitKeyPress() {
 
 void TermPeripherals::clearDisplay() { _commands.clear(); }
 
-bool TermPeripherals::shouldStop() { return _shouldStop; }
-
 void TermPeripherals::changeMode(bool highRes) {
     Chip8::Peripherals::changeMode(highRes);
     wresize(_ouputWin, _currentHeight, _currentWidth);

@@ -164,5 +164,3 @@ uint8_t SDLPeripherals::waitKeyPress() {
 }
 
 void SDLPeripherals::clearDisplay() { _commands.clear(); }
-
-bool SDLPeripherals::shouldStop() { return _shouldStop; }
