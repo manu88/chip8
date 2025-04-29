@@ -16,4 +16,3 @@ class Rom {
     size_t size() const { return bytes.size(); }
     Chip8::Bytes bytes;
 };
-#include <stdio.h>

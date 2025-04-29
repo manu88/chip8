@@ -29,7 +29,7 @@ class Peripherals {
         int timeoutMS;
         long frameId;
     };
-    virtual void signalExit() {_shouldStop = true;}
+    virtual void signalExit() { _shouldStop = true; }
     virtual void changeMode(bool highRes);
     virtual bool update(const Memory &memory, const Registers &registers,
                         const UpdateParams &params);
@@ -50,9 +50,8 @@ class Peripherals {
     static uint8_t getKeyCode(char key);
 
   protected:
-    
     uint8_t buffer[HIGH_RES_SCREEN_WIDTH][HIGH_RES_SCREEN_HEIGTH];
-    
+
     struct DrawCommand {
         uint16_t x;
         uint16_t y;
@@ -67,9 +66,8 @@ class Peripherals {
     int _scrollYOffset = 0;
     int _currentWidth = LOW_RES_SCREEN_WIDTH;
     int _currentHeight = LOW_RES_SCREEN_HEIGTH;
-    
+
   private:
     bool renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
-
 };
 } // namespace Chip8

@@ -10,7 +10,7 @@
 #include "Peripherals.hpp"
 #include <stdint.h>
 
-typedef struct _win_st WINDOW;
+typedef struct _win_st WINDOW; // forward def
 
 class TermPeripherals : public Chip8::Peripherals {
   public:

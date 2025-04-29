@@ -63,8 +63,8 @@ void Chip8::CPU::run() {
         if (params.timeoutMS < 0) {
             params.timeoutMS = CYCLE_MS;
         }
-        
-        if(_peripherals->update(_mem, _registers, params)){
+
+        if (_peripherals->update(_mem, _registers, params)) {
             _registers.v[0XF] = 1;
         }
 
