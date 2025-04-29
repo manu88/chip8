@@ -73,7 +73,7 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
-void SDLPeripherals::update(const Chip8::Memory &memory,
+bool SDLPeripherals::update(const Chip8::Memory &memory,
                             const Chip8::Registers &registers,
                             const Chip8::Peripherals::UpdateParams &params) {
     Chip8::Peripherals::update(memory, registers, params);
@@ -143,6 +143,7 @@ void SDLPeripherals::update(const Chip8::Memory &memory,
             _shouldStop = true;
         }
     }
+    return true;
 }
 
 uint8_t SDLPeripherals::waitKeyPress() {

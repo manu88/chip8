@@ -29,7 +29,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
     bool init() override;
 
-    void update(const Chip8::Memory &memory, const Chip8::Registers &registers,
+    bool update(const Chip8::Memory &memory, const Chip8::Registers &registers,
                 const Chip8::Peripherals::UpdateParams &params) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;

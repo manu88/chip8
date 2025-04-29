@@ -19,7 +19,7 @@ class TermPeripherals : public Chip8::Peripherals {
 
     bool init() override;
     ~TermPeripherals();
-    void update(const Chip8::Memory &memory, const Chip8::Registers &registers,
+    bool update(const Chip8::Memory &memory, const Chip8::Registers &registers,
                 const UpdateParams &params) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;

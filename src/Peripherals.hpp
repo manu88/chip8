@@ -6,7 +6,6 @@
 //
 
 #pragma once
-#include <random>
 #include <stdint.h>
 #include <vector>
 
@@ -22,7 +21,6 @@ class Peripherals {
     enum { HIGH_RES_SCREEN_WIDTH = 128 };
     enum { HIGH_RES_SCREEN_HEIGTH = 64 };
 
-    Peripherals() : _rng(_randomDevice()) {}
     virtual ~Peripherals() {}
 
     virtual bool init();
@@ -33,7 +31,7 @@ class Peripherals {
     };
     virtual void signalExit() {_shouldStop = true;}
     virtual void changeMode(bool highRes);
-    virtual void update(const Memory &memory, const Registers &registers,
+    virtual bool update(const Memory &memory, const Registers &registers,
                         const UpdateParams &params);
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i);
     virtual uint8_t waitKeyPress();
@@ -71,10 +69,7 @@ class Peripherals {
     int _currentHeight = LOW_RES_SCREEN_HEIGTH;
     
   private:
-    void renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
-    
-    std::random_device _randomDevice;
-    std::mt19937 _rng;
-    std::uniform_int_distribution<uint8_t> _uint8Distrib;
+    bool renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);
+
 };
 } // namespace Chip8

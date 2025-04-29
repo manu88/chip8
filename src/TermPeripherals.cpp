@@ -41,7 +41,7 @@ bool TermPeripherals::init() {
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
-void TermPeripherals::update(const Chip8::Memory &memory,
+bool TermPeripherals::update(const Chip8::Memory &memory,
                              const Chip8::Registers &registers,
                              const UpdateParams &params) {
     Chip8::Peripherals::update(memory, registers, params);
@@ -71,6 +71,7 @@ void TermPeripherals::update(const Chip8::Memory &memory,
     wrefresh(_stateWin);
     refresh();
     usleep(params.timeoutMS * 1000);
+    return true;
 }
 
 uint8_t TermPeripherals::waitKeyPress() {

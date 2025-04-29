@@ -8,12 +8,9 @@
 #include "Peripherals.hpp"
 #include "Memory.hpp"
 #include <stdio.h>
+#include <stdlib.h>
 
 bool Chip8::Peripherals::init() {
-    auto startTime = std::chrono::system_clock::now();
-    _rng.seed((unsigned int)startTime.time_since_epoch().count());
-    _uint8Distrib = std::uniform_int_distribution<uint8_t>();
-
     memset(&buffer, 0,
            sizeof(uint8_t) * HIGH_RES_SCREEN_WIDTH * HIGH_RES_SCREEN_HEIGTH);
     return true;
@@ -30,8 +27,9 @@ std::vector<uint8_t> Chip8::Peripherals::getKeysPressed() { return {}; }
 
 void Chip8::Peripherals::clearDisplay() { printf("Display clear\n"); }
 
-void Chip8::Peripherals::renderSprite(
+bool Chip8::Peripherals::renderSprite(
     const Chip8::Memory &memory, const Chip8::Peripherals::DrawCommand &cmd) {
+    bool somethingWasErased = false;
     const auto sprite = memory.getSpriteData(cmd.i);
     for (int y = 0; y < cmd.height; y++) {
         uint8_t v = sprite.data[y];
@@ -44,20 +42,30 @@ void Chip8::Peripherals::renderSprite(
             if (yP < 0) {
                 yP = _currentHeight - yP;
             }
-
-            buffer[xP % _currentWidth][yP % _currentHeight] = v & 0x0001;
+            xP %= _currentWidth;
+            yP %= _currentHeight;
+            uint8_t currentScreenVal = buffer[xP][yP];
+            buffer[xP][yP] ^= v & 0x0001;
+            if (currentScreenVal) {
+                somethingWasErased = true;
+            }
             v >>= 1;
         }
     }
+    return somethingWasErased;
 }
 
-void Chip8::Peripherals::update(
+bool Chip8::Peripherals::update(
     const Chip8::Memory &memory, const Chip8::Registers &registers,
     const Chip8::Peripherals::UpdateParams &params) {
 
+    bool somethingWasErased = false;
     for (const auto &cmd : _commands) {
-        renderSprite(memory, cmd);
+        if (renderSprite(memory, cmd)) {
+            somethingWasErased = true;
+        }
     }
+    return somethingWasErased;
 }
 
 void Chip8::Peripherals::draw(uint16_t x, uint16_t y, uint16_t height,
@@ -129,7 +137,7 @@ void Chip8::Peripherals::changeMode(bool highRes) {
     }
 }
 
-uint16_t Chip8::Peripherals::getRand() { return _uint8Distrib(_rng); }
+uint16_t Chip8::Peripherals::getRand() { return arc4random_uniform(256); }
 
 void Chip8::Peripherals::scroll(ScrollDirection direction, uint8_t amount) {
     switch (direction) {
