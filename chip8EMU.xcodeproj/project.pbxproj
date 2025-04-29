@@ -25,6 +25,7 @@
 		5957ED6E2D972FC800C1A4BD /* FileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */; };
 		598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364CD2D91CA44003B3793 /* SDL2.framework */; };
 		598364D62D92EEA1003B3793 /* libSDL2_ttf.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */; };
+		598761312DC0EC6C00A64B3D /* MiscTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 598761302DC0EC6C00A64B3D /* MiscTests.cpp */; };
 		59C245F12DB7A79C00250429 /* HexHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F02DB7A79C00250429 /* HexHelpers.cpp */; };
 		59C245F22DB7A79C00250429 /* HexHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F02DB7A79C00250429 /* HexHelpers.cpp */; };
 		59C245F52DBA19BA00250429 /* EmulatorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59C245F42DBA19BA00250429 /* EmulatorTests.cpp */; };
@@ -86,6 +87,7 @@
 		598364D52D92EEA1003B3793 /* libSDL2_ttf.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL2_ttf.dylib; path = ../../../../../opt/homebrew/lib/libSDL2_ttf.dylib; sourceTree = "<group>"; };
 		598364DB2D92FACD003B3793 /* asm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = asm; sourceTree = BUILT_PRODUCTS_DIR; };
 		598365692D942D40003B3793 /* hello.asm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm.asm; path = hello.asm; sourceTree = "<group>"; };
+		598761302DC0EC6C00A64B3D /* MiscTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MiscTests.cpp; sourceTree = "<group>"; };
 		59C245EF2DB7A79C00250429 /* HexHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HexHelpers.hpp; sourceTree = "<group>"; };
 		59C245F02DB7A79C00250429 /* HexHelpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HexHelpers.cpp; sourceTree = "<group>"; };
 		59C245F32DBA19BA00250429 /* EmulatorTests.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EmulatorTests.hpp; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				5957ED4E2D972F1700C1A4BD /* main.cpp */,
 				59C245F32DBA19BA00250429 /* EmulatorTests.hpp */,
 				59C245F42DBA19BA00250429 /* EmulatorTests.cpp */,
+				598761302DC0EC6C00A64B3D /* MiscTests.cpp */,
 				5957ED4F2D972F1700C1A4BD /* Memory.hpp */,
 				5957ED502D972F1700C1A4BD /* Memory.cpp */,
 				5957ED512D972F1700C1A4BD /* Peripherals.hpp */,
@@ -285,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5957ED572D972F1700C1A4BD /* SDLPeripherals.cpp in Sources */,
+				598761312DC0EC6C00A64B3D /* MiscTests.cpp in Sources */,
 				5957ED582D972F1700C1A4BD /* Rom.cpp in Sources */,
 				5957ED592D972F1700C1A4BD /* Peripherals.cpp in Sources */,
 				5957ED5A2D972F1700C1A4BD /* Memory.cpp in Sources */,

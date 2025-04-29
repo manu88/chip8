@@ -80,7 +80,9 @@ int main(int argc, const char *argv[]) {
     }
     if (checkFlag(argc, argv, "-t")) {
         printf("run tests\n");
-        return runEmulatorTests();
+        runEmulatorTests();
+        runMiscTests();
+        return 0;
     }
     if (argc < 2 || argv[1][0] == '-') {
         printf("Error: no input file\n");

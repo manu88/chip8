@@ -7,4 +7,5 @@
 
 #pragma once
 
-int runEmulatorTests();
+void runEmulatorTests();
+void runMiscTests();

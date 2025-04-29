@@ -811,7 +811,7 @@ static void testLD11() {
 
 static void testSuperChip(void);
 
-int runEmulatorTests() {
+void runEmulatorTests() {
     testCLS();
     testLD1();
     testLD2();
@@ -859,7 +859,6 @@ int runEmulatorTests() {
     testSYS();
 
     testSuperChip();
-    return 0;
 }
 
 static void testEXIT() {

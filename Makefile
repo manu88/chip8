@@ -6,7 +6,7 @@ CPPFLAGS+=-I/opt/homebrew/include/ -Isrc/
 LDFLAGS=-L/opt/homebrew/lib/ -lSDL2 -lSDL2_ttf -lncurses
 LDLIBS=
 
-SRCS_EMU=src/Assembler.cpp src/InstructionParser.cpp src/Rom.cpp src/Emulator.cpp src/Memory.cpp src/SDLPeripherals.cpp src/TermPeripherals.cpp src/FileLoader.cpp src/Peripherals.cpp src/main.cpp src/HexHelpers.cpp src/EmulatorTests.cpp
+SRCS_EMU=src/Assembler.cpp src/InstructionParser.cpp src/Rom.cpp src/Emulator.cpp src/Memory.cpp src/SDLPeripherals.cpp src/TermPeripherals.cpp src/FileLoader.cpp src/Peripherals.cpp src/main.cpp src/HexHelpers.cpp src/EmulatorTests.cpp src/MiscTests.cpp
 
 SRCS_ASM=asm/Disassembler.cpp asm/main.cpp asm/Tests.cpp src/Assembler.cpp src/FileLoader.cpp src/InstructionParser.cpp src/HexHelpers.cpp
 
