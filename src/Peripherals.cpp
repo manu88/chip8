@@ -75,53 +75,42 @@ void Chip8::Peripherals::draw(uint16_t x, uint16_t y, uint16_t height,
 
 /*static*/ uint8_t Chip8::Peripherals::getKeyCode(char key) {
     // hackish
-    if (key == '0') {
+
+    switch (std::tolower(key)) {
+    case '0':
         return 0;
-    }
-    if (key == '1') {
+    case '1':
         return 1;
-    }
-    if (key == '2') {
+    case '2':
         return 2;
-    }
-    if (key == '3') {
+    case '3':
         return 3;
-    }
-    if (key == '4') {
+    case '4':
         return 4;
-    }
-    if (key == '5') {
+    case '5':
         return 5;
-    }
-    if (key == '6') {
+    case '6':
         return 6;
-    }
-    if (key == '7') {
+    case '7':
         return 7;
-    }
-    if (key == '8') {
+    case '8':
         return 8;
-    }
-    if (key == '9') {
+    case '9':
         return 9;
-    }
-    if (std::tolower(key) == 'a') {
+    case 'a':
         return 10;
-    }
-    if (std::tolower(key) == 'b') {
+    case 'b':
         return 11;
-    }
-    if (std::tolower(key) == 'c') {
+    case 'c':
         return 12;
-    }
-    if (std::tolower(key) == 'd') {
+    case 'd':
         return 13;
-    }
-    if (std::tolower(key) == 'e') {
+    case 'e':
         return 14;
-    }
-    if (std::tolower(key) == 'f') {
+    case 'f':
         return 15;
+    default:
+        break;
     }
     return 0;
 }
