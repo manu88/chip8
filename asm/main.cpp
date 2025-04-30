@@ -46,11 +46,12 @@ int runAssembler(const std::string &srcFilePath, const std::string &outFilePath,
 
 int runDisassembler(const std::string &binFilePath,
                     const std::string &outFilePath, bool superChip) {
-    Disassembler disassembler({.superInstructions = superChip});
-    if (!disassembler.loadFile(binFilePath)) {
+    Chip8::Bytes b;
+    if (!Chip8::loadFile(binFilePath, b)) {
         printf("unable to read from file '%s'\n", binFilePath.c_str());
         return 1;
     }
+    Disassembler disassembler({.superInstructions = superChip});
     std::string code = disassembler.generate();
     if (code.size() == 0) {
         return 1;

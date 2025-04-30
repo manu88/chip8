@@ -23,8 +23,6 @@ class Disassembler : public Chip8::InstructionParser {
     Disassembler(Chip8::Config conf = Chip8::Config())
         : Disassembler(Chip8::Bytes(), conf) {}
 
-    bool loadFile(const std::string &path);
-
     std::string generate();
 
     struct Parameters {
