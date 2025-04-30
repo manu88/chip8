@@ -51,7 +51,7 @@ int runDisassembler(const std::string &binFilePath,
         printf("unable to read from file '%s'\n", binFilePath.c_str());
         return 1;
     }
-    Disassembler disassembler({.superInstructions = superChip});
+    Disassembler disassembler(b, {.superInstructions = superChip});
     std::string code = disassembler.generate();
     if (code.size() == 0) {
         return 1;

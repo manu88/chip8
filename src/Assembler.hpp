@@ -40,7 +40,6 @@ class Assembler {
 
     Assembler(const std::string &code, Chip8::Config conf = Chip8::Config())
         : _originalCode(code), _conf(conf) {}
-    Assembler(Chip8::Config conf = Chip8::Config()) : Assembler("", conf) {}
 
     Chip8::Bytes generate();
 
