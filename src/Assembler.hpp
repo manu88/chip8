@@ -42,8 +42,6 @@ class Assembler {
         : _originalCode(code), _conf(conf) {}
     Assembler(Chip8::Config conf = Chip8::Config()) : Assembler("", conf) {}
 
-    bool loadFile(const std::string &path);
-
     Chip8::Bytes generate();
 
     OptionalError getError() const { return _error; }

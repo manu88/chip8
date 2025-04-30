@@ -13,11 +13,13 @@
 
 int runAssembler(const std::string &srcFilePath, const std::string &outFilePath,
                  bool superChip) {
-    Assembler assembler({.superInstructions = superChip});
-    if (!assembler.loadFile(srcFilePath)) {
+    std::string fileContent;
+    if (!Chip8::loadFile(srcFilePath, fileContent)) {
         printf("unable to read from file '%s'\n", srcFilePath.c_str());
         return 1;
     }
+    Assembler assembler(fileContent, {.superInstructions = superChip});
+
     Chip8::Bytes binary = assembler.generate();
 
     if (assembler.getError().has_value()) {

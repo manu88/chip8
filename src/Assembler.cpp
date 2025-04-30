@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <assert.h>
 #include <cctype>
-#include <fstream>
 #include <locale>
 #include <sstream>
 #include <streambuf>
@@ -59,17 +58,6 @@ Assembler::Instruction splitInstruction(const std::string &line) {
     std::string op = line.substr(0, found);
     toUpper(op);
     return {op, splitArguments(strArgs)};
-}
-
-bool Assembler::loadFile(const std::string &path) {
-    std::ifstream infile(path);
-    if (!infile.good()) {
-        return false;
-    }
-    _originalCode = std::string((std::istreambuf_iterator<char>(infile)),
-                                std::istreambuf_iterator<char>());
-    infile.close();
-    return true;
 }
 
 Chip8::Bytes Assembler::generate() {

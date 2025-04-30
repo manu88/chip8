@@ -26,3 +26,14 @@ bool Chip8::loadFile(const std::string &path, Chip8::Bytes &bytes) {
     file.close();
     return true;
 }
+
+bool Chip8::loadFile(const std::string &path, std::string &content) {
+    std::ifstream infile(path);
+    if (!infile.good()) {
+        return "";
+    }
+    content = std::string((std::istreambuf_iterator<char>(infile)),
+                          std::istreambuf_iterator<char>());
+    infile.close();
+    return true;
+}

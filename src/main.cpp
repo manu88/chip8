@@ -56,11 +56,12 @@ static Chip8::Peripherals *createPeripherals(bool useGui) {
 
 static bool buildAsm(const std::string &inputFile, Rom &rom,
                      const Chip8::Config &conf) {
-    Assembler assembler(conf);
-    if (!assembler.loadFile(inputFile)) {
+    std::string code;
+    if (!Chip8::loadFile(inputFile, code)) {
         printf("unable to read from file '%s'\n", inputFile.c_str());
         return false;
     }
+    Assembler assembler(code, conf);
     rom.bytes = assembler.generate();
 
     if (assembler.getError().has_value()) {
