@@ -37,6 +37,14 @@ static void removeComments(std::string &s) {
     s.resize(found);
 }
 
+Assembler::Assembler(const std::string &code, Chip8::Config conf)
+    : _conf(conf) {
+    std::istringstream iss(code);
+    for (std::string line; std::getline(iss, line);) {
+        _originalCodeLines.push_back(line);
+    }
+}
+
 std::vector<std::string> splitArguments(const std::string &argsStr) {
     std::vector<std::string> args;
     std::istringstream f(argsStr);
@@ -69,14 +77,17 @@ Chip8::Bytes Assembler::generate() {
 
 bool Assembler::preprocess() {
     _instructions.clear();
-    std::istringstream iss(_originalCode);
-    int lineNum = 1;
+    _debugSymbols.clear();
+
+    int lineNum = 0;
     uint16_t addr = Chip8::Memory::ROM_START;
-    for (std::string line; std::getline(iss, line);) {
+    for (std::string line : _originalCodeLines) {
+        std::string originalLine = line;
         rtrim(line);
         ltrim(line);
         toUpper(line);
         removeComments(line);
+
         if (!line.empty()) {
             Instruction inst = splitInstruction(line);
             inst.originalLineNum = lineNum;
@@ -102,6 +113,11 @@ Chip8::Bytes Assembler::process() {
     Chip8::Bytes ret;
     for (const auto &inst : _instructions) {
         OptionalError err = std::nullopt;
+        if (inst.isLabel()) {
+            // ignore labels, they are already taken care of by preprocess
+            continue;
+        }
+
         uint16_t byteCode = generateMachineCode(inst, err);
         if (err) {
             _error = err;
@@ -111,11 +127,18 @@ Chip8::Bytes Assembler::process() {
         if (byteCode == 0) {
             continue;
         }
+        if (_conf.debugInstructions) {
+            _debugSymbols[_currentAddr] =
+                _originalCodeLines[inst.originalLineNum];
+        }
         uint8_t b0 = byteCode >> 8;
         uint8_t b1 = (uint8_t)byteCode;
         ret.push_back(b0);
         ret.push_back(b1);
         _currentAddr += 2;
+    }
+    if (_conf.debugInstructions) {
+        assert(ret.size() / 2 == _debugSymbols.size());
     }
     return ret;
 }
@@ -934,9 +957,6 @@ uint16_t Assembler::generateMachineCode(const Instruction &inst,
         return generateSKP(inst.args, error);
     } else if (inst.op == "RND") {
         return generateCxkk(inst.args, error);
-    } else if (inst.isLabel()) {
-        // ignore labels, they are already taken care of by preprocess
-        return 0;
     } else if (_conf.superInstructions) {
         if (inst.op == "EXIT") {
             return 0X00FD;

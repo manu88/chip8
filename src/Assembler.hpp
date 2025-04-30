@@ -20,6 +20,8 @@ class Assembler {
     };
 
     using OptionalError = std::optional<Error>;
+    using DebugSymbolMap =
+        std::map<uint16_t, std::string>; // key is instruction addr.
 
     struct Instruction {
         std::string op;
@@ -38,12 +40,13 @@ class Assembler {
         }
     };
 
-    Assembler(const std::string &code, Chip8::Config conf = Chip8::Config())
-        : _originalCode(code), _conf(conf) {}
+    Assembler(const std::string &code, Chip8::Config conf = Chip8::Config());
 
     Chip8::Bytes generate();
 
     OptionalError getError() const { return _error; }
+
+    const DebugSymbolMap getDebugSymbols() const { return _debugSymbols; }
 
   private:
     bool preprocess();
@@ -60,7 +63,8 @@ class Assembler {
     uint16_t generate2nnn(const std::vector<std::string> &args,
                           Assembler::OptionalError &error);
 
-    std::string _originalCode;
+    std::vector<std::string> _originalCodeLines;
+    DebugSymbolMap _debugSymbols;
     std::vector<Instruction> _instructions;
     uint16_t _currentAddr = 0;
 
