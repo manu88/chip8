@@ -38,13 +38,14 @@ bool getFlagValue(int argc, const char *argv[], const char *flag,
 }
 
 void printUsage() {
-    printf("usage: inputfile [-h] [-v] [-a] [-g] [-t] [-s]\n");
+    printf("usage: inputfile [-h] [-v] [-a] [-g] [-t] [-s] [-d]\n");
     printf("-h: this help\n");
     printf("-v: verbose\n");
     printf("-a: compile input file\n");
     printf("-g: use GUI\n");
     printf("-t: run tests\n");
     printf("-s: superchip mode\n");
+    printf("-d: superchip mode\n");
 }
 
 static Chip8::Peripherals *createPeripherals(bool useGui) {
@@ -91,22 +92,28 @@ int main(int argc, const char *argv[]) {
         return 0;
     }
     bool verbose = false;
+    bool debug = false;
+    bool inputIsAsm = false;
+    bool useGUI = false;
+    bool superChip = false;
 
     const std::string inputFile = argv[1];
     if (checkFlag(argc, argv, "-v")) {
         verbose = true;
     }
 
-    bool inputIsAsm = false;
+    if (checkFlag(argc, argv, "-d")) {
+        debug = true;
+    }
+
     if (checkFlag(argc, argv, "-a")) {
         inputIsAsm = true;
     }
 
-    bool useGUI = false;
     if (checkFlag(argc, argv, "-g")) {
         useGUI = true;
     }
-    bool superChip = false;
+
     if (checkFlag(argc, argv, "-s")) {
         superChip = true;
     }
@@ -114,6 +121,7 @@ int main(int argc, const char *argv[]) {
     Chip8::Config conf;
     conf.logs = verbose;
     conf.superInstructions = superChip;
+    conf.debugInstructions = debug;
 
     if (inputIsAsm) {
         if (!buildAsm(inputFile, rom, conf)) {
