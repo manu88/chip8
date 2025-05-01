@@ -9,6 +9,7 @@
 #include "Emulator.hpp"
 #include "HexHelpers.hpp"
 #include "Memory.hpp"
+#include "Rom.hpp"
 #include <SDL2/SDL_ttf.h>
 #include <string>
 
@@ -75,7 +76,7 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
 }
 
 void SDLPeripherals::drawDebugger(const Chip8::Registers &registers,
-                                  int startY) {
+                                  const Chip8::Memory &memory, int startY) {
     int startX =
         (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
     SDL_Rect r;
@@ -83,10 +84,14 @@ void SDLPeripherals::drawDebugger(const Chip8::Registers &registers,
     startY += 14;
     r.x = startX;
     r.y = startY;
-    r.w = 200;
+    r.w = 250;
     r.h = 98;
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &r);
+
+    const std::string code =
+        memory.getRom()->getDebugSymbols().at(registers.pc);
+    renderText(renderer, startX, startY + FONT_SIZE, code, _font);
 }
 
 int SDLPeripherals::drawStats(const Chip8::Registers &registers) {
@@ -167,7 +172,7 @@ bool SDLPeripherals::update(const Chip8::Memory &memory,
 
     if (_conf.debugInstructions) {
         int startY = drawStats(registers);
-        drawDebugger(registers, startY);
+        drawDebugger(registers, memory, startY);
     }
 
     SDL_RenderPresent(renderer);
@@ -180,6 +185,8 @@ bool SDLPeripherals::update(const Chip8::Memory &memory,
         } else if (e.type == SDL_KEYUP) {
             if (e.key.keysym.sym == SDLK_SPACE) {
                 printf("space\n");
+            } else if (e.key.keysym.sym == SDLK_n) {
+                printf("next\n");
             }
         }
     }

@@ -22,3 +22,16 @@ void Rom::dump() {
     }
     printf("\n");
 }
+
+const Assembler::DebugSymbolMap Rom::getDebugSymbols() const {
+    return _debugSymbols;
+}
+
+void Rom::relocateDebugSymbols(uint16_t offset) {
+    Assembler::DebugSymbolMap newMap;
+
+    for (auto &p : _debugSymbols) {
+        newMap[p.first + offset] = p.second;
+    }
+    _debugSymbols = newMap;
+}

@@ -66,7 +66,7 @@ static bool buildAsm(const std::string &inputFile, Rom &rom,
     Assembler assembler(code, conf);
     rom.bytes = assembler.generate();
     if (conf.debugInstructions) {
-        rom.debugSymbols = assembler.getDebugSymbols();
+        rom.setDebugSymbols(assembler.getDebugSymbols());
     }
 
     if (assembler.getError().has_value()) {

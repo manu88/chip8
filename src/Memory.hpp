@@ -25,6 +25,7 @@ class Memory {
 
     bool isValid(uint16_t addr) const;
     void setRom(Rom *rom);
+    const Rom *getRom() const { return _rom; }
     uint8_t getValueAtAddr(uint16_t addr) const;
     uint8_t getSpriteAddr(uint16_t val) const;
 

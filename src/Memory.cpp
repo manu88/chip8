@@ -45,7 +45,10 @@ static const uint8_t Sprites[NUM_SPRITES][5] = {
     {0b11110000, 0b10000000, 0b11110000, 0b10000000, 0b10000000},
 };
 
-void Chip8::Memory::setRom(Rom *rom) { _rom = rom; }
+void Chip8::Memory::setRom(Rom *rom) {
+    _rom = rom;
+    _rom->relocateDebugSymbols(ROM_ADDR);
+}
 
 bool Chip8::Memory::isValid(uint16_t addr) const {
     if (addr >= ROM_ADDR) {
