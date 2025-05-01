@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include "Assembler.hpp"
 #include "FileLoader.hpp"
 #include <string>
 
@@ -15,4 +16,5 @@ class Rom {
     void dump();
     size_t size() const { return bytes.size(); }
     Chip8::Bytes bytes;
+    Assembler::DebugSymbolMap debugSymbols;
 };
