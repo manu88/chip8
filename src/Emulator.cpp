@@ -40,14 +40,22 @@ void Chip8::CPU::updateTimers(double totalDurationMS) {
 void Chip8::CPU::advancePC() { _registers.pc += 2; }
 
 void Chip8::CPU::runOnce() {
+    if (_conf.debugInstructions) {
+        if (debugCtx.paused || !debugCtx.stepNext) {
+            return;
+        }
+        if(debugCtx.stepNext){
+            debugCtx.stepNext = false;
+        }
+    }
     uint16_t pc = _registers.pc;
     if (!execAt(pc)) {
         if (_conf.logs) {
             printf("Unable to exec instruction 0X%0X at pc=0X%0X\n",
                    currentInstruction, pc);
         }
-        return;
     }
+
 }
 
 void Chip8::CPU::run() {

@@ -13,6 +13,7 @@
 namespace Chip8 {
 class Memory;
 class Registers;
+class CPU;
 
 class Peripherals {
   public:

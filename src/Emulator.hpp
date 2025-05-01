@@ -45,6 +45,11 @@ struct Registers {
 
 class CPU : public InstructionParser {
   public:
+    
+    struct DebuggerContext{
+        bool paused = false;
+        bool stepNext = false;
+    };
     enum { CYCLE_MS = 16 }; // approx. 60Hz
     enum { DELAY_TIMER_HZ = 60 };
 
@@ -59,6 +64,8 @@ class CPU : public InstructionParser {
 
     Registers &getRegisters() { return _registers; }
     Memory &getMemory() { return _mem; }
+    
+    DebuggerContext debugCtx;
 
   private:
     void advancePC();
