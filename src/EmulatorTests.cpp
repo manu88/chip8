@@ -12,6 +12,7 @@
 #include <assert.h>
 
 struct StubPerih : Chip8::Peripherals {
+    StubPerih() : Peripherals(Chip8::Config()) {}
     void resetStubState() { clearDisplayCalled = false; }
     void clearDisplay() override { clearDisplayCalled = true; }
 

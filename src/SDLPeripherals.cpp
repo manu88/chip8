@@ -16,7 +16,8 @@
 #define OFFSET (int)10
 #define FONT_SIZE 16
 
-SDLPeripherals::SDLPeripherals() {
+SDLPeripherals::SDLPeripherals(const Chip8::Config &conf)
+    : Chip8::Peripherals(conf) {
     TTF_Init();
     _font = TTF_OpenFont("/opt/Arial.ttf", FONT_SIZE);
 }
@@ -73,6 +74,61 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
+void SDLPeripherals::drawDebugger(const Chip8::Registers &registers,
+                                  int startY) {
+    int startX =
+        (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
+    SDL_Rect r;
+    startX -= 4;
+    startY += 14;
+    r.x = startX;
+    r.y = startY;
+    r.w = 200;
+    r.h = 98;
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &r);
+}
+
+int SDLPeripherals::drawStats(const Chip8::Registers &registers) {
+    const int startX =
+        (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
+    const int startY = 10;
+
+    // render machine stats
+
+    renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
+    int inc = 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               "sp: " + hex(registers.sp), _font);
+    inc += 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               "delay: " + hex(registers.delayTimer), _font);
+    inc += 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               "sound: " + hex(registers.soundTimer), _font);
+    inc += 1;
+    for (int i = 0; i < 16; i += 2) {
+        std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
+        s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
+        renderText(renderer, startX,
+                   startY + (FONT_SIZE * 4) + (FONT_SIZE / 2 * i), s, _font);
+    }
+    inc += 8;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               std::string("mode: ") + (_highRes ? "HIGH" : "LOW"), _font);
+    inc += 1;
+
+    // frame around stats 'screen'
+    SDL_Rect r;
+    r.x = startX - 4;
+    r.y = startY;
+    r.w = 150;
+    r.h = startY + (FONT_SIZE * inc);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &r);
+    return r.h;
+}
+
 bool SDLPeripherals::update(const Chip8::Memory &memory,
                             const Chip8::Registers &registers,
                             const Chip8::Peripherals::UpdateParams &params) {
@@ -109,31 +165,11 @@ bool SDLPeripherals::update(const Chip8::Memory &memory,
         }
     }
 
-    // render machine stats
-    const int startX =
-        (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
-    const int startY = 10;
-    renderText(renderer, startX, startY, "pc: " + hex(registers.pc), _font);
-    int inc = 1;
-    renderText(renderer, startX, startY + (FONT_SIZE * inc),
-               "sp: " + hex(registers.sp), _font);
-    inc += 1;
-    renderText(renderer, startX, startY + (FONT_SIZE * inc),
-               "delay: " + hex(registers.delayTimer), _font);
-    inc += 1;
-    renderText(renderer, startX, startY + (FONT_SIZE * inc),
-               "sound: " + hex(registers.soundTimer), _font);
-    inc += 1;
-    for (int i = 0; i < 16; i += 2) {
-        std::string s = "v" + std::to_string(i) + ": " + hex(registers.v[i]);
-        s += " v" + std::to_string(i + 1) + ": " + hex(registers.v[i + 1]);
-        renderText(renderer, startX,
-                   startY + (FONT_SIZE * 4) + (FONT_SIZE / 2 * i), s, _font);
+    if (_conf.debugInstructions) {
+        int startY = drawStats(registers);
+        drawDebugger(registers, startY);
     }
-    inc += 8;
-    renderText(renderer, startX, startY + (FONT_SIZE * inc),
-               std::string("mode: ") + (_highRes ? "HIGH" : "LOW"), _font);
-    inc += 1;
+
     SDL_RenderPresent(renderer);
 
     SDL_Event e;
@@ -141,6 +177,10 @@ bool SDLPeripherals::update(const Chip8::Memory &memory,
     while (SDL_WaitEventTimeout(&e, params.timeoutMS) != 0) {
         if (e.type == SDL_QUIT) {
             _shouldStop = true;
+        } else if (e.type == SDL_KEYUP) {
+            if (e.key.keysym.sym == SDLK_SPACE) {
+                printf("space\n");
+            }
         }
     }
     return true;

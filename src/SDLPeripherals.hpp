@@ -24,17 +24,22 @@ class SDLPeripherals : public Chip8::Peripherals {
     enum { LOW_RES_SCALE_FACTOR = 10 };
     enum { HIGH_RES_SCALE_FACTOR = 5 };
 
-    SDLPeripherals();
+    SDLPeripherals(const Chip8::Config &conf);
+
     ~SDLPeripherals();
 
     bool init() override;
 
     bool update(const Chip8::Memory &memory, const Chip8::Registers &registers,
                 const Chip8::Peripherals::UpdateParams &params) override;
+
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
 
   private:
+    int drawStats(const Chip8::Registers &registers);
+    void drawDebugger(const Chip8::Registers &registers, int startY);
+
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 

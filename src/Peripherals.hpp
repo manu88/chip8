@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include "Config.hpp"
 #include <stdint.h>
 #include <vector>
 
@@ -20,6 +21,8 @@ class Peripherals {
 
     enum { HIGH_RES_SCREEN_WIDTH = 128 };
     enum { HIGH_RES_SCREEN_HEIGTH = 64 };
+
+    Peripherals(const Config &config) : _conf(config) {}
 
     virtual ~Peripherals() {}
 
@@ -66,6 +69,8 @@ class Peripherals {
     int _scrollYOffset = 0;
     int _currentWidth = LOW_RES_SCREEN_WIDTH;
     int _currentHeight = LOW_RES_SCREEN_HEIGTH;
+
+    Config _conf;
 
   private:
     bool renderSprite(const Chip8::Memory &memory, const DrawCommand &cmd);

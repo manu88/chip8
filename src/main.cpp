@@ -48,11 +48,12 @@ void printUsage() {
     printf("-d: superchip mode\n");
 }
 
-static Chip8::Peripherals *createPeripherals(bool useGui) {
+static Chip8::Peripherals *createPeripherals(bool useGui,
+                                             const Chip8::Config &conf) {
     if (useGui) {
-        return new SDLPeripherals();
+        return new SDLPeripherals(conf);
     }
-    return new TermPeripherals();
+    return new TermPeripherals(conf);
 }
 
 static bool buildAsm(const std::string &inputFile, Rom &rom,
@@ -133,7 +134,7 @@ int main(int argc, const char *argv[]) {
             return 1;
         }
     }
-    auto p = createPeripherals(useGUI);
+    auto p = createPeripherals(useGUI, conf);
     p->init();
 
     Chip8::CPU emu(conf);
