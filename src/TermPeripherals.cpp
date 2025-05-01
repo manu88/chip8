@@ -41,10 +41,9 @@ bool TermPeripherals::init() {
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
-bool TermPeripherals::update(const Chip8::Memory &memory,
-                             const Chip8::Registers &registers,
+bool TermPeripherals::update(const Chip8::CPU &cpu,
                              const UpdateParams &params) {
-    Chip8::Peripherals::update(memory, registers, params);
+    Chip8::Peripherals::update(cpu, params);
     box(_ouputWin, 0, 0);
     box(_stateWin, 0, 0);
 
@@ -58,13 +57,15 @@ bool TermPeripherals::update(const Chip8::Memory &memory,
         }
     }
 
-    mvwprintw(_stateWin, 1, 1, "pc: %s", hex(registers.pc).c_str());
-    mvwprintw(_stateWin, 2, 1, "sp: %s", hex(registers.sp).c_str());
-    mvwprintw(_stateWin, 3, 1, "delay: %s", hex(registers.delayTimer).c_str());
-    mvwprintw(_stateWin, 4, 1, "sound: %s", hex(registers.soundTimer).c_str());
+    mvwprintw(_stateWin, 1, 1, "pc: %s", hex(cpu.getRegisters().pc).c_str());
+    mvwprintw(_stateWin, 2, 1, "sp: %s", hex(cpu.getRegisters().sp).c_str());
+    mvwprintw(_stateWin, 3, 1, "delay: %s",
+              hex(cpu.getRegisters().delayTimer).c_str());
+    mvwprintw(_stateWin, 4, 1, "sound: %s",
+              hex(cpu.getRegisters().soundTimer).c_str());
     for (int i = 0; i < Chip8::Registers::Size; i++) {
         mvwprintw(_stateWin, 5 + i, 1, "v[%i]: %s", i,
-                  hex(registers.v[i]).c_str());
+                  hex(cpu.getRegisters().v[i]).c_str());
     }
     mvwprintw(_stateWin, 5 + 16, 1, "mode: %s", _highRes ? "HIGH" : "LOW");
     wrefresh(_ouputWin);

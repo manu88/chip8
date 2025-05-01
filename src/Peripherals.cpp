@@ -6,6 +6,7 @@
 //
 
 #include "Peripherals.hpp"
+#include "Emulator.hpp"
 #include "Memory.hpp"
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,12 +57,11 @@ bool Chip8::Peripherals::renderSprite(
 }
 
 bool Chip8::Peripherals::update(
-    const Chip8::Memory &memory, const Chip8::Registers &registers,
-    const Chip8::Peripherals::UpdateParams &params) {
+    const CPU &cpu, const Chip8::Peripherals::UpdateParams &params) {
 
     bool somethingWasErased = false;
     for (const auto &cmd : _commands) {
-        if (renderSprite(memory, cmd)) {
+        if (renderSprite(cpu.getMemory(), cmd)) {
             somethingWasErased = true;
         }
     }

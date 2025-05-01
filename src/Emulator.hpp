@@ -45,8 +45,7 @@ struct Registers {
 
 class CPU : public InstructionParser {
   public:
-    
-    struct DebuggerContext{
+    struct DebuggerContext {
         bool paused = false;
         bool stepNext = false;
     };
@@ -63,8 +62,9 @@ class CPU : public InstructionParser {
     void dump();
 
     Registers &getRegisters() { return _registers; }
+    const Registers &getRegisters() const { return _registers; }
     Memory &getMemory() { return _mem; }
-    
+    const Memory &getMemory() const { return _mem; }
     DebuggerContext debugCtx;
 
   private:

@@ -41,10 +41,10 @@ void Chip8::CPU::advancePC() { _registers.pc += 2; }
 
 void Chip8::CPU::runOnce() {
     if (_conf.debugInstructions) {
-        if (debugCtx.paused || !debugCtx.stepNext) {
+        if (debugCtx.paused) {
             return;
         }
-        if(debugCtx.stepNext){
+        if (debugCtx.stepNext) {
             debugCtx.stepNext = false;
         }
     }
@@ -55,7 +55,6 @@ void Chip8::CPU::runOnce() {
                    currentInstruction, pc);
         }
     }
-
 }
 
 void Chip8::CPU::run() {
@@ -72,7 +71,7 @@ void Chip8::CPU::run() {
             params.timeoutMS = CYCLE_MS;
         }
 
-        if (_peripherals->update(_mem, _registers, params)) {
+        if (_peripherals->update(*this, params)) {
             _registers.v[0XF] = 1;
         }
 

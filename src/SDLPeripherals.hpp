@@ -30,7 +30,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
     bool init() override;
 
-    bool update(const Chip8::Memory &memory, const Chip8::Registers &registers,
+    bool update(const Chip8::CPU &cpu,
                 const Chip8::Peripherals::UpdateParams &params) override;
 
     uint8_t waitKeyPress() override;
@@ -38,8 +38,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
   private:
     int drawStats(const Chip8::Registers &registers);
-    void drawDebugger(const Chip8::Registers &registers,
-                      const Chip8::Memory &memory, int startY);
+    void drawDebugger(const Chip8::CPU &cpu, int startY);
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;

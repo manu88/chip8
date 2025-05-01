@@ -20,7 +20,6 @@
 		5957ED672D972F8100C1A4BD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED632D972F8100C1A4BD /* main.cpp */; };
 		5957ED682D972F8100C1A4BD /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED652D972F8100C1A4BD /* Tests.cpp */; };
 		5957ED6A2D972FA300C1A4BD /* InstructionParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4D2D972F1700C1A4BD /* InstructionParser.cpp */; };
-		5957ED6C2D972FB200C1A4BD /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED502D972F1700C1A4BD /* Memory.cpp */; };
 		5957ED6D2D972FBD00C1A4BD /* Assembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED462D972F1700C1A4BD /* Assembler.cpp */; };
 		5957ED6E2D972FC800C1A4BD /* FileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5957ED4B2D972F1700C1A4BD /* FileLoader.cpp */; };
 		598364CE2D91CA44003B3793 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598364CD2D91CA44003B3793 /* SDL2.framework */; };
@@ -307,7 +306,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5957ED6C2D972FB200C1A4BD /* Memory.cpp in Sources */,
 				5957ED662D972F8100C1A4BD /* Disassembler.cpp in Sources */,
 				5957ED6A2D972FA300C1A4BD /* InstructionParser.cpp in Sources */,
 				5957ED672D972F8100C1A4BD /* main.cpp in Sources */,

@@ -75,8 +75,7 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
-void SDLPeripherals::drawDebugger(const Chip8::Registers &registers,
-                                  const Chip8::Memory &memory, int startY) {
+void SDLPeripherals::drawDebugger(const Chip8::CPU &cpu, int startY) {
     int startX =
         (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
     SDL_Rect r;
@@ -90,7 +89,7 @@ void SDLPeripherals::drawDebugger(const Chip8::Registers &registers,
     SDL_RenderDrawRect(renderer, &r);
 
     const std::string code =
-        memory.getRom()->getDebugSymbols().at(registers.pc);
+        cpu.getMemory().getRom()->getDebugSymbols().at(cpu.getRegisters().pc);
     renderText(renderer, startX, startY + FONT_SIZE, code, _font);
 }
 
@@ -134,10 +133,9 @@ int SDLPeripherals::drawStats(const Chip8::Registers &registers) {
     return r.h;
 }
 
-bool SDLPeripherals::update(const Chip8::Memory &memory,
-                            const Chip8::Registers &registers,
+bool SDLPeripherals::update(const Chip8::CPU &cpu,
                             const Chip8::Peripherals::UpdateParams &params) {
-    Chip8::Peripherals::update(memory, registers, params);
+    Chip8::Peripherals::update(cpu, params);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     SDL_RenderClear(renderer);
@@ -171,8 +169,8 @@ bool SDLPeripherals::update(const Chip8::Memory &memory,
     }
 
     if (_conf.debugInstructions) {
-        int startY = drawStats(registers);
-        drawDebugger(registers, memory, startY);
+        int startY = drawStats(cpu.getRegisters());
+        drawDebugger(cpu, startY);
     }
 
     SDL_RenderPresent(renderer);
