@@ -46,6 +46,7 @@ void Chip8::CPU::runOnce() {
         }
         if (debugCtx.stepNext) {
             debugCtx.stepNext = false;
+            debugCtx.paused = true;
         }
     }
     uint16_t pc = _registers.pc;

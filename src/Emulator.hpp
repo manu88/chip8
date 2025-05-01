@@ -46,7 +46,7 @@ struct Registers {
 class CPU : public InstructionParser {
   public:
     struct DebuggerContext {
-        bool paused = false;
+        bool paused = true;
         bool stepNext = false;
     };
     enum { CYCLE_MS = 16 }; // approx. 60Hz
@@ -65,7 +65,17 @@ class CPU : public InstructionParser {
     const Registers &getRegisters() const { return _registers; }
     Memory &getMemory() { return _mem; }
     const Memory &getMemory() const { return _mem; }
-    DebuggerContext debugCtx;
+
+    void pauseDebugger() const { debugCtx.paused = true; }
+    void resumeDebugger() const {
+        debugCtx.paused = false;
+        debugCtx.stepNext = false;
+    }
+    bool debuggerIsPaused() const { return debugCtx.paused; }
+    void debuggerStepNext() const {
+        debugCtx.paused = false;
+        debugCtx.stepNext = true;
+    }
 
   private:
     void advancePC();
@@ -129,5 +139,7 @@ class CPU : public InstructionParser {
     Peripherals *_peripherals;
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
+
+    mutable DebuggerContext debugCtx;
 };
 } // namespace Chip8

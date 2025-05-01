@@ -90,7 +90,12 @@ void SDLPeripherals::drawDebugger(const Chip8::CPU &cpu, int startY) {
 
     const std::string code =
         cpu.getMemory().getRom()->getDebugSymbols().at(cpu.getRegisters().pc);
-    renderText(renderer, startX, startY + FONT_SIZE, code, _font);
+
+    int inc = 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc),
+               cpu.debuggerIsPaused() ? "PAUSED" : "RUNNING", _font);
+    inc += 1;
+    renderText(renderer, startX, startY + (FONT_SIZE * inc), code, _font);
 }
 
 int SDLPeripherals::drawStats(const Chip8::Registers &registers) {
@@ -182,9 +187,15 @@ bool SDLPeripherals::update(const Chip8::CPU &cpu,
             _shouldStop = true;
         } else if (e.type == SDL_KEYUP) {
             if (e.key.keysym.sym == SDLK_SPACE) {
-                printf("space\n");
+                if (_conf.debugInstructions) {
+                    if (cpu.debuggerIsPaused()) {
+                        cpu.resumeDebugger();
+                    } else {
+                        cpu.pauseDebugger();
+                    }
+                }
             } else if (e.key.keysym.sym == SDLK_n) {
-                printf("next\n");
+                cpu.debuggerStepNext();
             }
         }
     }
