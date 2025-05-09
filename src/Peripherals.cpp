@@ -65,6 +65,7 @@ bool Chip8::Peripherals::update(
             somethingWasErased = true;
         }
     }
+    _commands.clear();
     return somethingWasErased;
 }
 
