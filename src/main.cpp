@@ -138,7 +138,6 @@ int main(int argc, const char *argv[]) {
         }
     }
     auto p = createPeripherals(useGUI, conf);
-    p->init();
 
     Chip8::CPU emu(conf);
     emu.init(&rom, p);
