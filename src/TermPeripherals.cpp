@@ -36,7 +36,7 @@ bool TermPeripherals::init() {
     keypad(_ouputWin, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
-    return true;
+    return Peripherals::init();
 }
 
 TermPeripherals::~TermPeripherals() { endwin(); }
