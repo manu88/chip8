@@ -57,7 +57,7 @@ bool Chip8::Peripherals::renderSprite(
 }
 
 bool Chip8::Peripherals::update(
-    const CPU &cpu, const Chip8::Peripherals::UpdateParams &params) {
+    CPU &cpu, const Chip8::Peripherals::UpdateParams &params) {
 
     bool somethingWasErased = false;
     for (const auto &cmd : _commands) {

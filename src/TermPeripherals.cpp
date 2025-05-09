@@ -41,8 +41,7 @@ bool TermPeripherals::init() {
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
-bool TermPeripherals::update(const Chip8::CPU &cpu,
-                             const UpdateParams &params) {
+bool TermPeripherals::update(Chip8::CPU &cpu, const UpdateParams &params) {
     Chip8::Peripherals::update(cpu, params);
     box(_ouputWin, 0, 0);
     box(_stateWin, 0, 0);

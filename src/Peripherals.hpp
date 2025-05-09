@@ -35,7 +35,7 @@ class Peripherals {
     };
     virtual void signalExit() { _shouldStop = true; }
     virtual void changeMode(bool highRes);
-    virtual bool update(const CPU &cpu, const UpdateParams &params);
+    virtual bool update(CPU &cpu, const UpdateParams &params);
     void draw(uint16_t x, uint16_t y, uint16_t height, uint16_t i);
     virtual uint8_t waitKeyPress();
     virtual std::vector<uint8_t> getKeysPressed();

@@ -21,7 +21,7 @@ class TermPeripherals : public Chip8::Peripherals {
     TermPeripherals(const Chip8::Config &conf) : Chip8::Peripherals(conf) {}
     ~TermPeripherals();
 
-    bool update(const Chip8::CPU &cpu, const UpdateParams &params) override;
+    bool update(Chip8::CPU &cpu, const UpdateParams &params) override;
     uint8_t waitKeyPress() override;
     void clearDisplay() override;
     void changeMode(bool highRes) override;

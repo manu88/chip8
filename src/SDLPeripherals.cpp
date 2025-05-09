@@ -138,7 +138,7 @@ int SDLPeripherals::drawStats(const Chip8::Registers &registers) {
     return r.h;
 }
 
-bool SDLPeripherals::update(const Chip8::CPU &cpu,
+bool SDLPeripherals::update(Chip8::CPU &cpu,
                             const Chip8::Peripherals::UpdateParams &params) {
     Chip8::Peripherals::update(cpu, params);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

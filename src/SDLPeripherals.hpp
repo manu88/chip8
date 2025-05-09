@@ -30,7 +30,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
     bool init() override;
 
-    bool update(const Chip8::CPU &cpu,
+    bool update(Chip8::CPU &cpu,
                 const Chip8::Peripherals::UpdateParams &params) override;
 
     uint8_t waitKeyPress() override;
