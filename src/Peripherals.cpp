@@ -12,9 +12,13 @@
 #include <stdlib.h>
 
 bool Chip8::Peripherals::init() {
+    reset();
+    return true;
+}
+
+void Chip8::Peripherals::reset() {
     memset(&buffer, 0,
            sizeof(uint8_t) * HIGH_RES_SCREEN_WIDTH * HIGH_RES_SCREEN_HEIGTH);
-    return true;
 }
 
 uint8_t Chip8::Peripherals::waitKeyPress() {

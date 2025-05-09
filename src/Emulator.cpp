@@ -26,6 +26,8 @@ void Chip8::CPU::init(Rom *rom, Peripherals *peripherals) {
 
 void Chip8::CPU::reset() {
     _registers.reset();
+    _mem.reset();
+    _peripherals->reset();
     _startTime = std::chrono::system_clock::now();
 }
 

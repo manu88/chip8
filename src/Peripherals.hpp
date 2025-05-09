@@ -28,6 +28,7 @@ class Peripherals {
     virtual ~Peripherals() {}
 
     virtual bool init();
+    virtual void reset();
 
     struct UpdateParams {
         int timeoutMS;

@@ -50,6 +50,11 @@ void Chip8::Memory::setRom(Rom *rom) {
     _rom->relocateDebugSymbols(ROM_ADDR);
 }
 
+void Chip8::Memory::reset() {
+    _ram.clear();
+    memset(stack, 0, STACK_SIZE * sizeof(uint16_t));
+}
+
 bool Chip8::Memory::isValid(uint16_t addr) const {
     if (addr >= ROM_ADDR) {
         uint16_t romAddr = addr - ROM_ADDR;

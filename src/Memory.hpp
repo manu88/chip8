@@ -23,6 +23,7 @@ class Memory {
     enum { STACK_SIZE = 16 };
     enum { ROM_START = ROM_ADDR };
 
+    void reset();
     bool isValid(uint16_t addr) const;
     void setRom(Rom *rom);
     const Rom *getRom() const { return _rom; }

@@ -196,6 +196,8 @@ bool SDLPeripherals::update(Chip8::CPU &cpu,
                 }
             } else if (e.key.keysym.sym == SDLK_n) {
                 cpu.debuggerStepNext();
+            } else if (e.key.keysym.sym == SDLK_r) {
+                cpu.reset();
             }
         }
     }
