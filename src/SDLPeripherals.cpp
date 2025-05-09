@@ -75,7 +75,7 @@ static void renderText(SDL_Renderer *renderer, int x, int y,
     SDL_RenderCopy(renderer, texture, NULL, &rect);
 }
 
-void SDLPeripherals::drawDebugger(const Chip8::CPU &cpu, int startY) {
+void SDLPeripherals::drawDebugger(Chip8::CPU &cpu, int startY) {
     int startX =
         (int)Peripherals::LOW_RES_SCREEN_WIDTH * LOW_RES_SCALE_FACTOR + 20;
     SDL_Rect r;

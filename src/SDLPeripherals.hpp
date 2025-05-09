@@ -38,7 +38,7 @@ class SDLPeripherals : public Chip8::Peripherals {
 
   private:
     int drawStats(const Chip8::Registers &registers);
-    void drawDebugger(const Chip8::CPU &cpu, int startY);
+    void drawDebugger(Chip8::CPU &cpu, int startY);
 
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;

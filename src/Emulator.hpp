@@ -66,13 +66,13 @@ class CPU : public InstructionParser {
     Memory &getMemory() { return _mem; }
     const Memory &getMemory() const { return _mem; }
 
-    void pauseDebugger() const { debugCtx.paused = true; }
-    void resumeDebugger() const {
+    void pauseDebugger() { debugCtx.paused = true; }
+    void resumeDebugger() {
         debugCtx.paused = false;
         debugCtx.stepNext = false;
     }
-    bool debuggerIsPaused() const { return debugCtx.paused; }
-    void debuggerStepNext() const {
+    bool debuggerIsPaused() { return debugCtx.paused; }
+    void debuggerStepNext() {
         debugCtx.paused = false;
         debugCtx.stepNext = true;
     }
@@ -140,6 +140,6 @@ class CPU : public InstructionParser {
 
     std::chrono::time_point<std::chrono::system_clock> _startTime;
 
-    mutable DebuggerContext debugCtx;
+    DebuggerContext debugCtx;
 };
 } // namespace Chip8
