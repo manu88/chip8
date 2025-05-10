@@ -45,7 +45,7 @@ void printUsage() {
     printf("-g: use GUI\n");
     printf("-t: run tests\n");
     printf("-s: superchip mode\n");
-    printf("-d: superchip mode\n");
+    printf("-d: debugger\n");
 }
 
 static Chip8::Peripherals *createPeripherals(bool useGui,
