@@ -30,7 +30,7 @@ bool TermPeripherals::init() {
     _outputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH,
                         Peripherals::LOW_RES_SCREEN_WIDTH, startY, startX);
 
-    startX += Peripherals::LOW_RES_SCREEN_WIDTH + 4;
+    startX += Peripherals::HIGH_RES_SCREEN_WIDTH + 4;
 
     _stateWin = newwin(24, 24, startY, startX);
     if (_conf.debugInstructions) {
