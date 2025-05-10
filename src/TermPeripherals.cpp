@@ -86,8 +86,13 @@ bool TermPeripherals::update(Chip8::CPU &cpu, const UpdateParams &params) {
     if (_conf.debugInstructions) {
         mvwprintw(_debugWin, 1, 1,
                   cpu.debuggerIsPaused() ? "PAUSED  " : "RUNNING");
-        const std::string code = cpu.getMemory().getRom()->getDebugSymbols().at(
-            cpu.getRegisters().pc);
+
+        std::string code = "?";
+        auto symbols = cpu.getMemory().getRom()->getDebugSymbols();
+        if (symbols.count(cpu.getRegisters().pc)) {
+            code = symbols.at(cpu.getRegisters().pc);
+        }
+
         mvwprintw(_debugWin, 2, 1, code.c_str());
         wrefresh(_debugWin);
     }

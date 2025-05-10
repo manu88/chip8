@@ -88,8 +88,11 @@ void SDLPeripherals::drawDebugger(Chip8::CPU &cpu, int startY) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawRect(renderer, &r);
 
-    const std::string code =
-        cpu.getMemory().getRom()->getDebugSymbols().at(cpu.getRegisters().pc);
+    std::string code = "?";
+    auto symbols = cpu.getMemory().getRom()->getDebugSymbols();
+    if (symbols.count(cpu.getRegisters().pc)) {
+        code = symbols.at(cpu.getRegisters().pc);
+    }
 
     int inc = 1;
     renderText(renderer, startX, startY + (FONT_SIZE * inc),
