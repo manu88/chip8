@@ -34,7 +34,6 @@ class SDLPeripherals : public Chip8::Peripherals {
                 const Chip8::Peripherals::UpdateParams &params) override;
 
     uint8_t waitKeyPress() override;
-    void clearDisplay() override;
 
   private:
     int drawStats(const Chip8::Registers &registers);

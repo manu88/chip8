@@ -18,15 +18,17 @@ class TermPeripherals : public Chip8::Peripherals {
     enum { HIGH_RES_SCALE_FACTOR = 5 };
 
     bool init() override;
+    void reset() override;
     TermPeripherals(const Chip8::Config &conf) : Chip8::Peripherals(conf) {}
     ~TermPeripherals();
 
     bool update(Chip8::CPU &cpu, const UpdateParams &params) override;
     uint8_t waitKeyPress() override;
-    void clearDisplay() override;
     void changeMode(bool highRes) override;
+    void clearDisplay() override;
 
   private:
-    WINDOW *_ouputWin;
+    WINDOW *_outputWin;
     WINDOW *_stateWin;
+    WINDOW *_debugWin;
 };

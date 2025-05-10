@@ -30,7 +30,7 @@ uint8_t Chip8::Peripherals::waitKeyPress() {
 
 std::vector<uint8_t> Chip8::Peripherals::getKeysPressed() { return {}; }
 
-void Chip8::Peripherals::clearDisplay() { printf("Display clear\n"); }
+void Chip8::Peripherals::clearDisplay() { _commands.clear(); }
 
 bool Chip8::Peripherals::renderSprite(
     const Chip8::Memory &memory, const Chip8::Peripherals::DrawCommand &cmd) {

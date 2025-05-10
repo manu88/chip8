@@ -221,5 +221,3 @@ uint8_t SDLPeripherals::waitKeyPress() {
     }
     return 0;
 }
-
-void SDLPeripherals::clearDisplay() { _commands.clear(); }

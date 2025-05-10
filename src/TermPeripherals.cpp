@@ -9,6 +9,7 @@
 #include "Emulator.hpp"
 #include "HexHelpers.hpp"
 #include "Memory.hpp"
+#include "Rom.hpp"
 #include <locale.h>
 #include <ncurses.h>
 #include <string>
@@ -26,32 +27,45 @@ bool TermPeripherals::init() {
     int startX = 4;
     int startY = 1;
 
-    _ouputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH,
-                       Peripherals::LOW_RES_SCREEN_WIDTH, startY, startX);
+    _outputWin = newwin(Peripherals::LOW_RES_SCREEN_HEIGTH,
+                        Peripherals::LOW_RES_SCREEN_WIDTH, startY, startX);
 
-    startX += Peripherals::HIGH_RES_SCREEN_WIDTH + 4;
+    startX += Peripherals::LOW_RES_SCREEN_WIDTH + 4;
 
     _stateWin = newwin(24, 24, startY, startX);
+    if (_conf.debugInstructions) {
+        startY += 24;
+        _debugWin = newwin(4, 30, startY, startX);
+    }
 
-    keypad(_ouputWin, TRUE);
+    keypad(_outputWin, TRUE);
+    nodelay(_outputWin, TRUE);
     mvprintw(0, 0, "Chip8 emulator");
     refresh();
     return Peripherals::init();
+}
+
+void TermPeripherals::reset() {
+    Peripherals::reset();
+    clearDisplay();
 }
 
 TermPeripherals::~TermPeripherals() { endwin(); }
 
 bool TermPeripherals::update(Chip8::CPU &cpu, const UpdateParams &params) {
     Chip8::Peripherals::update(cpu, params);
-    box(_ouputWin, 0, 0);
+    box(_outputWin, 0, 0);
     box(_stateWin, 0, 0);
+    if (_conf.debugInstructions) {
+        box(_debugWin, 0, 0);
+    }
 
     for (int x = 0; x < _currentWidth; x++) {
         for (int y = 0; y < _currentHeight; y++) {
             int xx = _scrollXOffset + x;
             int yy = _scrollYOffset + y;
             if (buffer[x][y]) {
-                mvwprintw(_ouputWin, yy, xx, "#");
+                mvwprintw(_outputWin, yy, xx, "#");
             }
         }
     }
@@ -67,8 +81,31 @@ bool TermPeripherals::update(Chip8::CPU &cpu, const UpdateParams &params) {
                   hex(cpu.getRegisters().v[i]).c_str());
     }
     mvwprintw(_stateWin, 5 + 16, 1, "mode: %s", _highRes ? "HIGH" : "LOW");
-    wrefresh(_ouputWin);
+    wrefresh(_outputWin);
     wrefresh(_stateWin);
+    if (_conf.debugInstructions) {
+        mvwprintw(_debugWin, 1, 1,
+                  cpu.debuggerIsPaused() ? "PAUSED  " : "RUNNING");
+        const std::string code = cpu.getMemory().getRom()->getDebugSymbols().at(
+            cpu.getRegisters().pc);
+        mvwprintw(_debugWin, 2, 1, code.c_str());
+        wrefresh(_debugWin);
+    }
+
+    if (_conf.debugInstructions) {
+        int key = wgetch(_outputWin);
+        if (key == 'n') {
+            cpu.debuggerStepNext();
+        } else if (key == 'r') {
+            cpu.reset();
+        } else if (key == ' ') {
+            if (cpu.debuggerIsPaused()) {
+                cpu.resumeDebugger();
+            } else {
+                cpu.pauseDebugger();
+            }
+        }
+    }
     refresh();
     usleep(params.timeoutMS * 1000);
     return true;
@@ -77,15 +114,22 @@ bool TermPeripherals::update(Chip8::CPU &cpu, const UpdateParams &params) {
 uint8_t TermPeripherals::waitKeyPress() {
     mvprintw(1, 0, "waiting input");
     refresh();
-    int key = wgetch(_ouputWin);
+    int key = wgetch(_outputWin);
     mvprintw(1, 0, "             ");
     refresh();
     return Peripherals::getKeyCode(key);
 }
 
-void TermPeripherals::clearDisplay() { _commands.clear(); }
+void TermPeripherals::clearDisplay() {
+    Peripherals::clearDisplay();
+    werase(_outputWin);
+    werase(_stateWin);
+    if (_conf.debugInstructions) {
+        werase(_debugWin);
+    }
+}
 
 void TermPeripherals::changeMode(bool highRes) {
     Chip8::Peripherals::changeMode(highRes);
-    wresize(_ouputWin, _currentHeight, _currentWidth);
+    wresize(_outputWin, _currentHeight, _currentWidth);
 }
